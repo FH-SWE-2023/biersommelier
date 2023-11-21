@@ -1,27 +1,29 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import '../DatabaseConnector.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as maps
+    show LatLng;
 
-class Beer {
+class Bar {
   String id;
   String name;
-  String imageId;
+  maps.LatLng location;
 
-  Beer({required this.id, required this.name, required this.imageId});
+  Bar({required this.id, required this.name, required this.location});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'imageId': imageId,
+      'location': location,
     };
   }
 
-  factory Beer.fromMap(Map<String, dynamic> map) {
-    return Beer(
+  factory Bar.fromMap(Map<String, dynamic> map) {
+    return Bar(
       id: map['id'],
       name: map['name'],
-      imageId: map['imageId'],
+      location: map['location'],
     );
   }
 
@@ -32,65 +34,65 @@ class Beer {
 
   static String createTable() {
     return '''
-      CREATE TABLE beers(
+      CREATE TABLE bars(
         id TEXT PRIMARY KEY,
         name TEXT,
-        imageId TEXT
+        location TEXT
       )
     ''';
   }
 
-  // Insert a new beer into the database.
-  static Future<void> insert(Beer beer) async {
+  // Insert a new bar into the database.
+  static Future<void> insert(Bar beer) async {
     final db = await DatabaseConnector().database;
     await db.insert(
-      'beers',
+      'bars',
       beer.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  // Update a beer in the database.
-  static Future<void> update(Beer beer) async {
+  // Update a bar in the database.
+  static Future<void> update(Bar beer) async {
     final db = await DatabaseConnector().database;
     await db.update(
-      'beers',
+      'bars',
       beer.toMap(),
       where: 'id = ?',
       whereArgs: [beer.id],
     );
   }
 
-  // Delete a beer from the database.
+  // Delete a bar from the database.
   static Future<void> delete(String id) async {
     final db = await DatabaseConnector().database;
     await db.delete(
-      'beers',
+      'bars',
       where: 'id = ?',
       whereArgs: [id],
     );
   }
 
-  // Retrieve a beer from the database.
-  static Future<Beer?> get(String id) async {
+  // Retrieve a bar from the database.
+  static Future<Bar?> get(String id) async {
     final db = await DatabaseConnector().database;
     final List<Map<String, dynamic>> maps =
-        await db.query('beers', where: 'id = ?', whereArgs: [id]);
+        await db.query('bars', where: 'id = ?', whereArgs: [id]);
 
     if (maps.isNotEmpty) {
-      return Beer.fromMap(maps.first);
+      return Bar.fromMap(maps.first);
     }
 
     return null;
   }
 
-  // Retrieve all beers from the database.
-  static Future<List<Beer>> getAll() async {
+  // Retrieve all bars from the database.
+  static Future<List<Bar>> getAll() async {
     final db = await DatabaseConnector().database;
-    final List<Map<String, dynamic>> maps = await db.query('beers', limit: 500);
+    final List<Map<String, dynamic>> maps = await db.query('bars', limit: 500);
 
     return List.generate(maps.length, (i) {
-      return Beer.fromMap(maps[i]);
+      return Bar.fromMap(maps[i]);
     });
   }
 }
