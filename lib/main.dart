@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'router/PageRouter.dart';
-import 'db/DatabaseConnector.dart' as db;
+import 'database/DatabaseConnector.dart' as db;
 
 /// Entrypoint der App. Hier wird sie gestartet mit dem Hauptwidget
 /// Biersommilier.
