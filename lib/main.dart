@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'router/PageRouter.dart';
+import 'db/db_connector.dart' as db;
 
 /// Entrypoint der App. Hier wird sie gestartet mit dem Hauptwidget
 /// Biersommilier.
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  db.DatabaseConnector dbConnector = db.DatabaseConnector();
+  await dbConnector.database;
   runApp(const BierSommelier());
 }
 
