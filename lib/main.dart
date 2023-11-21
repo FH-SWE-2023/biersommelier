@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'db/db_connector.dart' as db;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  db.DatabaseConnector dbConnector = db.DatabaseConnector();
+  await dbConnector.database;
   runApp(const MyApp());
 }
 
@@ -124,10 +128,22 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
         selectedIndex: 1,
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home',),
-          NavigationDestination(icon: Icon(Icons.explore), label: 'Explore',),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile',),
-          NavigationDestination(icon: Icon(Icons.settings_rounded), label: 'Settings',),
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.explore),
+            label: 'Explore',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_rounded),
+            label: 'Settings',
+          ),
           NavigationDestination(icon: Icon(Icons.abc_rounded), label: 'ABC')
         ],
       ),
