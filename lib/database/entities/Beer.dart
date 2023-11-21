@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
-import '../db_connector.dart';
+import '../DatabaseConnector.dart';
 
 class Beer {
   String id;
@@ -69,6 +69,19 @@ class Beer {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  // Retrieve a beer from the database.
+  static Future<Beer?> get(String id) async {
+    final db = await DatabaseConnector().database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('beers', where: 'id = ?', whereArgs: [id]);
+
+    if (maps.isNotEmpty) {
+      return Beer.fromMap(maps.first);
+    }
+
+    return null;
   }
 
   // Retrieve all beers from the database.

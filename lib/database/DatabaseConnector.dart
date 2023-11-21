@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'entities/beer.dart';
+import 'entities/Beer.dart';
 
 class DatabaseConnector {
   static Database? _database;
