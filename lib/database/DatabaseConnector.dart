@@ -46,6 +46,7 @@ class DatabaseConnector {
 
   // Generic Query Execution, should not be used, just here for now
   // TODO: Remove this function before release
+  @Deprecated('Methods for every entity are implemented')
   Future<List<Map<String, dynamic>>> executeQuery(String sql) async {
     Database db = await database;
     return await db.rawQuery(sql);
