@@ -9,7 +9,7 @@ class PageRouter {
   /// Eigenschaften der App (Hintergrundfarbe uä)
   static MaterialApp app() {
     return MaterialApp.router(
-      title: 'Biersommelier',
+      title: 'Biersommelier App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
         useMaterial3: true,
@@ -20,32 +20,28 @@ class PageRouter {
 
   /// Der eigentliche Entrypoint des Routers
   static GoRouter router() {
-    return GoRouter(
-      routes: [
-        ShellRoute(
+    return GoRouter(routes: [
+      ShellRoute(
           routes: [
             GoRoute(
               path: '/',
               builder: (context, state) => const Home(),
             ),
-            GoRoute(path: '/other',
-            builder: (context, state) => const Other()),
+            GoRoute(path: '/other', builder: (context, state) => const Other()),
           ],
           pageBuilder: (context, state, child) {
             // Der scaffold und die Navbar sind immer sichtbar
             // Dies kann sich bei programmierung der introduction
             // abändern
-            return NoTransitionPage(child:
-            Scaffold(
+            return NoTransitionPage(
+                child: Scaffold(
               appBar: AppBar(
                 title: Text('Biersommelier'),
               ),
               body: child,
               bottomNavigationBar: const NavBar(),
             ));
-          }
-        )
-      ]
-    );
+          })
+    ]);
   }
 }
