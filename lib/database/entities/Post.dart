@@ -55,14 +55,14 @@ class Post {
 
   static String createTable() {
     return '''
-      CREATE TABLE posts(
+      CREATE TABLE IF NOT EXISTS posts(
         id TEXT PRIMARY KEY,
         name TEXT,
-        imageId TEXT
-        rating INTEGER
-        barId TEXT
-        beerId TEXT
-        date TEXT
+        imageId TEXT,
+        rating INTEGER,
+        barId TEXT,
+        beerId TEXT,
+        date TEXT,
         description TEXT
       )
     ''';

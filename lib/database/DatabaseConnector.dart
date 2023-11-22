@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'entities/Beer.dart';
+import 'entities/Beer.dart' show Beer;
+import 'entities/Bar.dart' show Bar;
+import 'entities/Post.dart' show Post;
 
 class DatabaseConnector {
   static Database? _database;
@@ -38,6 +40,8 @@ class DatabaseConnector {
   Future _onCreate(Database db, int version) async {
     // TABLE CREATION HERE
     await db.execute(Beer.createTable());
+    await db.execute(Bar.createTable());
+    await db.execute(Post.createTable());
   }
 
   // Generic Query Execution, should not be used, just here for now
