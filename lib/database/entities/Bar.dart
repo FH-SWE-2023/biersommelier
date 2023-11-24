@@ -34,7 +34,7 @@ class Bar {
 
   static String createTable() {
     return '''
-      CREATE TABLE bars(
+      CREATE TABLE IF NOT EXISTS bars(
         id TEXT PRIMARY KEY,
         name TEXT,
         location TEXT

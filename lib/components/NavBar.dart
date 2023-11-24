@@ -1,5 +1,5 @@
+import 'package:biersommelier/router/PageRouter.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 /// Beispielwidget für die Navigation Bar
 /// Diese Navbar wird nicht bestehen bleiben und ist nur
@@ -13,19 +13,29 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int pageIndex = 0;
+
+  // Ziemliches Mess, jedoch ist das nur ein Demokomponent
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
       onDestinationSelected: (index) {
-        setState(() {
-          pageIndex = index;
-
-          if (index != 0) {
-            context.go('/other');
-          } else {
-            context.go('/');
-          }
-        });
+        if (PageRouter.currentPage == '/') {
+          context.go('/other').then((_) {
+            if (PageRouter.currentPage == '/other') {
+              setState(() {
+                pageIndex = 1;
+              });
+            }
+          });
+        } else {
+          context.go('/').then((_) {
+            if (PageRouter.currentPage == '/') {
+              setState(() {
+                pageIndex = 0;
+              });
+            }
+          });
+        }
       },
       selectedIndex: pageIndex,
       destinations: const [

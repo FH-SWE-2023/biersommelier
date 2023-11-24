@@ -32,7 +32,7 @@ class Beer {
 
   static String createTable() {
     return '''
-      CREATE TABLE beers(
+      CREATE TABLE IF NOT EXISTS beers(
         id TEXT PRIMARY KEY,
         name TEXT,
         imageId TEXT
