@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'router/PageRouter.dart';
+import 'router/PageManager.dart';
 import 'database/DatabaseConnector.dart' as database;
 
 /// Entrypoint der App. Hier wird sie gestartet mit dem Hauptwidget
@@ -19,6 +19,6 @@ class BierSommelier extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return PageRouter.app();
+    return PageManager.app();
   }
 }
