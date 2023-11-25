@@ -8,26 +8,31 @@ import 'package:fluttertoast/fluttertoast.dart';
 /// (default warning)
 ///
 /// example call:
+/// WidgetsBinding.instance.addPostFrameCallback((_){
+//       showToast(context, "Hallo Welt", severityLevel.success);
+//  });
 /// showToast(context,"Hello Wold","success");
 ///
-showToast(BuildContext context,String massage, String level) {
+enum SeverityLevel { success, warning, danger }
+showToast(BuildContext context,String message, SeverityLevel level) {
 
   final Color backgroundColor;
   final Color textColor;
   final IconData icon;
 
-  if (level == "success") {
-    backgroundColor = const Color(0xffc6da7f);
-    textColor = Colors.black;
-    icon = Icons.check;
-  } else if(level == "danger"){
-    backgroundColor = const Color(0xffe20000);
-    textColor = Colors.white;
-    icon = Icons.clear;
-  }else {
-    backgroundColor = const Color(0xffffb400);
-    textColor = Colors.black;
-    icon = Icons.warning_amber_rounded;
+  switch (level) {
+    case SeverityLevel.success:
+      backgroundColor = const Color(0xffc6da7f);
+      textColor = Colors.black;
+      icon = Icons.check;
+    case SeverityLevel.danger:
+      backgroundColor = const Color(0xffe20000);
+      textColor = Colors.white;
+      icon = Icons.clear;
+    default: //severityLevel.warning
+      backgroundColor = const Color(0xffffb400);
+      textColor = Colors.black;
+      icon = Icons.warning_amber_rounded;
   }
 
   FToast fToast = FToast();
@@ -47,7 +52,7 @@ showToast(BuildContext context,String massage, String level) {
           ),
           const SizedBox(width: 12),
           Text(
-            massage,
+            message,
             style: TextStyle(
               color: textColor,
             ),
