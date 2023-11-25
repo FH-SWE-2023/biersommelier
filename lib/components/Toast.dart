@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+enum ToastLevel {
+  success,
+  warning,
+  danger,
+}
+
 ///
 /// Component that displays short information texts with a configurable severity level
 ///
@@ -10,24 +16,29 @@ import 'package:fluttertoast/fluttertoast.dart';
 /// example call:
 /// showToast(context,"Hello Wold","success");
 ///
-showToast(BuildContext context,String massage, String level) {
-
+showToast(BuildContext context, String message, ToastLevel level) {
   final Color backgroundColor;
   final Color textColor;
   final IconData icon;
 
-  if (level == "success") {
-    backgroundColor = const Color(0xffc6da7f);
-    textColor = Colors.black;
-    icon = Icons.check;
-  } else if(level == "danger"){
-    backgroundColor = const Color(0xffe20000);
-    textColor = Colors.white;
-    icon = Icons.clear;
-  }else {
-    backgroundColor = const Color(0xffffb400);
-    textColor = Colors.black;
-    icon = Icons.warning_amber_rounded;
+  switch (level) {
+    case ToastLevel.success:
+      backgroundColor = const Color(0xffc6da7f);
+      textColor = Colors.black;
+      icon = Icons.check;
+      break;
+
+    case ToastLevel.warning:
+      backgroundColor = const Color(0xffffb400);
+      textColor = Colors.black;
+      icon = Icons.warning_amber_rounded;
+      break;
+
+    case ToastLevel.danger:
+      backgroundColor = const Color(0xffe20000);
+      textColor = Colors.white;
+      icon = Icons.clear;
+      break;
   }
 
   FToast fToast = FToast();
@@ -39,30 +50,25 @@ showToast(BuildContext context,String massage, String level) {
       color: backgroundColor,
     ),
     child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          color: textColor,
+        ),
+        const SizedBox(width: 12),
+        Text(
+          message,
+          style: TextStyle(
             color: textColor,
           ),
-          const SizedBox(width: 12),
-          Text(
-            massage,
-            style: TextStyle(
-              color: textColor,
-            ),
-          ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
   fToast.showToast(
     child: toast,
     toastDuration: const Duration(seconds: 3),
     gravity: ToastGravity.BOTTOM,
   );
 }
-
-
-
-
-
