@@ -1,5 +1,7 @@
 import 'package:biersommelier/pages/Home.dart';
 import 'package:biersommelier/pages/Other.dart';
+import 'package:biersommelier/pages/TestExplore.dart';
+
 import 'package:flutter/material.dart';
 
 enum RutPage { home, king, explore, favorites, add }
@@ -19,7 +21,7 @@ class RutPath {
         return const Home();
 
       case RutPage.explore:
-        return const Other();
+        return const TestExplore();
 
       default:
         return const Home();

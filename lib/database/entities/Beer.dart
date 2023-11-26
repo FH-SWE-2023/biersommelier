@@ -87,7 +87,11 @@ class Beer {
   // Retrieve all beers from the database.
   static Future<List<Beer>> getAll() async {
     final db = await DatabaseConnector().database;
-    final List<Map<String, dynamic>> maps = await db.query('beers', limit: 500);
+    final List<Map<String, dynamic>> maps = await db.query(
+      'beers',
+      orderBy: 'name COLLATE NOCASE ASC', // Sort alphabetically, ignoring case
+      limit: 500,
+    );
 
     return List.generate(maps.length, (i) {
       return Beer.fromMap(maps[i]);

@@ -15,7 +15,7 @@ class Bar {
     return {
       'id': id,
       'name': name,
-      'location': location,
+      'location': location.toString(),
     };
   }
 
@@ -23,7 +23,10 @@ class Bar {
     return Bar(
       id: map['id'],
       name: map['name'],
-      location: map['location'],
+      location: maps.LatLng(
+        double.parse(map['location'].split('(')[1].split(',')[0]),
+        double.parse(map['location'].split(',')[1].split(')')[0]),
+      )
     );
   }
 
@@ -89,7 +92,11 @@ class Bar {
   // Retrieve all bars from the database.
   static Future<List<Bar>> getAll() async {
     final db = await DatabaseConnector().database;
-    final List<Map<String, dynamic>> maps = await db.query('bars', limit: 500);
+    final List<Map<String, dynamic>> maps = await db.query(
+      'bars',
+      orderBy: 'name COLLATE NOCASE ASC', // Sort alphabetically, ignoring case
+      limit: 500,
+    );
 
     return List.generate(maps.length, (i) {
       return Bar.fromMap(maps[i]);
