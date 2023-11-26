@@ -1,4 +1,3 @@
-import 'package:biersommelier/router/PageRouter.dart';
 import 'package:flutter/material.dart';
 
 class Popup extends StatelessWidget {
@@ -6,7 +5,6 @@ class Popup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PageRouter.setUserConfirmation(true);
     return Scaffold(
       body: Center(
         child: Column(
@@ -27,7 +25,7 @@ class Popup extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
                 onPressed: () {
-                  context.pop();
+                  // context.pop();
                 },
                 child: const Text('Wieder schließen'))
           ],

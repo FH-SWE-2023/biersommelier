@@ -1,4 +1,5 @@
-import 'package:biersommelier/router/PageRouter.dart';
+import 'package:biersommelier/router/Rut.dart';
+import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
 
 /// Beispielwidget für die Navigation Bar
@@ -14,27 +15,33 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int pageIndex = 0;
 
-  // Ziemliches Mess, jedoch ist das nur ein Demokomponent
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
       onDestinationSelected: (index) {
-        if (PageRouter.currentPage == '/') {
-          context.go('/other').then((_) {
-            if (PageRouter.currentPage == '/other') {
-              setState(() {
-                pageIndex = 1;
-              });
-            }
-          });
+        if (index == 1) {
+          if (context.path.page == RutPage.home) {
+            context.jump(RutPage.explore, change: (change) {
+              if (change) {
+                setState(() {
+                  pageIndex = 1;
+                });
+              }
+            });
+          }
         } else {
-          context.go('/').then((_) {
-            if (PageRouter.currentPage == '/') {
-              setState(() {
-                pageIndex = 0;
-              });
-            }
-          });
+          if (context.path.page == RutPage.explore) {
+            context.blockRouting(
+                buttonSuccessText: 'Aber Sicher!',
+                buttonCancelText: 'Ne lass mal');
+            context.jump(RutPage.home, change: (change) {
+              if (change) {
+                setState(() {
+                  pageIndex = 0;
+                });
+              }
+            });
+          }
         }
       },
       selectedIndex: pageIndex,
