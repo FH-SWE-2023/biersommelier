@@ -1,5 +1,6 @@
+import 'package:biersommelier/router/Rut.dart';
+import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 /// Beispielwidget für die Navigation Bar
 /// Diese Navbar wird nicht bestehen bleiben und ist nur
@@ -13,19 +14,35 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int pageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
       onDestinationSelected: (index) {
-        setState(() {
-          pageIndex = index;
-
-          if (index != 0) {
-            context.go('/other');
-          } else {
-            context.go('/');
+        if (index == 1) {
+          if (context.path.page == RutPage.home) {
+            context.jump(RutPage.explore, change: (change) {
+              if (change) {
+                setState(() {
+                  pageIndex = 1;
+                });
+              }
+            });
           }
-        });
+        } else {
+          if (context.path.page == RutPage.explore) {
+            context.blockRouting(
+                buttonSuccessText: 'Aber Sicher!',
+                buttonCancelText: 'Ne lass mal');
+            context.jump(RutPage.home, change: (change) {
+              if (change) {
+                setState(() {
+                  pageIndex = 0;
+                });
+              }
+            });
+          }
+        }
       },
       selectedIndex: pageIndex,
       destinations: const [

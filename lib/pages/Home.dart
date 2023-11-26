@@ -7,7 +7,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-        child: Text('Homepage'),
+      child: Text('Homepage'),
     );
   }
 }

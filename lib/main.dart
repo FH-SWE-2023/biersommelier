@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'router/PageRouter.dart';
-import 'database/DatabaseConnector.dart' as db;
+import 'router/PageManager.dart';
+import 'database/DatabaseConnector.dart' as database;
 
 /// Entrypoint der App. Hier wird sie gestartet mit dem Hauptwidget
 /// Biersommilier.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  db.DatabaseConnector dbConnector = db.DatabaseConnector();
-  await dbConnector.database;
+  database.DatabaseConnector dbConnector = database.DatabaseConnector();
+  var db = await dbConnector.database;
   runApp(const BierSommelier());
 }
 
@@ -19,6 +19,6 @@ class BierSommelier extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return PageRouter.app();
+    return PageManager.app();
   }
 }
