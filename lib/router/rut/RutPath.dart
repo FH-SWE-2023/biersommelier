@@ -1,11 +1,11 @@
+import 'package:biersommelier/pages/AddPost.dart';
 import 'package:biersommelier/pages/BeerCaptain.dart';
 import 'package:biersommelier/pages/Explore.dart';
 import 'package:biersommelier/pages/Favorites.dart';
 import 'package:biersommelier/pages/Logbook.dart';
-import 'package:biersommelier/pages/TestPopup.dart';
 import 'package:flutter/material.dart';
 
-enum RutPage { explore, beerCaptain, add, favorites, log }
+enum RutPage { explore, beerCaptain, addPost, favorites, log }
 
 class RutPath {
   RutPage page;
@@ -24,8 +24,8 @@ class RutPath {
       case RutPage.beerCaptain:
         return const BeerCaptain();
 
-      case RutPage.add:
-        return const Popup();
+      case RutPage.addPost:
+        return const AddPost();
 
       case RutPage.favorites:
         return const Favorites();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Logbook extends StatelessWidget {
-  const Logbook({Key? key}) : super(key: key);
+  const Logbook({super.key});
 
   @override
   Widget build(BuildContext context) {

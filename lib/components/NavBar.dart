@@ -3,9 +3,7 @@ import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
 
-/// Beispielwidget für die Navigation Bar
-/// Diese Navbar wird nicht bestehen bleiben und ist nur
-/// dafür da eine Demo für den Router zu zeigen
+/// The navigation bar positioned at the bottom of the screen
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
 
@@ -16,18 +14,21 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int pageIndex = 0;
 
+  /// Navigate to the page with the given [index]
+  void navigateTo(int index) {
+    context.jump({0: RutPage.explore, 1: RutPage.beerCaptain, 2: RutPage.addPost, 3: RutPage.favorites, 4: RutPage.log}[index]!, change: (change) {
+      if (change) {
+        setState(() {
+          pageIndex = index;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
-      onDestinationSelected: (index) {
-        context.jump(RutPage.values[pageIndex], change: (change) {
-          if (change) {
-            setState(() {
-              pageIndex = index;
-            });
-          }
-        });
-      },
+      onDestinationSelected: navigateTo,
       selectedIndex: pageIndex,
       backgroundColor: Theme.of(context).colorScheme.white,
       shadowColor: Theme.of(context).colorScheme.black,
@@ -45,17 +46,11 @@ class _NavBarState extends State<NavBar> {
             child: Column(
               children: [
                 RawMaterialButton(
-                  onPressed: () {context.jump(RutPage.add, change: (change) {
-                    if (change) {
-                      setState(() {
-                        pageIndex = 2;
-                      });
-                    }
-                  });},
+                  onPressed: () => navigateTo(2),
                   elevation: 2.0,
                   fillColor: Theme.of(context).colorScheme.primary,
-                  padding: EdgeInsets.all(15.0),
-                  shape: CircleBorder(),
+                  padding: const EdgeInsets.all(15.0),
+                  shape: const CircleBorder(),
                   child: const Icon(
                     Icons.local_drink,
                     size: 35.0,
