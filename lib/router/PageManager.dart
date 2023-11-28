@@ -49,26 +49,7 @@ class PageManager {
               fontFamily: 'Inter', fontSize: 14, fontWeight: FontWeight.normal),
         ),
 
-        inputDecorationTheme: const InputDecorationTheme(
         
-              
-              filled:true,
-              
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
-                //borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromRGBO(23, 16, 0, 1)),
-                //borderRadius: BorderRadius.circular(10),
-              ),
-              
-              hintStyle: TextStyle(
-                color: const Color.fromRGBO(69, 50, 0, 1), fontSize: 16
-                ),
-              fillColor:Color.fromRGBO(240, 236, 225, 1),   
-              
-        ),
 
         useMaterial3: false,
       ),
