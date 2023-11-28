@@ -14,7 +14,7 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   RutDelegate(this.rut);
 
-  RutPath path = RutPath(page: RutPage.home);
+  RutPath path = RutPath(page: RutPage.log);
   JumpAuthorizer authorizer = JumpAuthorizer(
     defaultTitle: 'Seite verlassen',
     defaultDescription: 'Willst du diese Seite wirklich verlassen?',
