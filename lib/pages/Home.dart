@@ -1,4 +1,3 @@
-import 'package:biersommelier/router/PageRouter.dart';
 import 'package:flutter/material.dart';
 
 /// Beispielwidget für das Home Fenster
