@@ -8,14 +8,20 @@ class Bar {
   String id;
   String name;
   maps.LatLng location;
+  String address;
 
-  Bar({required this.id, required this.name, required this.location});
+  Bar(
+      {required this.id,
+      required this.name,
+      required this.location,
+      required this.address});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'location': location.toString(),
+      'address': address,
     };
   }
 
@@ -26,7 +32,8 @@ class Bar {
       location: maps.LatLng(
         double.parse(map['location'].split('(')[1].split(',')[0]),
         double.parse(map['location'].split(',')[1].split(')')[0]),
-      )
+      ),
+      address: map['address'],
     );
   }
 
@@ -40,7 +47,8 @@ class Bar {
       CREATE TABLE IF NOT EXISTS bars(
         id TEXT PRIMARY KEY,
         name TEXT,
-        location TEXT
+        location TEXT,
+        address TEXT
       )
     ''';
   }

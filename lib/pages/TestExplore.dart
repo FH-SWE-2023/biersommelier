@@ -9,7 +9,7 @@ class TestExplore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: ExploreBar(), // This should be the main content of the scaffold.
     );
   }
