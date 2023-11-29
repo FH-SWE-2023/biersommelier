@@ -9,13 +9,18 @@ class ConfirmationDialog extends StatelessWidget {
   final Function()? cancel;
 
   const ConfirmationDialog({
-    Key? key,
-    this.description = 'Bist du sicher, dass du\ndiesen Favoriten löschen\nmöchtest?',
-    this.deleteButtonText = const Text('Löschen', style: TextStyle(color: Colors.red, fontSize: 20.0)),  //Schriftgröße und Farbe bestimmen
-    this.cancelButtonText = const Text('Abbrechen', style: TextStyle(color: Colors.black, fontSize: 20.0)),
+    super.key,
+    this.description =
+        'Bist du sicher, dass du\ndiesen Favoriten löschen\nmöchtest?',
+    this.deleteButtonText = const Text('Löschen',
+        style: TextStyle(
+            color: Colors.red,
+            fontSize: 20.0)), //Schriftgröße und Farbe bestimmen
+    this.cancelButtonText = const Text('Abbrechen',
+        style: TextStyle(color: Colors.black, fontSize: 20.0)),
     this.delete,
     this.cancel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,40 +31,37 @@ class ConfirmationDialog extends StatelessWidget {
         ),
       ),
       contentPadding: const EdgeInsets.all(16.0),
-      content: Container(
-        width: 300.0, // Breite erstellen fuer Container
-        child: IntrinsicHeight(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: 120.0, // Höhe des Textcontainers
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20.0, left: 10.0, right:10.0), //Abstand zwischen Text und Decken(Rahmen)
-                  child: Text(
-                    description,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20.0), //Schriftgröße vergrößern
-                  ),
+      content: SizedBox(
+        width: 300.0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 30,
+                horizontal: 10,
+              ),
+              child: Text(
+                description,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w400),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton(
+                  onPressed: delete,
+                  child: deleteButtonText,
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                    onPressed: delete ?? () => print('Delete pressed'),  //Druckknopfen für "Löschen"
-                    child: deleteButtonText,
-
-
-                  ),
-                  TextButton(
-                    onPressed: cancel ?? () => print('Cancel pressed'), //Druckknopfen für "Abbrechen"
-                    child: cancelButtonText,
-                  ),
-                ],
-              ),
-            ],
-          ),
+                TextButton(
+                  onPressed: cancel,
+                  child: cancelButtonText,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
