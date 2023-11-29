@@ -89,10 +89,10 @@ class CustomTextField extends TextField {
               borderRadius: BorderRadius.circular(10),
             ),
             labelStyle: TextStyle(
-                color: const Color.fromRGBO(69, 50, 0, 1), 
+                color: Theme.of(context).colorScheme.secondary, 
                 fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize
                 ),
-              fillColor:Theme.of(context).colorScheme.onPrimary,  //HIER FEHLER!!!!!
+              fillColor: Color.fromARGB(255, 240, 236, 225)
           ),
           keyboardType: keyboardType,
           textInputAction: textInputAction,
