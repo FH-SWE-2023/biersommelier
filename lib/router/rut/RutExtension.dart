@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 
 extension RutContext on BuildContext {
   void blockRouting({
-    String? title,
     String? description,
     String? buttonSuccessText,
     String? buttonCancelText,
   }) {
     Rut.of(this).blockRouting(
-      title: title,
       description: description,
       buttonSuccessText: buttonSuccessText,
       buttonCancelText: buttonCancelText,
