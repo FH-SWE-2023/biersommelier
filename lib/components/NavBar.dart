@@ -12,11 +12,20 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
+  // The current page index
   int pageIndex = 0;
+  // Map the index of the navigation bar to the page
+  final indexToPage = {
+    0: RutPage.explore,
+    1: RutPage.beerCaptain,
+    2: RutPage.addPost,
+    3: RutPage.favorites,
+    4: RutPage.log
+  };
 
   /// Navigate to the page with the given [index]
   void navigateTo(int index) {
-    context.jump({0: RutPage.explore, 1: RutPage.beerCaptain, 2: RutPage.addPost, 3: RutPage.favorites, 4: RutPage.log}[index]!, change: (change) {
+    context.jump(indexToPage[index]!, change: (change) {
       if (change) {
         setState(() {
           pageIndex = index;
@@ -27,6 +36,10 @@ class _NavBarState extends State<NavBar> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the current page index from the path
+    pageIndex = indexToPage.keys.firstWhere(
+            (key) => indexToPage[key] == context.path.page,
+        orElse: () => 0);
     return NavigationBar(
       onDestinationSelected: navigateTo,
       selectedIndex: pageIndex,
