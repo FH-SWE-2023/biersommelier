@@ -54,25 +54,33 @@ class _NavBarState extends State<NavBar> {
             icon: Icon(Icons.person_3_outlined),
             selectedIcon: Icon(Icons.person_3),
             label: 'Bierkapitän'),
-      OverflowBox(maxHeight: double.infinity, child: Container(
-            transform: Matrix4.translationValues(0, -17, 0),
-            child: Column(
-              children: [
-                RawMaterialButton(
-                  onPressed: () => navigateTo(2),
-                  elevation: 2.0,
-                  fillColor: Theme.of(context).colorScheme.primary,
-                  padding: const EdgeInsets.all(15.0),
-                  shape: const CircleBorder(),
-                  child: const Icon(
-                    Icons.local_drink,
-                    size: 35.0,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                const Text('Hinzufügen', style: TextStyle(fontSize: 11)),
-              ],
-            ))),
+        OverflowBox(
+            maxHeight: double.infinity,
+            child: Container(
+                transform: Matrix4.translationValues(0, -17, 0),
+                child: Column(
+                  children: [
+                    RawMaterialButton(
+                      onPressed: () => navigateTo(2),
+                      elevation: 2.0,
+                      fillColor: Theme.of(context).colorScheme.primary,
+                      padding: const EdgeInsets.all(15.0),
+                      shape: const CircleBorder(),
+                      child: const Icon(
+                        Icons.local_drink,
+                        size: 35.0,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text('Hinzufügen',
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Roboto',
+                            letterSpacing: 1.5,
+                            color: Color(0xff171000))),
+                  ],
+                ))),
         const NavigationDestination(
             icon: Icon(Icons.favorite_border),
             selectedIcon: Icon(Icons.favorite),
