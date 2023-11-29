@@ -1,8 +1,6 @@
 import 'package:biersommelier/components/Post/RateBar.dart';
 import 'package:flutter/material.dart';
 
-// TODO make dynamic
-
 class Post extends StatelessWidget {
   final Image image;
   final String description;
