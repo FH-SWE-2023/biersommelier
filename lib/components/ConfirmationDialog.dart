@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// Confirmation Dialog für Screen, Lastenheft Abbildung 25 (a302-5) (a304-5)
 class ConfirmationDialog extends StatelessWidget {
   final String description;
   final Widget deleteButtonText;
