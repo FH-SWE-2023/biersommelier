@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 
 /// Confirmation Dialog für Screen, Lastenheft Abbildung 25 (a302-5) (a304-5)
+/// - [description] Eine Beschreibung des Prompts
+/// - [confirmButtonText] Der Text des bestätigen Buttons
+/// - [cancelButtonText] Der Text des abbrechen Buttons
+/// - [onConfirm] Callback wenn bestätigen gedrückt wurde
+/// - [onCancel] Callback wenn abbrechen gedrückt wurde
 class ConfirmationDialog extends StatelessWidget {
   final String description;
-  final Widget deleteButtonText;
-  final Widget cancelButtonText;
-  final Function()? delete;
-  final Function()? cancel;
+  final String confirmButtonText;
+  final String cancelButtonText;
+  final Function()? onConfirm;
+  final Function()? onCancel;
 
   const ConfirmationDialog({
     super.key,
     this.description =
         'Bist du sicher, dass du\ndiesen Favoriten löschen\nmöchtest?',
-    this.deleteButtonText = const Text('Löschen',
-        style: TextStyle(
-            color: Colors.red,
-            fontSize: 20.0)), //Schriftgröße und Farbe bestimmen
-    this.cancelButtonText = const Text('Abbrechen',
-        style: TextStyle(color: Colors.black, fontSize: 20.0)),
-    this.delete,
-    this.cancel,
+    this.confirmButtonText = 'Löschen', //Schriftgröße und Farbe bestimmen
+    this.cancelButtonText = 'Abbrechen',
+    this.onConfirm,
+    this.onCancel,
   });
 
   @override
@@ -52,12 +53,21 @@ class ConfirmationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TextButton(
-                  onPressed: delete,
-                  child: deleteButtonText,
+                  onPressed: onConfirm,
+                  child: Text(
+                    confirmButtonText,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 20.0,
+                    ),
+                  ),
                 ),
                 TextButton(
-                  onPressed: cancel,
-                  child: cancelButtonText,
+                  onPressed: onCancel,
+                  child: Text(
+                    cancelButtonText,
+                    style: const TextStyle(color: Colors.black, fontSize: 20.0),
+                  ),
                 ),
               ],
             ),
