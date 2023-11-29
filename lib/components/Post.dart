@@ -1,6 +1,13 @@
 import 'package:biersommelier/components/Post/RateBar.dart';
 import 'package:flutter/material.dart';
 
+/// Ein Beitrag mit dem Aussehen nach Lastenheft Screen `a102`
+///
+/// - [image] Das Hauptbild in der Mitte
+/// - [bar] Das Lokal
+/// - [created] Der Zeitstempel wann der Post erstellt wurde
+/// - [beer] Der Biername
+/// - [rating] Eine Integerzahl von 1 bis 5 wie gut es bewertet wurde
 class Post extends StatelessWidget {
   final Image image;
   final String description;

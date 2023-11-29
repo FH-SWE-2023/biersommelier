@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Das Biericon für die Bewertungsoberfläche
+///
+/// - [active] Wenn aktiv wird ein Icon mit Farbe erzeugt, sonst grau
 class BeerIcon extends StatelessWidget {
   final bool active;
 
