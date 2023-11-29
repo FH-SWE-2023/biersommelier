@@ -1,7 +1,5 @@
-import 'package:biersommelier/components/Alert.dart';
 import 'package:biersommelier/components/ConfirmationDialog.dart';
 import 'package:biersommelier/router/Rut.dart';
-import 'package:flutter/material.dart';
 
 class JumpAuthorizer {
   bool _active = false;
