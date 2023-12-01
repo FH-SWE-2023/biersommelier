@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+
+/*
+So verwendest du die Komponente:
+
+TextFieldWithLabel(
+  label: "Text",
+  textField: CustomTextField(
+    context:context,
+  )
+)
+*/
+
 class TextFieldWithLabel extends StatelessWidget {
 
   final String label;
@@ -21,10 +33,13 @@ class TextFieldWithLabel extends StatelessWidget {
           
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            Padding(
+               padding: EdgeInsets.all(8.0),
+              child: Text(
               this.label,
               style: Theme.of(context).textTheme.bodyLarge
               ),
+            ),
             this.textField,
           ]
         )

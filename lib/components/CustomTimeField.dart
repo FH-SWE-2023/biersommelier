@@ -38,10 +38,13 @@ class TimeFieldWithLabel extends StatelessWidget {
           
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            Padding(
+               padding: EdgeInsets.all(8.0),
+              child: Text(
               this.label,
               style: Theme.of(context).textTheme.bodyLarge
               ),
+            ),
             this.dateTimeFormField,
           ]
         )
