@@ -5,7 +5,18 @@ import 'package:intl/intl.dart';
 
 
 
+/*
+So verwendest du die Komponente:
 
+DateFieldWithLabel(
+  label: "Datum",
+  dateTimeFormField: CustomDateField(
+    context: context,
+    initialValue: DateTime.now(),
+    initialDate: DateTime.now(),
+  )
+)
+*/
 
 class DateFieldWithLabel extends StatelessWidget {
 
@@ -50,12 +61,12 @@ class CustomDateField extends DateTimeFormField {
     bool enabled = true,
     bool use24hFormat = false,
     TextStyle? dateTextStyle,
-    DateFormat? dateFormat,
+    //DateFormat? dateFormat,
     DateTime? firstDate,
     DateTime? lastDate,
     DateTime? initialDate,
     ValueChanged<DateTime>? onDateSelected,
-    InputDecoration? decoration,
+    //InputDecoration? decoration,
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     DatePickerMode initialDatePickerMode = DatePickerMode.day,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.date,
@@ -70,7 +81,7 @@ class CustomDateField extends DateTimeFormField {
           enabled: enabled,
           use24hFormat: use24hFormat,
           dateTextStyle: dateTextStyle,
-          dateFormat: dateFormat,
+          dateFormat: DateFormat('dd.MM.yyyy'),
           firstDate: firstDate,
           lastDate: lastDate,
           initialDate:initialDate,

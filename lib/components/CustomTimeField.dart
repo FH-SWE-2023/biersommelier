@@ -4,7 +4,18 @@ import 'package:date_field/date_field.dart';
 import 'package:intl/intl.dart';
 
 
+/*
+So verwendest du die Komponente:
 
+TimeFieldWithLabel(
+  label: "Uhrzeit",
+  dateTimeFormField: CustomTimeField(
+    context: context,
+    initialValue: DateTime.now(),
+    initialDate: DateTime.now(),
+  )
+),
+*/
 
 
 class TimeFieldWithLabel extends StatelessWidget {
@@ -48,14 +59,14 @@ class CustomTimeField extends DateTimeFormField {
     DateTime? initialValue,
     AutovalidateMode? autovalidateMode,
     bool enabled = true,
-    bool use24hFormat = false,
+    bool use24hFormat = true,
     TextStyle? dateTextStyle,
-    DateFormat? dateFormat,
+    //DateFormat? dateFormat,
     DateTime? firstDate,
     DateTime? lastDate,
     DateTime? initialDate,
     ValueChanged<DateTime>? onDateSelected,
-    InputDecoration? decoration,
+    //InputDecoration? decoration,
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     DatePickerMode initialDatePickerMode = DatePickerMode.day,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.time,
@@ -70,7 +81,7 @@ class CustomTimeField extends DateTimeFormField {
           enabled: enabled,
           use24hFormat: use24hFormat,
           dateTextStyle: dateTextStyle,
-          dateFormat: dateFormat,
+          dateFormat: DateFormat('HH:mm'),
           firstDate: firstDate,
           lastDate: lastDate,
           initialDate:initialDate,
