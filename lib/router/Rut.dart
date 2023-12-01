@@ -41,13 +41,11 @@ class Rut implements RouterConfig<RutPath> {
   }
 
   void blockRouting({
-    String? title,
     String? description,
     String? buttonSuccessText,
     String? buttonCancelText,
   }) {
     _delegate.blockRouting(
-      title: title,
       description: description,
       buttonSuccessText: buttonSuccessText,
       buttonCancelText: buttonCancelText,
