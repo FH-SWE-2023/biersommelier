@@ -1,32 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:date_field/date_field.dart';
+import 'package:intl/intl.dart';
 
 
 
 
-class TimeFieldWithLabel extends State<>{
 
-    DateTime cur = DateTime.now();
+class TimeFieldWithLabel extends StatelessWidget {
 
-    @override
-    Widget build(BuildContext context) => Scaffold(
-      body: ElevatedButton(
-          child: Text(cur.toString()),
-          onPressed: () async {
-            DateTime? newDate = await showDatePicker(
-              context: context, 
-              initialDate: cur,
-              firstDate: DateTime(2000), 
-              lastDate: DateTime(2100)
-              );
+  final String label;
+  final CustomTimeField dateTimeFormField;
+  
 
-              if(newDate == null) return;
+  const TimeFieldWithLabel({
+    super.key, 
+    required this.label, 
+    required this.dateTimeFormField,
+  });
 
-              setState(() {
-                cur = newDate;
-              });
-              cur = newDate;
-          },
-          )
-    
-    );
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+          
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              this.label,
+              style: Theme.of(context).textTheme.bodyLarge
+              ),
+            this.dateTimeFormField,
+          ]
+        )
+        );
+  }
 }
+
+class CustomTimeField extends DateTimeFormField {
+
+    CustomTimeField({
+    required BuildContext context,
+    Key? key,
+    FormFieldSetter<DateTime>? onSaved,
+    FormFieldValidator<DateTime>? validator,
+    DateTime? initialValue,
+    AutovalidateMode? autovalidateMode,
+    bool enabled = true,
+    bool use24hFormat = false,
+    TextStyle? dateTextStyle,
+    DateFormat? dateFormat,
+    DateTime? firstDate,
+    DateTime? lastDate,
+    DateTime? initialDate,
+    ValueChanged<DateTime>? onDateSelected,
+    InputDecoration? decoration,
+    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+    DatePickerMode initialDatePickerMode = DatePickerMode.day,
+    DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.time,
+    TimePickerEntryMode initialTimePickerEntryMode = TimePickerEntryMode.dial,
+    DateTimeFieldCreator fieldCreator = DateTimeField.new,
+  }) : super(
+          key: key,
+          initialValue: initialValue,
+          onSaved: onSaved,
+          validator: validator,
+          autovalidateMode: autovalidateMode,
+          enabled: enabled,
+          use24hFormat: use24hFormat,
+          dateTextStyle: dateTextStyle,
+          dateFormat: dateFormat,
+          firstDate: firstDate,
+          lastDate: lastDate,
+          initialDate:initialDate,
+          onDateSelected:onDateSelected,
+            decoration: InputDecoration(
+            floatingLabelBehavior: FloatingLabelBehavior.never ,
+            
+            filled: true,
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            labelStyle: TextStyle(
+                color: Theme.of(context).colorScheme.secondary, 
+                fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize
+                ),
+              fillColor: Color.fromARGB(255, 240, 236, 225)
+          ),
+          initialEntryMode:initialEntryMode,
+          initialDatePickerMode:initialDatePickerMode,
+          mode:mode,
+          initialTimePickerEntryMode:initialTimePickerEntryMode,
+          fieldCreator:fieldCreator,
+        );
+
+  @override
+  FormFieldState<DateTime> createState() => FormFieldState<DateTime>();
+}
+

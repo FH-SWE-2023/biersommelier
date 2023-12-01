@@ -42,7 +42,6 @@ class CustomDateField extends DateTimeFormField {
 
     CustomDateField({
     required BuildContext context,
-    String labelText = "",
     Key? key,
     FormFieldSetter<DateTime>? onSaved,
     FormFieldValidator<DateTime>? validator,
@@ -59,7 +58,7 @@ class CustomDateField extends DateTimeFormField {
     InputDecoration? decoration,
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     DatePickerMode initialDatePickerMode = DatePickerMode.day,
-    DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
+    DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.date,
     TimePickerEntryMode initialTimePickerEntryMode = TimePickerEntryMode.dial,
     DateTimeFieldCreator fieldCreator = DateTimeField.new,
   }) : super(
@@ -69,29 +68,16 @@ class CustomDateField extends DateTimeFormField {
           validator: validator,
           autovalidateMode: autovalidateMode,
           enabled: enabled,
-          builder: (FormFieldState<DateTime> field) {
-            // Theme defaults are applied inside the _InputDropdown widget
-            final InputDecoration _decorationWithThemeDefaults =
-                decoration ?? const InputDecoration();
-
-            final InputDecoration effectiveDecoration =
-                _decorationWithThemeDefaults.copyWith(
-                    errorText: field.errorText);
-
-            void onChangedHandler(DateTime value) {
-              if (onDateSelected != null) {
-                onDateSelected(value);
-              }
-              field.didChange(value);
-            }
-
-            return fieldCreator(
-              firstDate: firstDate,
-              initialDate: initialDate,
-              lastDate: lastDate,
-              decoration: InputDecoration(
+          use24hFormat: use24hFormat,
+          dateTextStyle: dateTextStyle,
+          dateFormat: dateFormat,
+          firstDate: firstDate,
+          lastDate: lastDate,
+          initialDate:initialDate,
+          onDateSelected:onDateSelected,
+            decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.never ,
-            labelText: labelText,
+            
             filled: true,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent),
@@ -107,18 +93,11 @@ class CustomDateField extends DateTimeFormField {
                 ),
               fillColor: Color.fromARGB(255, 240, 236, 225)
           ),
-              initialDatePickerMode: initialDatePickerMode,
-              dateFormat: dateFormat,
-              onDateSelected: onChangedHandler,
-              selectedDate: field.value,
-              enabled: enabled,
-              use24hFormat: use24hFormat,
-              mode: mode,
-              initialEntryMode: initialEntryMode,
-              dateTextStyle: dateTextStyle,
-              initialTimePickerEntryMode: initialTimePickerEntryMode,
-            );
-          },
+          initialEntryMode:initialEntryMode,
+          initialDatePickerMode:initialDatePickerMode,
+          mode:mode,
+          initialTimePickerEntryMode:initialTimePickerEntryMode,
+          fieldCreator:fieldCreator,
         );
 
   @override
