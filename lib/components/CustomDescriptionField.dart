@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
-/*
-So verwendest du die Komponente:
-
-TextFieldWithLabel(
-  label: "Text",
-  textField: CustomTextField(
-    context:context,
-  )
-)
-*/
-
-class TextFieldWithLabel extends StatelessWidget {
+class DescriptionFieldWithLabel extends StatelessWidget {
 
   final String label;
-  final CustomTextField textField;
+  final CustomDescriptionField textField;
   
 
-  const TextFieldWithLabel({
+  const DescriptionFieldWithLabel({
     super.key, 
     required this.label, 
     required this.textField,
@@ -47,15 +35,17 @@ class TextFieldWithLabel extends StatelessWidget {
   }
 }
 
-class CustomTextField extends TextField {
+class CustomDescriptionField extends TextField {
 
-  CustomTextField({
+  CustomDescriptionField({
     required BuildContext context,
     Key? key,
+    maxLines = 5,
+    minLines = 5,
     TextEditingController? controller,
     FocusNode? focusNode,
-    InputDecoration? decoration,
-    TextInputType? keyboardType,
+    //InputDecoration? decoration,
+    //TextInputType? keyboardType,
     TextInputAction? textInputAction,
     TextCapitalization textCapitalization = TextCapitalization.none,
     StrutStyle? strutStyle,
@@ -89,6 +79,9 @@ class CustomTextField extends TextField {
     String labelText="",
   }) : super(
           key: key,
+          maxLines: maxLines,
+          minLines: minLines,
+          
           controller: controller,
           focusNode: focusNode,
           decoration: InputDecoration(
@@ -109,7 +102,7 @@ class CustomTextField extends TextField {
                 ),
               fillColor: Color.fromARGB(255, 240, 236, 225)
           ),
-          keyboardType: keyboardType,
+          keyboardType: TextInputType.multiline,
           textInputAction: textInputAction,
           textCapitalization: textCapitalization,
           style: style,
