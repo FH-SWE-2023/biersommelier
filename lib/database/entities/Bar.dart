@@ -54,23 +54,23 @@ class Bar {
   }
 
   // Insert a new bar into the database.
-  static Future<void> insert(Bar beer) async {
+  static Future<void> insert(Bar bar) async {
     final db = await DatabaseConnector().database;
     await db.insert(
       'bars',
-      beer.toMap(),
+      bar.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
   // Update a bar in the database.
-  static Future<void> update(Bar beer) async {
+  static Future<void> update(Bar bar) async {
     final db = await DatabaseConnector().database;
     await db.update(
       'bars',
-      beer.toMap(),
+      bar.toMap(),
       where: 'id = ?',
-      whereArgs: [beer.id],
+      whereArgs: [bar.id],
     );
   }
 
