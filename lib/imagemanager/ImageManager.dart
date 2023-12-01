@@ -39,8 +39,8 @@ class ImageManager {
 
   /// Opens the image picker and returns the picked image
   Future<File> pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       return File(image.path);
     } else {

@@ -14,9 +14,8 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   RutDelegate(this.rut);
 
-  RutPath path = RutPath(page: RutPage.home);
+  RutPath path = RutPath(page: RutPage.log);
   JumpAuthorizer authorizer = JumpAuthorizer(
-    defaultTitle: 'Seite verlassen',
     defaultDescription: 'Willst du diese Seite wirklich verlassen?',
     defaultButtonSuccessText: 'Bestätigen',
     defaultButtonCancelText: 'Abbrechen',
@@ -67,14 +66,12 @@ class RutDelegate extends RouterDelegate<RutPath>
   }
 
   void blockRouting({
-    String? title,
     String? description,
     String? buttonSuccessText,
     String? buttonCancelText,
   }) {
     authorizer.userRequestMode();
     authorizer.setPrompt(
-      title: title,
       description: description,
       buttonSuccessText: buttonSuccessText,
       buttonCancelText: buttonCancelText,
