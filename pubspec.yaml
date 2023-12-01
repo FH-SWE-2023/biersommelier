@@ -41,6 +41,7 @@ dependencies:
   google_maps_flutter: ^2.5.0
   fluttertoast: ^8.2.4
   flutter_image_compress: ^2.1.0
+  date_field: ^3.0.5
   image_picker: any
   flutter_localizations:
     sdk: flutter
