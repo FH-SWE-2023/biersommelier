@@ -38,7 +38,7 @@ class _NavBarState extends State<NavBar> {
   Widget build(BuildContext context) {
     // Get the current page index from the path
     pageIndex = indexToPage.keys.firstWhere(
-            (key) => indexToPage[key] == context.path.page,
+        (key) => indexToPage[key] == context.path.page,
         orElse: () => 0);
     return NavigationBar(
       onDestinationSelected: navigateTo,
@@ -46,14 +46,14 @@ class _NavBarState extends State<NavBar> {
       backgroundColor: Theme.of(context).colorScheme.white,
       shadowColor: Theme.of(context).colorScheme.black,
       destinations: [
-        const NavigationDestination(
-            icon: Icon(Icons.map_outlined),
-            selectedIcon: Icon(Icons.map),
-            label: 'Entdecken'),
-        const NavigationDestination(
-            icon: Icon(Icons.person_3_outlined),
-            selectedIcon: Icon(Icons.person_3),
-            label: 'Bierkapitän'),
+        NavigationDestination(
+          icon: Image.asset('assets/navbar/Map.png'),
+          label: 'Entdecken',
+        ),
+        NavigationDestination(
+          icon: Image.asset('assets/navbar/Hat.png'),
+          label: 'Bierkapitän',
+        ),
         OverflowBox(
             maxHeight: double.infinity,
             child: Container(
@@ -64,12 +64,10 @@ class _NavBarState extends State<NavBar> {
                       onPressed: () => navigateTo(2),
                       elevation: 2.0,
                       fillColor: Theme.of(context).colorScheme.primary,
-                      padding: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(3.0),
                       shape: const CircleBorder(),
-                      child: const Icon(
-                        Icons.local_drink,
-                        size: 35.0,
-                      ),
+                      child:
+                          Image.asset('assets/navbar/AddBeer.png', scale: 3.7),
                     ),
                     const SizedBox(height: 6),
                     const Text('Hinzufügen',
@@ -81,14 +79,14 @@ class _NavBarState extends State<NavBar> {
                             color: Color(0xff171000))),
                   ],
                 ))),
-        const NavigationDestination(
-            icon: Icon(Icons.favorite_border),
-            selectedIcon: Icon(Icons.favorite),
-            label: 'Favoriten'),
-        const NavigationDestination(
-            icon: Icon(Icons.menu_book_outlined),
-            selectedIcon: Icon(Icons.menu_book),
-            label: 'Logbuch'),
+        NavigationDestination(
+          icon: Image.asset('assets/navbar/Heart.png'),
+          label: 'Favoriten',
+        ),
+        NavigationDestination(
+          icon: Image.asset('assets/navbar/Log.png'),
+          label: 'Logbuch',
+        ),
       ],
     );
   }
