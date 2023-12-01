@@ -1,5 +1,6 @@
 import 'package:biersommelier/router/Rut.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 // As Flutter does not expose these color types, we have to extend them ourselves
 extension AppColorScheme on ColorScheme {
@@ -51,6 +52,12 @@ class PageManager {
       // Rut (Rille) ist ein selbstimplemeniterter Router. Da dieser visuell unter den anderen
       // Komponenten befindet heißt er nun so als hätte man Router falsch geschrieben.
       routerConfig: Rut(),
+
+      // Added localization support
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [
+        Locale('de', 'DE'),
+      ],
     );
   }
 }

@@ -7,7 +7,7 @@ class RutParser extends RouteInformationParser<RutPath> {
     final uri = Uri.parse(information.uri.toString());
 
     if (uri.pathSegments.isEmpty) {
-      return RutPath(page: RutPage.home);
+      return RutPath(page: RutPage.log);
     }
 
     return RutPath(page: RutPage.explore);

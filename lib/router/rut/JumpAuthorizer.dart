@@ -1,20 +1,16 @@
-import 'package:biersommelier/components/Alert.dart';
+import 'package:biersommelier/components/ConfirmationDialog.dart';
 import 'package:biersommelier/router/Rut.dart';
-import 'package:flutter/material.dart';
 
 class JumpAuthorizer {
   bool _active = false;
-  String? customTitle;
   String? customDescription;
-  String defaultTitle;
-  String defaultDescription;
   String? customButtonSuccessText;
   String? customButtonCancelText;
+  String defaultDescription;
   String defaultButtonSuccessText;
   String defaultButtonCancelText;
 
   JumpAuthorizer({
-    required this.defaultTitle,
     required this.defaultDescription,
     required this.defaultButtonSuccessText,
     required this.defaultButtonCancelText,
@@ -29,19 +25,16 @@ class JumpAuthorizer {
   }
 
   void setPrompt({
-    String? title,
     String? description,
     String? buttonSuccessText,
     String? buttonCancelText,
   }) {
-    customTitle = title;
     customDescription = description;
     customButtonSuccessText = buttonSuccessText;
     customButtonCancelText = buttonCancelText;
   }
 
   void _clearCustomMessages() {
-    customTitle = null;
     customDescription = null;
     customButtonSuccessText = null;
     customButtonCancelText = null;
@@ -50,18 +43,16 @@ class JumpAuthorizer {
   void authorizeJump(Rut rut, Function(bool) authorized) {
     if (_active) {
       rut.showDialog(
-        Alert(
-          title: customTitle ?? defaultTitle,
+        ConfirmationDialog(
           description: customDescription ?? defaultDescription,
-          successButtonText:
-              Text(customButtonSuccessText ?? defaultButtonSuccessText),
-          cancelButtonText:
-              Text(customButtonCancelText ?? defaultButtonCancelText),
-          cancel: () {
+          confirmButtonText:
+              customButtonSuccessText ?? defaultButtonSuccessText,
+          cancelButtonText: customButtonCancelText ?? defaultButtonCancelText,
+          onCancel: () {
             rut.showDialog(null);
             authorized.call(false);
           },
-          success: () {
+          onConfirm: () {
             rut.showDialog(null);
             grantMode();
             _clearCustomMessages();
