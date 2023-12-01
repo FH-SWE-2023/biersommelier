@@ -7,7 +7,7 @@ import '../database/entities/Beer.dart';
 
 import '../imagemanager/ImageManager.dart';
 
-// ExploreBar component
+/// Creates the ExploreBar Component which contains the ExploreTabBar and the ExploreList with Locals and Beers
 class ExploreBar extends StatefulWidget {
   const ExploreBar({super.key});
 
@@ -66,11 +66,35 @@ class ExploreTabBar extends StatelessWidget {
       child: TabBar(
         controller: tabController,
         labelColor: Colors.black,
-        unselectedLabelColor: Colors.grey,
-        indicatorSize: TabBarIndicatorSize.tab,
-        tabs: const [
-          Tab(text: 'Lokale'),
-          Tab(text: 'Biere'),
+        unselectedLabelColor: Colors.black,
+        indicatorSize: TabBarIndicatorSize.label,
+        indicatorWeight: 4,
+        indicatorPadding: const EdgeInsets.symmetric(horizontal: 40),
+        tabs: [
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // width: 16px
+                Image.asset('assets/icons/pin.png', width: 30, height: 30),
+                const SizedBox(width: 5),
+                const Text('Lokale'),
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // width: 16px
+                Image.asset('assets/icons/beer.png', width: 30, height: 30),
+                const SizedBox(width: 5),
+                const Text('Biere'),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -105,7 +129,7 @@ class ExploreList extends StatelessWidget {
 
               return ListTile(
                 leading: isBar
-                    ? const SizedBox.shrink()
+                    ? null
                     : FutureBuilder<File>(
                   future: imageManager.getImageByKey(item.id), // Using the instance here
                   builder: (BuildContext context, AsyncSnapshot<File> imageSnapshot) {

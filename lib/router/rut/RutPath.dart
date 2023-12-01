@@ -3,7 +3,6 @@ import 'package:biersommelier/pages/BeerCaptain.dart';
 import 'package:biersommelier/pages/Explore.dart';
 import 'package:biersommelier/pages/Favorites.dart';
 import 'package:biersommelier/pages/Logbook.dart';
-import 'package:biersommelier/pages/TestExplore.dart';
 
 import 'package:flutter/material.dart';
 
@@ -21,7 +20,7 @@ class RutPath {
   static Widget findPage(RutPage page) {
     switch (page) {
       case RutPage.explore:
-        return const TestExplore();
+        return const Explore();
 
       case RutPage.beerCaptain:
         return const BeerCaptain();
