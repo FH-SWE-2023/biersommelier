@@ -3,6 +3,8 @@ import 'package:biersommelier/pages/BeerCaptain.dart';
 import 'package:biersommelier/pages/Explore.dart';
 import 'package:biersommelier/pages/Favorites.dart';
 import 'package:biersommelier/pages/Logbook.dart';
+import 'package:biersommelier/pages/TestExplore.dart';
+
 import 'package:flutter/material.dart';
 
 enum RutPage { explore, beerCaptain, addPost, favorites, log }
@@ -19,7 +21,7 @@ class RutPath {
   static Widget findPage(RutPage page) {
     switch (page) {
       case RutPage.explore:
-        return const Explore();
+        return const TestExplore();
 
       case RutPage.beerCaptain:
         return const BeerCaptain();
