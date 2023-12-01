@@ -42,6 +42,8 @@ dependencies:
   fluttertoast: ^8.2.4
   flutter_image_compress: ^2.1.0
   image_picker: any
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
