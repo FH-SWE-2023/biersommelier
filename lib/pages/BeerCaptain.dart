@@ -1,8 +1,6 @@
 import 'package:biersommelier/components/CTAButton.dart';
 import 'package:biersommelier/components/Toast.dart';
-import 'package:biersommelier/router/Rut.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class BeerCaptain extends StatelessWidget {
   const BeerCaptain({super.key});
