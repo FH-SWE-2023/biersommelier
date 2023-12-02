@@ -17,29 +17,24 @@ class CTAButton extends TextButton {
 
   CTAButton({
     required BuildContext context,
-    Key? key,
-    required VoidCallback? onPressed,
+    super.key,
+    required super.onPressed,
     required Widget child,
-    FocusNode? focusNode,
-    bool autofocus = false,
-    Clip clipBehavior = Clip.none,
+    super.focusNode,
+    super.autofocus,
+    super.clipBehavior,
     ButtonStyle? style,
     MaterialStatesController? statesController,
-    ValueChanged<bool>? onFocusChange,
-    ValueChanged<bool>? onHover,
-    VoidCallback? onLongPress,
+    super.onFocusChange,
+    super.onHover,
+    super.onLongPress,
     this.isLoading = false,
   }) : super(
-          key: key,
-          onPressed: onPressed,
           child: isLoading
               ? CircularProgressIndicator(
                   color: Theme.of(context).colorScheme.secondary,
                 )
               : child,
-          focusNode: focusNode,
-          autofocus: autofocus,
-          clipBehavior: clipBehavior,
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).colorScheme.secondary,
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -48,8 +43,5 @@ class CTAButton extends TextButton {
               fontWeight: FontWeight.bold,
             ),
           ),
-          onFocusChange: onFocusChange,
-          onHover: onHover,
-          onLongPress: onLongPress,
         );
 }
