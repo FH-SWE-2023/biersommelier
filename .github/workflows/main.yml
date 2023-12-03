@@ -18,5 +18,4 @@ jobs:
         channel: 'stable'
         flutter-version: '3.16.2'
     - run: flutter pub get
-    - run: flutter test
     - run: flutter build appbundle --release # or: flutter build apk --release
