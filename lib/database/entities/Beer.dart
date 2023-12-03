@@ -84,6 +84,19 @@ class Beer {
     return null;
   }
 
+  // get by name
+  static Future<Beer?> getByName(String name) async {
+    final db = await DatabaseConnector().database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('beers', where: 'name = ?', whereArgs: [name]);
+
+    if (maps.isNotEmpty) {
+      return Beer.fromMap(maps.first);
+    }
+
+    return null;
+  }
+
   // Retrieve all beers from the database.
   static Future<List<Beer>> getAll() async {
     final db = await DatabaseConnector().database;

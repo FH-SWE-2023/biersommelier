@@ -97,6 +97,19 @@ class Bar {
     return null;
   }
 
+  // get by name
+  static Future<Bar?> getByName(String name) async {
+    final db = await DatabaseConnector().database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('bars', where: 'name = ?', whereArgs: [name]);
+
+    if (maps.isNotEmpty) {
+      return Bar.fromMap(maps.first);
+    }
+
+    return null;
+  }
+
   // Retrieve all bars from the database.
   static Future<List<Bar>> getAll() async {
     final db = await DatabaseConnector().database;
