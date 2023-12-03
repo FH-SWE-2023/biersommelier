@@ -16,13 +16,13 @@ class DescriptionFieldWithLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
           child: Column(
           
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-               padding: const EdgeInsets.all(8.0),
+               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
               label,
               style: Theme.of(context).textTheme.bodyLarge

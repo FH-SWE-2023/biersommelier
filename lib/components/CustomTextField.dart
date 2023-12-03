@@ -28,7 +28,7 @@ class TextFieldWithLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
           child: Column(
           
           crossAxisAlignment: CrossAxisAlignment.start,
