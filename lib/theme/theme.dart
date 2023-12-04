@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 
+
+// As Flutter does not expose these color types, we have to extend them ourselves
+extension AppColorScheme on ColorScheme {
+  Color get success => const Color(0xFFB4CF67);
+  Color get lightSecondary => const Color(0xFF946C00);
+  Color get hint => const Color(0xFF2187FF);
+  Color get white => const Color(0xFFFFFFFF);
+  Color get black => const Color(0xFF000000);
+  Color get lightBorder => const Color(0xFF9F9B8D);
+}
+
 final theme = ThemeData(
   colorScheme: const ColorScheme(
     primary: Color(0xFFFFB800),
