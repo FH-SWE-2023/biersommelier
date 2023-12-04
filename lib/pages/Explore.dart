@@ -23,8 +23,7 @@ class Explore extends StatelessWidget {
             fit: FlexFit.tight,
             flex: 2,
             child: Center(
-              child: CTAButton(
-                context: context,
+              child: ActionButton(
                 onPressed: () {
                   Rut.of(context).showDialog(Popup.continueWorking(
                     pressContinue: () {

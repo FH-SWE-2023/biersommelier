@@ -13,16 +13,16 @@ class Favorites extends StatelessWidget {
         children: [
           const Text('Favorites'),
           const SizedBox(height: 20),
-          CTAButton(
-              context: context,
-              onPressed: () {
-                context.blockRouting(
-                  description: 'Routing wieder freigeben?',
-                  buttonSuccessText: 'Ja bitte',
-                  buttonCancelText: 'Ne passt schon',
-                );
-              },
-              child: const Text('Routing blockieren'))
+          ActionButton(
+            onPressed: () {
+              context.blockRouting(
+                description: 'Routing wieder freigeben?',
+                buttonSuccessText: 'Ja bitte',
+                buttonCancelText: 'Ne passt schon',
+              );
+            },
+            child: const Text('Routing blockieren'),
+          )
         ],
       ),
     );
