@@ -1,4 +1,4 @@
-import 'package:biersommelier/components/CTAButton.dart';
+import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/router/Rut.dart';
