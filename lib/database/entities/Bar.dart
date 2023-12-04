@@ -8,14 +8,20 @@ class Bar {
   String id;
   String name;
   maps.LatLng location;
+  String address;
 
-  Bar({required this.id, required this.name, required this.location});
+  Bar(
+      {required this.id,
+      required this.name,
+      required this.location,
+      required this.address});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'location': location,
+      'location': location.toString(),
+      'address': address,
     };
   }
 
@@ -23,7 +29,11 @@ class Bar {
     return Bar(
       id: map['id'],
       name: map['name'],
-      location: map['location'],
+      location: maps.LatLng(
+        double.parse(map['location'].split('(')[1].split(',')[0]),
+        double.parse(map['location'].split(',')[1].split(')')[0]),
+      ),
+      address: map['address'],
     );
   }
 
@@ -37,29 +47,30 @@ class Bar {
       CREATE TABLE IF NOT EXISTS bars(
         id TEXT PRIMARY KEY,
         name TEXT,
-        location TEXT
+        location TEXT,
+        address TEXT
       )
     ''';
   }
 
   // Insert a new bar into the database.
-  static Future<void> insert(Bar beer) async {
+  static Future<void> insert(Bar bar) async {
     final db = await DatabaseConnector().database;
     await db.insert(
       'bars',
-      beer.toMap(),
+      bar.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
   // Update a bar in the database.
-  static Future<void> update(Bar beer) async {
+  static Future<void> update(Bar bar) async {
     final db = await DatabaseConnector().database;
     await db.update(
       'bars',
-      beer.toMap(),
+      bar.toMap(),
       where: 'id = ?',
-      whereArgs: [beer.id],
+      whereArgs: [bar.id],
     );
   }
 
@@ -89,7 +100,11 @@ class Bar {
   // Retrieve all bars from the database.
   static Future<List<Bar>> getAll() async {
     final db = await DatabaseConnector().database;
-    final List<Map<String, dynamic>> maps = await db.query('bars', limit: 500);
+    final List<Map<String, dynamic>> maps = await db.query(
+      'bars',
+      orderBy: 'name COLLATE NOCASE ASC', // Sort alphabetically, ignoring case
+      limit: 500,
+    );
 
     return List.generate(maps.length, (i) {
       return Bar.fromMap(maps[i]);

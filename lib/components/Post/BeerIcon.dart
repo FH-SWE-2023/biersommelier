@@ -15,10 +15,10 @@ class BeerIcon extends StatelessWidget {
       height: 26,
       child: (active
           ? Image.asset(
-              'assets/post/RatingButtonOn.png',
+              'assets/icons/review_full.png',
             )
           : Image.asset(
-              'assets/post/RatingButtonOff.png',
+              'assets/icons/review_empty.png',
             )),
     );
   }

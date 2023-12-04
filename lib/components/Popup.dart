@@ -1,4 +1,4 @@
-import 'package:biersommelier/components/popup/Option.dart';
+import 'package:biersommelier/components/Popup/Option.dart';
 import 'package:flutter/material.dart';
 
 class Popup extends StatelessWidget {
@@ -11,13 +11,13 @@ class Popup extends StatelessWidget {
     return Popup(
       options: [
         Option(
-          icon: 'assets/popup/Pen.png',
+          icon: 'assets/icons/pen_black.png',
           label: 'Weiter bearbeiten',
           color: Colors.black,
           callback: pressContinue,
         ),
         Option(
-          icon: 'assets/popup/Delete.png',
+          icon: 'assets/icons/delete.png',
           label: 'Änderung löschen',
           color: Colors.red[900],
           callback: pressDelete,

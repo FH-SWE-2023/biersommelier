@@ -41,7 +41,10 @@ dependencies:
   google_maps_flutter: ^2.5.0
   fluttertoast: ^8.2.4
   flutter_image_compress: ^2.1.0
+  date_field: ^3.0.5
   image_picker: any
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -70,9 +73,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - assets/post/
-    - assets/navbar/
-    - assets/popup/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

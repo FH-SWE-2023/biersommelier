@@ -1,5 +1,9 @@
 import 'package:biersommelier/router/Rut.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:path/path.dart';
+
+import  '../theme/theme.dart' as theme;
 
 // As Flutter does not expose these color types, we have to extend them ourselves
 extension AppColorScheme on ColorScheme {
@@ -18,39 +22,16 @@ class PageManager {
   static MaterialApp app() {
     return MaterialApp.router(
       title: 'Biersommelier',
-      theme: ThemeData(
-        colorScheme: const ColorScheme(
-          primary: Color(0xFFFFB800),
-          secondary: Color(0xFF453200),
-          surface: Color(0xFFFFFFFF),
-          background: Color(0xFFFFFFFF),
-          error: Color(0xFFC00000),
-          onPrimary: Color(0xFFFFFFFF),
-          onSecondary: Color(0xFFFFFFFF),
-          onSurface: Color(0xFF171000),
-          onBackground: Color(0xFF171000),
-          onError: Color(0xFFFFFFFF),
-          brightness: Brightness.light,
-        ),
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(
-              fontFamily: 'Inter', fontSize: 24, fontWeight: FontWeight.bold),
-          displayMedium: TextStyle(
-              fontFamily: 'Inter', fontSize: 16, fontWeight: FontWeight.bold),
-          displaySmall: TextStyle(
-              fontFamily: 'Inter', fontSize: 16, fontWeight: FontWeight.w600),
-          headlineMedium: TextStyle(
-              fontFamily: 'Inter', fontSize: 8, fontWeight: FontWeight.bold),
-          bodyLarge: TextStyle(
-              fontFamily: 'Inter', fontSize: 16, fontWeight: FontWeight.normal),
-          bodySmall: TextStyle(
-              fontFamily: 'Inter', fontSize: 14, fontWeight: FontWeight.normal),
-        ),
-        useMaterial3: false,
-      ),
+      theme: theme.theme,
       // Rut (Rille) ist ein selbstimplemeniterter Router. Da dieser visuell unter den anderen
       // Komponenten befindet heißt er nun so als hätte man Router falsch geschrieben.
       routerConfig: Rut(),
+
+      // Added localization support
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [
+        Locale('de', 'DE'),
+      ],
     );
   }
 }

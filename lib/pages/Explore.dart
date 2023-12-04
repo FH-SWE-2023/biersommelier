@@ -1,7 +1,10 @@
 import 'package:biersommelier/components/CTAButton.dart';
+import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/router/Rut.dart';
 import 'package:flutter/material.dart';
+
+import '../components/ExploreTabList.dart';
 
 class Explore extends StatelessWidget {
   const Explore({super.key});
@@ -10,22 +13,35 @@ class Explore extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Entdecken'),
-          SizedBox(height: 20),
-          CTAButton(
-            context: context,
-            onPressed: () {
-              Rut.of(context).showDialog(
-                Popup.continueWorking(pressContinue: () {
-                  Rut.of(context).showDialog(null);
-                }, pressDelete: () {
-                  Rut.of(context).showDialog(null);
-                }),
-              );
-            },
-            child: Text('Popup'),
+          const Header(
+              title: "Entdecken",
+              backgroundColor: Colors.white,
+              icon: HeaderIcon.add),
+          Flexible(
+            fit: FlexFit.tight,
+            flex: 2,
+            child: Center(
+              child: CTAButton(
+                context: context,
+                onPressed: () {
+                  Rut.of(context).showDialog(Popup.continueWorking(
+                    pressContinue: () {
+                      Rut.of(context).showDialog(null);
+                    },
+                    pressDelete: () {
+                      Rut.of(context).showDialog(null);
+                    },
+                  ));
+                },
+                child: const Text('Popup anzeigen'),
+              ),
+            ),
+          ),
+          const Flexible(
+            fit: FlexFit.tight,
+            child: ExploreBar(),
           ),
         ],
       ),
