@@ -21,4 +21,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: app
-          path: ${{ runner.temp }}/build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk

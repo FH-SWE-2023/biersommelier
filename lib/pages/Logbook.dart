@@ -25,8 +25,7 @@ class Logbook extends StatelessWidget {
               beer: 'Leckeres Weizen',
               created: DateTime.now(),
               description: 'Dat warn spaß',
-              image: Image.network(
-                  'https://th.bing.com/th/id/OIP.NUgAjHtAgYJ6UJQghyzTiAHaFj?rs=1&pid=ImgDetMain'),
+              image: Image.asset('assets/demo/Beitrag.jpg'),
               rating: 4,
             ),
           ),
