@@ -1,4 +1,4 @@
-import 'package:biersommelier/components/CTAButton.dart';
+import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/router/Rut.dart';
@@ -23,8 +23,7 @@ class Explore extends StatelessWidget {
             fit: FlexFit.tight,
             flex: 2,
             child: Center(
-              child: CTAButton(
-                context: context,
+              child: ActionButton(
                 onPressed: () {
                   Rut.of(context).showDialog(Popup.continueWorking(
                     pressContinue: () {

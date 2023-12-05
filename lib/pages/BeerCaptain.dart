@@ -1,4 +1,4 @@
-import 'package:biersommelier/components/CTAButton.dart';
+import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Toast.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +13,12 @@ class BeerCaptain extends StatelessWidget {
         children: [
           const Text('BeerCaptain'),
           const SizedBox(height: 20),
-          CTAButton(
-              context: context,
-              onPressed: () {
-                showToast(context, "Hat geklappt", ToastLevel.success);
-              },
-              child: const Text('Toast zeigen'))
+          ActionButton(
+            onPressed: () {
+              showToast(context, "Hat geklappt", ToastLevel.success);
+            },
+            child: const Text('Toast zeigen'),
+          )
         ],
       ),
     );
