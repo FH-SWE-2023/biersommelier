@@ -1,19 +1,25 @@
+import 'package:biersommelier/components/CustomTextField.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
-
 
 /// DropdownInputField is a stateless widget that provides an input field with a dropdown list of options.
 /// It uses the Autocomplete widget of Flutter to provide suggestions as the user types in the input field.
 class DropdownInputField extends StatelessWidget {
   /// Label of the input field
   final String labelText;
+
   /// List of options to choose from
   final List<Bar> optionsList;
+
   /// Function to call when a bar is selected
   final Function(Bar) onBarSelected;
 
-  const DropdownInputField({super.key, required this.labelText, required this.optionsList, required this.onBarSelected});
+  const DropdownInputField(
+      {super.key,
+      required this.labelText,
+      required this.optionsList,
+      required this.onBarSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -35,29 +41,12 @@ class DropdownInputField extends StatelessWidget {
           FocusNode focusNode,
           VoidCallback onFieldSubmitted) {
         return TextFormField(
-          controller: textEditingController,
-          focusNode: focusNode,
-          onFieldSubmitted: (String value) {
-            onFieldSubmitted();
-          },
-          decoration: InputDecoration(
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              labelText: labelText,
-              filled: true,
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Theme.of(context).colorScheme.secondary),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              labelStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize),
-              fillColor: const Color.fromARGB(255, 240, 236, 225)),
-        );
+            controller: textEditingController,
+            focusNode: focusNode,
+            onFieldSubmitted: (String value) {
+              onFieldSubmitted();
+            },
+            decoration: getCustomInputDecoration(context, labelText));
       },
       // Used to build the dropdown list of options.
       optionsViewBuilder: (BuildContext context,
