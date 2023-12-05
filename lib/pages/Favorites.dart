@@ -26,12 +26,7 @@ class Favorites extends StatelessWidget {
             child: const Text('Routing blockieren'),
           ),
           const SizedBox(height: 20),
-          ActionButton(
-            onPressed: () {
-                Rut.of(context).showDialog(ImagePickerWidget());
-            },
-            child: const Text('Bild auswählen'),
-          ),
+          ImagePickerWidget(),
         ],
       ),
     );

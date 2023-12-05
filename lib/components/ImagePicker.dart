@@ -12,33 +12,39 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   File? _image;
 
   Future getImage() async {
-    final pickedFile = await ImageManager().pickImage();
+    try {
+      final pickedFile = await ImageManager().pickImage();
 
-    if (!(pickedFile.path.endsWith(".png") ||
-        pickedFile.path.endsWith(".jpeg"))) {
-      showToast(context, "Falsches Bildformat (PNG/JPEG)", ToastLevel.danger);
-    }
-    else{
-      final _i = File(pickedFile.path);
-      if(_i.lengthSync()>52428800){  //50 * 1024*1024 = 50MB
-        showToast(context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
+      if (!(pickedFile.path.endsWith(".png") ||
+          pickedFile.path.endsWith(".jpeg"))) {
+        showToast(context, "Falsches Bildformat (PNG/JPEG)", ToastLevel.danger);
+      } else {
+        final _i = File(pickedFile.path);
+        if (_i.lengthSync() > 52428800) {
+          // 50 * 1024*1024 = 50MB
+          showToast(
+              context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
+        } else {
+          setState(() {
+            _image = _i;
+          });
+        }
       }
-      else{
-        setState(() {
-          _image = _i;
-        });
+      // ignore: empty_catches
+    } catch (e) {
+      if (e.toString() != "Exception: No image selected") {
+        showToast(context, "Fehler beim Laden des Bildes", ToastLevel.danger);
       }
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if(_image == null){
+        if (_image == null) {
           getImage();
-        }
-        else {
+        } else {
           showDialog(
             context: context,
             builder: (BuildContext context) {
