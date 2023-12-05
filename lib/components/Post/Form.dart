@@ -4,10 +4,11 @@ import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/CustomDateField.dart';
 import 'package:biersommelier/components/CustomDescriptionField.dart';
+import 'package:biersommelier/components/DropdownInputField.dart';
 import 'package:biersommelier/components/CustomTextField.dart';
 import 'package:biersommelier/components/CustomTimeField.dart';
 import 'package:biersommelier/components/CustomRatingField.dart';
-import 'package:biersommelier/components/CTAButton.dart';
+import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Toast.dart';
 import 'package:uuid/uuid.dart';
 
@@ -166,12 +167,32 @@ class _PostFormState extends State<PostForm> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        TextFieldWithLabel(
-                          label: "Lokal",
-                          textField: CustomTextField(
-                            context: context,
-                            controller: _barController,
-                            labelText: "Name",
+                        Padding(padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Lokal", style: Theme.of(context).textTheme.bodyLarge),
+                              ),
+                              FutureBuilder<List<Bar>>(
+                                future: Bar.getAll(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                    return const Text("No bars available");
+                                  }
+                                  return DropdownInputField(
+                                    optionsList: snapshot.data!,
+                                    labelText: "Lokal",
+                                    onBarSelected: (Bar selectedBar) {
+                                      setState(() {
+                                        _bar = selectedBar;
+                                      });
+                                    },
+                                  );
+                                },
+                              )
+                            ],
                           ),
                         ),
                         TextFieldWithLabel(
@@ -258,11 +279,12 @@ class _PostFormState extends State<PostForm> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: CTAButton(
-                            context: context,
-                            onPressed: _submitForm,
-                            isLoading: _isLoading,
-                            child: const Text('Hinzufügen'), // Set to true to show loading indicator
+                          child: ActionButton(
+                            onPressed: () {
+                              _submitForm();
+                            },
+                            loading: _isLoading,
+                            child: const Text('Popup anzeigen'),
                           ),
                         ),
                       ],
