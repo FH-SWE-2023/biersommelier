@@ -1,54 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
-/*
-So verwendest du die Komponente:
-
-TextFieldWithLabel(
-  label: "Text",
-  textField: CustomTextField(
-    context:context,
-  )
-)
-*/
-
-class TextFieldWithLabel extends StatelessWidget {
-
-  final String label;
-  final CustomTextField textField;
-  
-
-  const TextFieldWithLabel({
-    super.key, 
-    required this.label, 
-    required this.textField,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-          
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-               padding: const EdgeInsets.all(8.0),
-              child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyLarge
-              ),
-            ),
-            textField,
-          ]
-        )
-        );
-  }
-}
-
+/// CustomTextField is a stateless widget that provides a text input field with custom styling.
 class CustomTextField extends TextField {
-
   CustomTextField({
     required BuildContext context,
     super.key,
@@ -86,26 +40,55 @@ class CustomTextField extends TextField {
     super.autofillHints = null,
     MouseCursor? cursor,
     super.enableIMEPersonalizedLearning = false,
-    String labelText="",
+    String labelText = "",
   }) : super(
-          decoration: InputDecoration(
-            floatingLabelBehavior: FloatingLabelBehavior.never ,
-            labelText: labelText,
-            filled: true,
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            labelStyle: TextStyle(
-                color: Theme.of(context).colorScheme.secondary, 
-                fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize
-                ),
-              fillColor: const Color.fromARGB(255, 240, 236, 225)
-          ),
+          decoration: getCustomInputDecoration(context, labelText),
           mouseCursor: cursor,
         );
+}
+
+/// Returns a custom input decoration for a text field.
+InputDecoration getCustomInputDecoration(
+    BuildContext context, String labelText) {
+  return InputDecoration(
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      labelText: labelText,
+      filled: true,
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.transparent),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      labelStyle: TextStyle(
+          color: Theme.of(context).colorScheme.secondary,
+          fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize),
+      fillColor: const Color.fromARGB(255, 240, 236, 225));
+}
+
+/// TextFieldWithLabel is a stateless widget that provides a text input field with a label.
+class TextFieldWithLabel extends StatelessWidget {
+  final String label;
+  final CustomTextField textField;
+
+  const TextFieldWithLabel({
+    super.key,
+    required this.label,
+    required this.textField,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(label, style: Theme.of(context).textTheme.bodyLarge),
+          ),
+          textField,
+        ]));
+  }
 }
