@@ -27,11 +27,11 @@ class PostForm extends StatefulWidget {
 }
 
 class _PostFormState extends State<PostForm> {
-  late TextEditingController _barController;
-  late TextEditingController _beerController;
   late TextEditingController _descriptionController;
   late DateTime _selectedDate;
   late int _rating;
+
+  bool _isEditing = false;
 
   Bar? _bar;
   Beer? _beer;
@@ -42,21 +42,11 @@ class _PostFormState extends State<PostForm> {
   void initState() {
     super.initState();
 
-    // check if bar and beer exist and save them to _bar and _beer
     if (widget.initialPost != null) {
-      Bar.get(widget.initialPost!.barId).then((bar) {
-        setState(() {
-          _bar = bar!;
-        });
-      });
-      Beer.get(widget.initialPost!.beerId).then((beer) {
-        setState(() {
-          _beer = beer!;
-        });
-      });
+      _isEditing = true;
     }
 
-    if (widget.initialPost != null) {
+    if (_isEditing) {
       // if bar and beer exist dont exist, error
       if (_bar == null || _beer == null) {
         showToast(context, "Lokal oder Bier nicht gefunden!", ToastLevel.danger);
@@ -64,14 +54,10 @@ class _PostFormState extends State<PostForm> {
       }
 
       // Bar name
-      _barController = TextEditingController(text: _bar?.name);
-      _beerController = TextEditingController(text: _beer?.name);
       _descriptionController = TextEditingController(text: widget.initialPost!.description);
       _selectedDate = widget.initialPost!.date;
       _rating = widget.initialPost!.rating;
     } else {
-      _barController = TextEditingController();
-      _beerController = TextEditingController();
       _descriptionController = TextEditingController();
       _selectedDate = DateTime.now();
       _rating = 0;
@@ -79,9 +65,7 @@ class _PostFormState extends State<PostForm> {
   }
 
   Future<void> _submitForm() async {
-    if (_barController.text.isEmpty ||
-        _beerController.text.isEmpty ||
-        _descriptionController.text.isEmpty ||
+    if (_descriptionController.text.isEmpty ||
         _rating == 0) {
       showToast(context, "Bitte fülle alle Felder aus!", ToastLevel.danger);
       return;
@@ -89,19 +73,6 @@ class _PostFormState extends State<PostForm> {
 
     setState(() {
       _isLoading = true;
-    });
-
-    // Get bar and beer and save them to _bar and _beer
-    await Bar.getByName(_barController.text).then((bar) {
-      setState(() {
-        _bar = bar;
-      });
-    });
-
-    await Beer.getByName(_beerController.text).then((beer) {
-      setState(() {
-        _beer = beer;
-      });
     });
 
     // context check
@@ -130,10 +101,10 @@ class _PostFormState extends State<PostForm> {
     );
 
     // save to database with insert or update
-    if (widget.initialPost == null) {
-      await Post.insert(post);
-    } else {
+    if (_isEditing) {
       await Post.update(post);
+    } else {
+      await Post.insert(post);
     }
 
     widget.onSubmit(post);
@@ -142,8 +113,6 @@ class _PostFormState extends State<PostForm> {
   @override
   void dispose() {
     // Dispose controllers when the widget is removed from the widget tree
-    _barController.dispose();
-    _beerController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -157,7 +126,7 @@ class _PostFormState extends State<PostForm> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Header(
-                  title: widget.initialPost == null ? "Hinzufügen" : "Bearbeiten",
+                  title: _isEditing ? "Bearbeiten" : "Hinzufügen",
                   backgroundColor: Colors.white,
                   icon: HeaderIcon.back,
                 ),
@@ -199,7 +168,6 @@ class _PostFormState extends State<PostForm> {
                           label: "Bier",
                           textField: CustomTextField(
                             context: context,
-                            controller: _beerController,
                             labelText: "Name",
                           ),
                         ),
@@ -284,7 +252,7 @@ class _PostFormState extends State<PostForm> {
                               _submitForm();
                             },
                             loading: _isLoading,
-                            child: const Text('Popup anzeigen'),
+                            child: Text(_isEditing ? "Speichern" : "Hinzufügen"),
                           ),
                         ),
                       ],
