@@ -59,14 +59,29 @@ class Bar extends DropdownOption {
     ''';
   }
 
-  static List<String> updateTableColumns() {
-    return [
+  static Future<bool> updateTableColumns(Database db) async {
+    List<String> columnsToAdd = [
       'id TEXT',
       'name TEXT',
       'location TEXT',
       'address TEXT',
-      'isFavorite INTEGER'
+      'isFavorite INTEGER',
     ];
+
+    for (String column in columnsToAdd) {
+      try {
+        await db.execute('ALTER TABLE bars ADD $column');
+      } catch (e) {
+        // If there's an exception, it's likely because the column already exists.
+        // In that case, we don't need to do anything.
+        if (e.toString().contains('duplicate column name')) {
+          continue;
+        } else {
+          rethrow;
+        }
+      }
+    }
+    return true;
   }
 
   // Insert a new bar into the database.
