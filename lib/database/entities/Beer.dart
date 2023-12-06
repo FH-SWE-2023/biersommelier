@@ -1,19 +1,23 @@
+import 'package:biersommelier/components/DropdownInputField.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import '../DatabaseConnector.dart';
 
-class Beer {
+class Beer extends DropdownOption {
   String id;
   String name;
-  String imageId;
+  String icon;
 
-  Beer({required this.id, required this.name, required this.imageId});
+  @override
+  String? get address => null;
+
+  Beer({required this.id, required this.name, required this.icon}) : super(name: name, icon: 'beer.png');
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'imageId': imageId,
+      'imageId': icon,
     };
   }
 
@@ -21,7 +25,7 @@ class Beer {
     return Beer(
       id: map['id'],
       name: map['name'],
-      imageId: map['imageId'],
+      icon: map['imageId'],
     );
   }
 

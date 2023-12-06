@@ -1,10 +1,11 @@
+import 'package:biersommelier/components/DropdownInputField.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import '../DatabaseConnector.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as maps
     show LatLng;
 
-class Bar {
+class Bar extends DropdownOption {
   String id;
   String name;
   maps.LatLng location;
@@ -14,7 +15,7 @@ class Bar {
       {required this.id,
       required this.name,
       required this.location,
-      required this.address});
+      required this.address}) : super(name: name, address: address, icon: "pin.png");
 
   Map<String, dynamic> toMap() {
     return {

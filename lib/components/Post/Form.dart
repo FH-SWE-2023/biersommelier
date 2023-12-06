@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:biersommelier/router/Rut.dart';
 
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/CustomDateField.dart';
 import 'package:biersommelier/components/CustomDescriptionField.dart';
 import 'package:biersommelier/components/DropdownInputField.dart';
-import 'package:biersommelier/components/CustomTextField.dart';
 import 'package:biersommelier/components/CustomTimeField.dart';
 import 'package:biersommelier/components/CustomRatingField.dart';
 import 'package:biersommelier/components/ActionButton.dart';
@@ -49,12 +47,14 @@ class _PostFormState extends State<PostForm> {
     if (_isEditing) {
       // if bar and beer exist dont exist, error
       if (_bar == null || _beer == null) {
-        showToast(context, "Lokal oder Bier nicht gefunden!", ToastLevel.danger);
+        showToast(
+            context, "Lokal oder Bier nicht gefunden!", ToastLevel.danger);
         return;
       }
 
       // Bar name
-      _descriptionController = TextEditingController(text: widget.initialPost!.description);
+      _descriptionController =
+          TextEditingController(text: widget.initialPost!.description);
       _selectedDate = widget.initialPost!.date;
       _rating = widget.initialPost!.rating;
     } else {
@@ -65,8 +65,7 @@ class _PostFormState extends State<PostForm> {
   }
 
   Future<void> _submitForm() async {
-    if (_descriptionController.text.isEmpty ||
-        _rating == 0) {
+    if (_descriptionController.text.isEmpty || _rating == 0) {
       showToast(context, "Bitte fülle alle Felder aus!", ToastLevel.danger);
       return;
     }
@@ -92,7 +91,8 @@ class _PostFormState extends State<PostForm> {
     // Create or update a Post object
     final post = Post(
       id: widget.initialPost?.id ?? const Uuid().v4(),
-      imageId: '', // Update as needed
+      imageId: '',
+      // Update as needed
       rating: _rating,
       barId: _bar!.id,
       beerId: _beer!.id,
@@ -122,146 +122,156 @@ class _PostFormState extends State<PostForm> {
     return Center(
       child: SafeArea(
           child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Header(
-                  title: _isEditing ? "Bearbeiten" : "Hinzufügen",
-                  backgroundColor: Colors.white,
-                  icon: HeaderIcon.back,
-                ),
-              ),
-              Expanded(
-                child: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Header(
+              title: _isEditing ? "Bearbeiten" : "Hinzufügen",
+              backgroundColor: Colors.white,
+              icon: HeaderIcon.back,
+            ),
+          ),
+          Expanded(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    buildPaddedDropdownInputField(context, "Lokal", Bar.getAll(), (selectedBar) {
+                      setState(() {
+                        _bar = selectedBar;
+                      });
+                    }),
+                    buildPaddedDropdownInputField(context, "Bier", Beer.getAll(), (selectedBeer) {
+                      setState(() {
+                        _beer = selectedBeer;
+                      });
+                    }),
+                    CustomRatingField(
+                      initialRating: _rating,
+                      onRatingSelected: (rating) {
+                        setState(() {
+                          _rating = rating;
+                        });
+                      },
+                    ),
+                    Row(
                       children: [
-                        Padding(padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Lokal", style: Theme.of(context).textTheme.bodyLarge),
-                              ),
-                              FutureBuilder<List<Bar>>(
-                                future: Bar.getAll(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                    return const Text("No bars available");
-                                  }
-                                  return DropdownInputField(
-                                    optionsList: snapshot.data!,
-                                    labelText: "Lokal",
-                                    onBarSelected: (Bar selectedBar) {
-                                      setState(() {
-                                        _bar = selectedBar;
-                                      });
-                                    },
+                        Expanded(
+                          child: DateFieldWithLabel(
+                            label: "Datum",
+                            dateTimeFormField: CustomDateField(
+                              context: context,
+                              initialDate: _selectedDate,
+                              initialValue: _selectedDate,
+                              onDateSelected: (date) {
+                                setState(() {
+                                  // set DATE part of _selectedDate to the selected date
+                                  _selectedDate = DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    _selectedDate.hour,
+                                    _selectedDate.minute,
                                   );
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                        TextFieldWithLabel(
-                          label: "Bier",
-                          textField: CustomTextField(
-                            context: context,
-                            labelText: "Name",
-                          ),
-                        ),
-                        CustomRatingField(
-                          initialRating: _rating,
-                          onRatingSelected: (rating) {
-                            setState(() {
-                              _rating = rating;
-                            });
-                          },
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: DateFieldWithLabel(
-                                label: "Datum",
-                                dateTimeFormField: CustomDateField(
-                                  context: context,
-                                  initialDate: _selectedDate,
-                                  initialValue: _selectedDate,
-                                  onDateSelected: (date) {
-                                    setState(() {
-                                      // set DATE part of _selectedDate to the selected date
-                                      _selectedDate = DateTime(
-                                        date.year,
-                                        date.month,
-                                        date.day,
-                                        _selectedDate.hour,
-                                        _selectedDate.minute,
-                                      );
-                                    });
-                                  },
-                                ),
-                              ),
+                                });
+                              },
                             ),
-                            Expanded(
-                              child: TimeFieldWithLabel(
-                                label: "Uhrzeit",
-                                dateTimeFormField: CustomTimeField(
-                                  context: context,
-                                  initialValue: _selectedDate,
-                                  initialDate: _selectedDate,
-                                  onDateSelected: (time) {
-                                    setState(() {
-                                      // set TIME part of _selectedDate to the selected time
-                                      _selectedDate = DateTime(
-                                        _selectedDate.year,
-                                        _selectedDate.month,
-                                        _selectedDate.day,
-                                        time.hour,
-                                        time.minute,
-                                      );
-                                    });
-                                  },
-                                ),
-                              ),
+                          ),
+                        ),
+                        Expanded(
+                          child: TimeFieldWithLabel(
+                            label: "Uhrzeit",
+                            dateTimeFormField: CustomTimeField(
+                              context: context,
+                              initialValue: _selectedDate,
+                              initialDate: _selectedDate,
+                              onDateSelected: (time) {
+                                setState(() {
+                                  // set TIME part of _selectedDate to the selected time
+                                  _selectedDate = DateTime(
+                                    _selectedDate.year,
+                                    _selectedDate.month,
+                                    _selectedDate.day,
+                                    time.hour,
+                                    time.minute,
+                                  );
+                                });
+                              },
                             ),
-                          ],
-                        ),
-                        DescriptionFieldWithLabel(
-                          label: "Beschreibung",
-                          textField: CustomDescriptionField(
-                            context: context,
-                            controller: _descriptionController,
-                            labelText: "Füge eine Beschreibung hinzu...",
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: OutlinedButton.icon(
-                            icon: const Icon(Icons.camera_alt),
-                            label: const Text('Foto hinzufügen'),
-                            onPressed: () {
-                              showToast(context, "Not yet implemented!", ToastLevel.warning);
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ActionButton(
-                            onPressed: () {
-                              _submitForm();
-                            },
-                            loading: _isLoading,
-                            child: Text(_isEditing ? "Speichern" : "Hinzufügen"),
                           ),
                         ),
                       ],
                     ),
-                  ),
+                    DescriptionFieldWithLabel(
+                      label: "Beschreibung",
+                      textField: CustomDescriptionField(
+                        context: context,
+                        controller: _descriptionController,
+                        labelText: "Füge eine Beschreibung hinzu...",
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.camera_alt),
+                        label: const Text('Foto hinzufügen'),
+                        onPressed: () {
+                          showToast(context, "Not yet implemented!",
+                              ToastLevel.warning);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ActionButton(
+                        onPressed: () {
+                          _submitForm();
+                        },
+                        loading: _isLoading,
+                        child: Text(_isEditing ? "Speichern" : "Hinzufügen"),
+                      ),
+                    ),
+                  ],
                 ),
-              )
-            ],
-          )),
+              ),
+            ),
+          )
+        ],
+      )),
     );
   }
+}
+
+
+/// Helper functions to build the dropdown lists
+Widget buildPaddedDropdownInputField<T extends DropdownOption>(BuildContext context, String label, Future<List<T>> future, Function setStateFunction) {
+  return Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(label,
+              style: Theme.of(context).textTheme.bodyLarge),
+        ),
+        FutureBuilder<List<T>>(
+          future: future,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Text("No data available");
+            }
+            return DropdownInputField<T>(
+              optionsList: snapshot.data!,
+              labelText: label,
+              onOptionSelected: (selectedItem) {
+                setStateFunction(selectedItem);
+              },
+            );
+          },
+        )
+      ],
+    ),
+  );
 }
