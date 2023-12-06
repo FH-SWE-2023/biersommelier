@@ -9,7 +9,9 @@ import '../imagemanager/ImageManager.dart';
 
 /// Creates the ExploreBar Component which contains the ExploreTabBar and the ExploreList with Locals and Beers
 class ExploreBar extends StatefulWidget {
-  const ExploreBar({super.key});
+  final bool onlyFavorites;
+
+  const ExploreBar({super.key, this.onlyFavorites = false});
 
   @override
   _ExploreBarState createState() => _ExploreBarState();
@@ -43,8 +45,8 @@ class _ExploreBarState extends State<ExploreBar>
           child: TabBarView(
             controller: _tabController,
             children: [
-              ExploreList(isBar: true), // For 'Lokale' which represents bars
-              ExploreList(isBar: false), // For 'Biere' which represents beers
+              ExploreList(isBar: true, onlyFavorites: widget.onlyFavorites), // For 'Lokale' which represents bars
+              ExploreList(isBar: false, onlyFavorites: widget.onlyFavorites), // For 'Biere' which represents beers
             ],
           ),
         ),
@@ -104,15 +106,18 @@ class ExploreTabBar extends StatelessWidget {
 // ExploreList sub-component
 class ExploreList extends StatelessWidget {
   final bool isBar; // To determine whether we are displaying Bars or Beers
+  final bool onlyFavorites;
 
-  ExploreList({required this.isBar}) : super(key: UniqueKey());
+  ExploreList({required this.isBar, required this.onlyFavorites}) : super(key: UniqueKey());
 
   final ImageManager imageManager = ImageManager(); // Instance of ImageManager
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-      future: isBar ? Bar.getAll() : Beer.getAll(),
+      future: isBar
+          ? Bar.getAll(onlyFavorites: onlyFavorites)
+          : Beer.getAll(onlyFavorites: onlyFavorites),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -130,23 +135,18 @@ class ExploreList extends StatelessWidget {
               return ListTile(
                 leading: isBar
                     ? null
-                    : FutureBuilder<File>(
-                  future: imageManager.getImageByKey(item.id), // Using the instance here
-                  builder: (BuildContext context, AsyncSnapshot<File> imageSnapshot) {
-                    if (imageSnapshot.connectionState == ConnectionState.done && imageSnapshot.data != null) {
-                      // Constrain the image to a square
+                    : FutureBuilder<Image>(
+                  future: imageManager.getImageByKey(item.id),
+                  builder: (BuildContext context, AsyncSnapshot<Image> imageSnapshot) {
+                    if (imageSnapshot.connectionState == ConnectionState.done && imageSnapshot.hasData) {
                       return SizedBox(
-                        width: 50.0, // Specify your desired square size
+                        width: 50.0,
                         height: 50.0,
-                        child: Image(
-                          image: FileImage(imageSnapshot.data!),
-                          fit: BoxFit.cover, // This ensures the image covers the square
-                        ),
+                        child: imageSnapshot.data,
                       );
-                    } else if (imageSnapshot.error != null) {
-                      return const Icon(Icons.local_drink);
+                    } else if (imageSnapshot.hasError) {
+                      return const Icon(Icons.error);
                     } else {
-                      // Show a square box as a placeholder
                       return const SizedBox(
                         width: 50.0,
                         height: 50.0,

@@ -77,6 +77,18 @@ class Post {
     ''';
   }
 
+  static List<String> updateTableColumns() {
+    return [
+      'id TEXT',
+      'imageId TEXT',
+      'rating INTEGER',
+      'barId TEXT',
+      'beerId TEXT',
+      'date TEXT',
+      'description TEXT'
+    ];
+  }
+
   // Insert a new Post into the database.
   static Future<void> insert(Post post) async {
     final db = await DatabaseConnector().database;

@@ -48,6 +48,26 @@ class DatabaseConnector {
     await db.execute(Beer.createTable());
     await db.execute(Bar.createTable());
     await db.execute(Post.createTable());
+
+    List<String> columnsToAdd = [
+      ...Beer.updateTableColumns(),
+      ...Bar.updateTableColumns(),
+      ...Post.updateTableColumns(),
+    ];
+
+    for (String column in columnsToAdd) {
+      try {
+        await db.execute('ALTER TABLE posts ADD $column');
+      } catch (e) {
+        // If there's an exception, it's likely because the column already exists.
+        // In that case, we don't need to do anything.
+        if (e.toString().contains('duplicate column name')) {
+          continue;
+        } else {
+          rethrow;
+        }
+      }
+    }
   }
 
   // Generic Query Execution, should not be used, just here for now

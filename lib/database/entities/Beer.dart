@@ -6,18 +6,20 @@ import '../DatabaseConnector.dart';
 class Beer extends DropdownOption {
   String id;
   String name;
-  String icon;
+  String imageId;
+  bool isFavorite;
 
   @override
   String? get address => null;
 
-  Beer({required this.id, required this.name, required this.icon}) : super(name: name, icon: 'beer.png');
+  Beer({required this.id, required this.name,required this.imageId, this.isFavorite = false}) : super(name: name, icon: 'beer.png');
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'imageId': icon,
+      'imageId': imageId,
+      'isFavorite': isFavorite ? 1 : 0,
     };
   }
 
@@ -25,7 +27,8 @@ class Beer extends DropdownOption {
     return Beer(
       id: map['id'],
       name: map['name'],
-      icon: map['imageId'],
+      imageId: map['imageId'],
+      isFavorite: map['isFavorite'] == 1,
     );
   }
 
@@ -39,9 +42,19 @@ class Beer extends DropdownOption {
       CREATE TABLE IF NOT EXISTS beers(
         id TEXT PRIMARY KEY,
         name TEXT,
-        imageId TEXT
+        imageId TEXT,
+        isFavorite INTEGER
       )
     ''';
+  }
+
+  static List<String> updateTableColumns() {
+    return [
+      'id TEXT',
+      'name TEXT',
+      'imageId TEXT',
+      'isFavorite INTEGER',
+    ];
   }
 
   // Insert a new beer into the database.
@@ -102,10 +115,28 @@ class Beer extends DropdownOption {
   }
 
   // Retrieve all beers from the database.
-  static Future<List<Beer>> getAll() async {
+  static Future<List<Beer>> getAll({bool onlyFavorites = false}) async {
+    if (onlyFavorites) {
+      return getAllFavorites();
+    }
     final db = await DatabaseConnector().database;
     final List<Map<String, dynamic>> maps = await db.query(
       'beers',
+      orderBy: 'name COLLATE NOCASE ASC', // Sort alphabetically, ignoring case
+      limit: 500,
+    );
+
+    return List.generate(maps.length, (i) {
+      return Beer.fromMap(maps[i]);
+    });
+  }
+
+  // Retrieve all favourite beers from the database
+  static Future<List<Beer>> getAllFavorites() async {
+    final db = await DatabaseConnector().database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'beers',
+      where: 'isFavorite = 1',
       orderBy: 'name COLLATE NOCASE ASC', // Sort alphabetically, ignoring case
       limit: 500,
     );
