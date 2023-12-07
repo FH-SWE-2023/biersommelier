@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:biersommelier/components/Post.dart';
+import 'package:biersommelier/database/entities/Post.dart' as DBPost;
+
+Future<List<DBPost.Post>> posts = DBPost.Post.getAll();
+String phrase = "Du hast noch keine Beiträge";
 
 class Logbook extends StatelessWidget {
   const Logbook({super.key});
-
+   
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,15 +24,23 @@ class Logbook extends StatelessWidget {
                 offset: const Offset(0, 3),
               ),
             ]),
-            child: Post(
-              bar: 'Schmucke Veranda',
-              beer: 'Leckeres Weizen',
-              created: DateTime.now(),
-              description: 'Dat warn spaß',
-              image: Image.network(
-                  'https://th.bing.com/th/id/OIP.NUgAjHtAgYJ6UJQghyzTiAHaFj?rs=1&pid=ImgDetMain'),
-              rating: 4,
-            ),
+            child: 
+              //(() {
+                // your code here
+              //}())
+            
+             
+              posts.map((post) {
+                Post(
+                bar: post.bar,
+                beer: post.beer,
+                created: post.created,
+                description: post.description,
+                image: Image.network(
+                    'https://th.bing.com/th/id/OIP.NUgAjHtAgYJ6UJQghyzTiAHaFj?rs=1&pid=ImgDetMain'),
+                rating: post.rating,
+              )
+            }) 
           ),
         ),
       ),
