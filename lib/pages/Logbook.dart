@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:biersommelier/components/Post.dart';
 import 'package:biersommelier/database/entities/Post.dart' as DBPost;
+import 'package:biersommelier/components/Header.dart';
 
 Future<List<DBPost.Post>> posts = DBPost.Post.getAll();
 String phrase = "Du hast noch keine Beiträge";
@@ -11,27 +12,24 @@ class Logbook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(
-        color: Colors.grey[100],
-        child: Center(
-          child: Container(
-            width: 380,
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, 3),
+      child: Column(
+
+            children: [ 
+              const Header(
+                title: "Logbuch",
+                backgroundColor: Colors.white,
+                icon: HeaderIcon.none,
               ),
-            ]),
-            child: 
               //(() {
                 // your code here
               //}())
-            
-             FutureBuilder<List<DBPost.Post>>(
-              future: DBPost.Post.getAll(), 
-              builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot){
+              Padding(
+                padding:EdgeInsets.only(top:24, bottom:24),
+                
+                child: 
+                  FutureBuilder<List<DBPost.Post>>(
+                  future: DBPost.Post.getAll(), 
+                  builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot){
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -40,33 +38,50 @@ class Logbook extends StatelessWidget {
                   } else if (snapshot.hasData) {
                     final items = snapshot.data!;
 
-                  items.map((post) {
-                    Post(
-                    bar: post.bar,
-                    beer: post.beer,
-                    created: post.created,
-                    description: post.description,
-                    image: Image.network(
-                        'https://th.bing.com/th/id/OIP.NUgAjHtAgYJ6UJQghyzTiAHaFj?rs=1&pid=ImgDetMain'),
-                    rating: post.rating,
-                    );
-                  }
-                  );
+                    if(items.length == 0){
+                      return Column(
+                        
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+
+                           Expanded( //Klappt noch net so gut. Text soll eigentlich zentriert sein horizontal & vertikal
+                          child: Center(
+                              child: Text('Noch keine Beiträge.'),
+                          )
+                          ),
+                        ]
+                      );
+                      
+                     
+                    }
+                    else{
+                 
                   return ListView.builder(
-                    key: PageStorageKey(isBar ? 'BarsList' : 'BeersList'),
+                    key: PageStorageKey('PostList'),
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      final item = items[index];
+                      final post = items[index];
 
-                    return ListTile(
-                      
+                    return Post(
+                      bar: post.bar,
+                      beer: post.beer,
+                      created: post.created,
+                      description: post.description,
+                      image: Image.network(
+                        'https://th.bing.com/th/id/OIP.NUgAjHtAgYJ6UJQghyzTiAHaFj?rs=1&pid=ImgDetMain'),
+                      rating: post.rating,
                     );
-                    });
+                    }); }
                   }
+                else {
+                  return const Center(child: Text('No data available'));
+                }
                 }) 
-              )
-              )
-              )
-          );   
+                ),
+              ]
+            )
+          );
+        
+         
   }
 }
