@@ -29,21 +29,44 @@ class Logbook extends StatelessWidget {
                 // your code here
               //}())
             
-             
-              posts.map((post) {
-                Post(
-                bar: post.bar,
-                beer: post.beer,
-                created: post.created,
-                description: post.description,
-                image: Image.network(
-                    'https://th.bing.com/th/id/OIP.NUgAjHtAgYJ6UJQghyzTiAHaFj?rs=1&pid=ImgDetMain'),
-                rating: post.rating,
+             FutureBuilder<List<DBPost.Post>>(
+              future: DBPost.Post.getAll(), 
+              builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot){
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (snapshot.hasData) {
+                    final items = snapshot.data!;
+
+                  items.map((post) {
+                    Post(
+                    bar: post.bar,
+                    beer: post.beer,
+                    created: post.created,
+                    description: post.description,
+                    image: Image.network(
+                        'https://th.bing.com/th/id/OIP.NUgAjHtAgYJ6UJQghyzTiAHaFj?rs=1&pid=ImgDetMain'),
+                    rating: post.rating,
+                    );
+                  }
+                  );
+                  return ListView.builder(
+                    key: PageStorageKey(isBar ? 'BarsList' : 'BeersList'),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+
+                    return ListTile(
+                      
+                    );
+                    });
+                  }
+                }) 
               )
-            }) 
-          ),
-        ),
-      ),
-    );
+              )
+              )
+          );   
   }
 }
