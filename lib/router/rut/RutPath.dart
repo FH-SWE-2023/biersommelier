@@ -3,6 +3,7 @@ import 'package:biersommelier/pages/BeerCaptain.dart';
 import 'package:biersommelier/pages/Explore.dart';
 import 'package:biersommelier/pages/Favorites.dart';
 import 'package:biersommelier/pages/Logbook.dart';
+
 import 'package:flutter/material.dart';
 
 enum RutPage { explore, beerCaptain, addPost, favorites, log }

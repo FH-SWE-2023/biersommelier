@@ -1,4 +1,4 @@
-import 'package:biersommelier/router/PageManager.dart';
+import 'package:biersommelier/theme/theme.dart';
 import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
@@ -47,11 +47,11 @@ class _NavBarState extends State<NavBar> {
       shadowColor: Theme.of(context).colorScheme.black,
       destinations: [
         NavigationDestination(
-          icon: Image.asset('assets/navbar/Map.png'),
+          icon: Image.asset('assets/icons/map.png', width: 30),
           label: 'Entdecken',
         ),
         NavigationDestination(
-          icon: Image.asset('assets/navbar/Hat.png'),
+          icon: Image.asset('assets/icons/hat.png', width: 30),
           label: 'Bierkapitän',
         ),
         OverflowBox(
@@ -67,7 +67,7 @@ class _NavBarState extends State<NavBar> {
                       padding: const EdgeInsets.all(3.0),
                       shape: const CircleBorder(),
                       child:
-                          Image.asset('assets/navbar/AddBeer.png', scale: 3.7),
+                          Image.asset('assets/icons/addBeer.png', scale: 3.7),
                     ),
                     const SizedBox(height: 6),
                     const Text('Hinzufügen',
@@ -80,11 +80,11 @@ class _NavBarState extends State<NavBar> {
                   ],
                 ))),
         NavigationDestination(
-          icon: Image.asset('assets/navbar/Heart.png'),
+          icon: Image.asset('assets/icons/heart.png', width: 30),
           label: 'Favoriten',
         ),
         NavigationDestination(
-          icon: Image.asset('assets/navbar/Log.png'),
+          icon: Image.asset('assets/icons/log.png', width: 30),
           label: 'Logbuch',
         ),
       ],

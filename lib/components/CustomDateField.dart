@@ -33,19 +33,25 @@ class DateFieldWithLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
           
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              this.label,
+             Padding(
+               padding: const EdgeInsets.all(8.0),
+              child: Text(
+              label,
               style: Theme.of(context).textTheme.bodyLarge
               ),
-            this.dateTimeFormField,
+            ),
+            dateTimeFormField,
           ]
-        )
+             ),
+          
+          
         );
+        
   }
 }
 
@@ -53,45 +59,33 @@ class CustomDateField extends DateTimeFormField {
 
     CustomDateField({
     required BuildContext context,
-    Key? key,
-    FormFieldSetter<DateTime>? onSaved,
-    FormFieldValidator<DateTime>? validator,
-    DateTime? initialValue,
-    AutovalidateMode? autovalidateMode,
-    bool enabled = true,
-    bool use24hFormat = false,
-    TextStyle? dateTextStyle,
+    super.key,
+    super.onSaved,
+    super.validator,
+    super.initialValue,
+    super.autovalidateMode,
+    super.enabled,
+    super.use24hFormat,
+    super.dateTextStyle,
     //DateFormat? dateFormat,
-    DateTime? firstDate,
-    DateTime? lastDate,
-    DateTime? initialDate,
-    ValueChanged<DateTime>? onDateSelected,
+    super.firstDate,
+    super.lastDate,
+    super.initialDate,
+    super.onDateSelected,
     //InputDecoration? decoration,
-    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
-    DatePickerMode initialDatePickerMode = DatePickerMode.day,
-    DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.date,
-    TimePickerEntryMode initialTimePickerEntryMode = TimePickerEntryMode.dial,
-    DateTimeFieldCreator fieldCreator = DateTimeField.new,
+    super.initialEntryMode,
+    super.initialDatePickerMode,
+    super.mode = DateTimeFieldPickerMode.date,
+    super.initialTimePickerEntryMode,
+    super.fieldCreator,
   }) : super(
-          key: key,
-          initialValue: initialValue,
-          onSaved: onSaved,
-          validator: validator,
-          autovalidateMode: autovalidateMode,
-          enabled: enabled,
-          use24hFormat: use24hFormat,
-          dateTextStyle: dateTextStyle,
           dateFormat: DateFormat('dd.MM.yyyy'),
-          firstDate: firstDate,
-          lastDate: lastDate,
-          initialDate:initialDate,
-          onDateSelected:onDateSelected,
             decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.never ,
             
             filled: true,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
+              borderSide: const BorderSide(color: Colors.transparent),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
@@ -102,13 +96,8 @@ class CustomDateField extends DateTimeFormField {
                 color: Theme.of(context).colorScheme.secondary, 
                 fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize
                 ),
-              fillColor: Color.fromARGB(255, 240, 236, 225)
+              fillColor: const Color.fromARGB(255, 240, 236, 225)
           ),
-          initialEntryMode:initialEntryMode,
-          initialDatePickerMode:initialDatePickerMode,
-          mode:mode,
-          initialTimePickerEntryMode:initialTimePickerEntryMode,
-          fieldCreator:fieldCreator,
         );
 
   @override
