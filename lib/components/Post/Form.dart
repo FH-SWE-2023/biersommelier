@@ -107,6 +107,11 @@ class _PostFormState extends State<PostForm> {
       await Post.insert(post);
     }
 
+    // show toast
+    if (context.mounted) {
+      showToast(context, "Beitrag hinzugefügt", ToastLevel.success);
+    }
+
     widget.onSubmit(post);
   }
 
