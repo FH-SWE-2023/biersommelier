@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:uuid/uuid.dart';
@@ -11,10 +12,20 @@ class ImageManager {
     return directory.path;
   }
 
-  /// Returns the image with the given [key]
-  Future<File> getImageByKey(String key) async {
+  /// Returns the image file with the given [key]
+  Future<File> getImageFileByKey(String key) async {
     final path = await _localPath;
     return File('$path/$key.jpg');
+  }
+
+  Future<Image> getImageByKey(String key) async {
+    final file = await getImageFileByKey(key);
+    if (await file.exists()) {
+      return Image.file(file);
+    } else {
+      // Load a placeholder image
+      return Image.asset('assets/icons/review_full.png');  // Replace with the actual path of your placeholder image
+    }
   }
 
   /// Saves the given [image] and returns the generated key

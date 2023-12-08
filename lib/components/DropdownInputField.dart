@@ -1,36 +1,43 @@
 import 'package:biersommelier/components/CustomTextField.dart';
-import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 
+abstract class DropdownOption {
+  final String name;
+  final String icon;
+  final String? address;
+
+  DropdownOption({required this.name, required this.icon, this.address});
+}
+
 /// DropdownInputField is a stateless widget that provides an input field with a dropdown list of options.
 /// It uses the Autocomplete widget of Flutter to provide suggestions as the user types in the input field.
-class DropdownInputField extends StatelessWidget {
+class DropdownInputField<Option extends DropdownOption> extends StatelessWidget {
   /// Label of the input field
   final String labelText;
 
   /// List of options to choose from
-  final List<Bar> optionsList;
+  final List<Option> optionsList;
 
   /// Function to call when a bar is selected
-  final Function(Bar) onBarSelected;
+  final Function(Option) onOptionSelected;
 
   const DropdownInputField(
       {super.key,
       required this.labelText,
       required this.optionsList,
-      required this.onBarSelected});
+      required this.onOptionSelected});
 
   @override
   Widget build(BuildContext context) {
     // The Autocomplete widget that provides the functionality of the dropdown input field.
-    return Autocomplete<Bar>(
+    return Autocomplete<Option>(
       // Determines how the selected option is displayed in the input field.
-      displayStringForOption: (Bar option) => option.name,
+      displayStringForOption: (Option option) => option.name,
       // Used to filter the options based on the user's input.
       optionsBuilder: (TextEditingValue textEditingValue) {
-        return optionsList.where((Bar option) {
-          return (option.name + option.address)
+        return optionsList.where((Option option) {
+          return (option.name + (option.address ?? ""))
               .toLowerCase()
               .contains(textEditingValue.text.toLowerCase());
         });
@@ -50,7 +57,7 @@ class DropdownInputField extends StatelessWidget {
       },
       // Used to build the dropdown list of options.
       optionsViewBuilder: (BuildContext context,
-          AutocompleteOnSelected<Bar> onSelected, Iterable<Bar> options) {
+          AutocompleteOnSelected<Option> onSelected, Iterable<Option> options) {
         return Align(
           alignment: Alignment.topLeft,
           child: Container(
@@ -73,16 +80,16 @@ class DropdownInputField extends StatelessWidget {
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   children: options
-                      .map((Bar option) => GestureDetector(
+                      .map((Option option) => GestureDetector(
                             onTap: () {
                               onSelected(option);
-                              onBarSelected(option);
+                              onOptionSelected(option);
                             },
                             child: ListTile(
                               dense: true,
                               title: Row(
                                 children: [
-                                  Image.asset('assets/icons/pin.png',
+                                  Image.asset('assets/icons/${option.icon}',
                                       width: 21,
                                       color: Theme.of(context)
                                           .colorScheme
@@ -96,7 +103,7 @@ class DropdownInputField extends StatelessWidget {
                                               overflow:
                                                   TextOverflow.ellipsis))),
                                   Flexible(
-                                      child: Text(option.address,
+                                      child: Text(option.address ?? "",
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .colorScheme

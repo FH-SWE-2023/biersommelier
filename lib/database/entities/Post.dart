@@ -2,9 +2,11 @@ import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import '../DatabaseConnector.dart';
 
+import 'Beer.dart';
+import 'Bar.dart';
+
 class Post {
   String id;
-  String name;
   String imageId;
   int rating;
   String barId;
@@ -14,7 +16,6 @@ class Post {
 
   Post(
       {required this.id,
-      required this.name,
       required this.imageId,
       required this.rating,
       required this.barId,
@@ -25,12 +26,11 @@ class Post {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
       'imageId': imageId,
       'rating': rating,
       'barId': barId,
       'beerId': beerId,
-      'date': date,
+      'date': date.toString(),
       'description': description,
     };
   }
@@ -38,15 +38,25 @@ class Post {
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
       id: map['id'],
-      name: map['name'],
       imageId: map['imageId'],
       rating: map['rating'],
       barId: map['barId'],
       beerId: map['beerId'],
-      date: map['date'],
+      date: DateTime.parse(map['date']),
       description: map['description'],
     );
   }
+
+  // function to get Beer object from Post object
+  static Future<Beer?> getBeer(Post post) async {
+    return await Beer.get(post.beerId);
+  }
+
+  // function to get Bar object from Post object
+  static Future<Bar?> getBar(Post post) async {
+    return await Bar.get(post.barId);
+  }
+
 
   static String generateUuid() {
     const uuid = Uuid();
@@ -57,7 +67,6 @@ class Post {
     return '''
       CREATE TABLE IF NOT EXISTS posts(
         id TEXT PRIMARY KEY,
-        name TEXT,
         imageId TEXT,
         rating INTEGER,
         barId TEXT,
@@ -66,6 +75,33 @@ class Post {
         description TEXT
       )
     ''';
+  }
+
+  static Future<bool> updateTableColumns(Database db) async {
+    List<String> columnsToAdd = [
+      'id TEXT',
+      'imageId TEXT',
+      'rating INTEGER',
+      'barId TEXT',
+      'beerId TEXT',
+      'date TEXT',
+      'description TEXT'
+    ];
+
+    for (String column in columnsToAdd) {
+      try {
+        await db.execute('ALTER TABLE posts ADD $column');
+      } catch (e) {
+        // If there's an exception, it's likely because the column already exists.
+        // In that case, we don't need to do anything.
+        if (e.toString().contains('duplicate column name')) {
+          continue;
+        } else {
+          rethrow;
+        }
+      }
+    }
+    return true;
   }
 
   // Insert a new Post into the database.
