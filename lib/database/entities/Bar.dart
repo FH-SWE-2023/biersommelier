@@ -59,6 +59,19 @@ class Bar extends DropdownOption {
     ''';
   }
 
+  // create default bars
+  static String createDefaultBars() {
+    return '''
+      INSERT INTO bars (id, name, location, address, isFavorite)
+      VALUES
+        ('${generateUuid()}', 'Billiard Bar Downtown', '(50.775346, 6.083887)', 'Viktoriastraße 91, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Billiard Verein Aachen', '(50.775346, 6.083887)', 'Rote Sträse 39, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Lach Club Aachen', '(50.775346, 6.083887)', 'Blastraße 3, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Mizu Bar Aachen', '(50.775346, 6.083887)', 'Oralinastraße 69, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Ver-pufft', '(50.775346, 6.083887)', 'Ottstraße 420, 52066 Aachen', 0)
+    ''';
+  }
+
   static Future<bool> updateTableColumns(Database db) async {
     List<String> columnsToAdd = [
       'id TEXT',
@@ -163,7 +176,6 @@ class Bar extends DropdownOption {
     final db = await DatabaseConnector().database;
     final List<Map<String, dynamic>> maps = await db.query(
       'bars',
-      orderBy: 'name COLLATE NOCASE ASC', // Sort alphabetically, ignoring case
       limit: 500,
     );
 

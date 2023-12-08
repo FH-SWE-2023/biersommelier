@@ -48,6 +48,19 @@ class Beer extends DropdownOption {
     ''';
   }
 
+  static String createDefaultBeers() {
+    return '''
+      INSERT INTO beers (id, name, imageId, isFavorite) VALUES
+      ('b007bec1-e6b0-4514-b741-895440d2619e', 'Kölsch', '', 0),
+      ('88c58884-5dba-4296-9a74-21cc29b9db73', 'Berg Märzen', '', 0),
+      ('ba8bb191-6c43-491f-99a8-4a3029440496', 'Dunkles', '', 0),
+      ('1fbf011a-958b-4ebf-924b-5f7325a4c616', 'Duxer Bock', '', 0),
+      ('3ddd3fbb-2ba3-4942-aed8-37371190651d', 'Berliner Weisse', '', 0),
+      ('268fa825-3127-4e37-b7c4-3da4001f13ec', 'Feldschlösschen Pils', '', 0),
+      ('92d646f8-49a9-4399-85db-6522da2674e2', 'Watzdorfer Schwarzbier', '', 0)
+    ''';
+  }
+
   static Future<bool> updateTableColumns(Database db) async {
     List<String> columnsToAdd = [
       'id TEXT',

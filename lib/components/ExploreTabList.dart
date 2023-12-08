@@ -136,6 +136,7 @@ class ExploreList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
+          throw snapshot.error!;
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
           final items = snapshot.data!;

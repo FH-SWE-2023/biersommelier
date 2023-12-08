@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:uuid/uuid.dart';
@@ -24,7 +25,15 @@ class ImageManager {
       return Image.file(file);
     } else {
       // Load a placeholder image
-      return Image.asset('assets/icons/review_full.png');  // Replace with the actual path of your placeholder image
+      //return Image.asset('assets/icons/review_full.png');
+
+      // check if image in asstes/demo/key.png exists, if not load assets/icons/review_full.png
+      try {
+        final image = await rootBundle.load('assets/demo/$key.png');
+        return Image.memory(image.buffer.asUint8List());
+      } catch (e) {
+        return Image.asset('assets/icons/review_full.png');
+      }
     }
   }
 

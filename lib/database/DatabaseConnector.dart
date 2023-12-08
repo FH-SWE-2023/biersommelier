@@ -41,6 +41,10 @@ class DatabaseConnector {
     await db.execute(Beer.createTable());
     await db.execute(Bar.createTable());
     await db.execute(Post.createTable());
+
+    // Create default entities
+    await db.execute(Bar.createDefaultBars());
+    await db.execute(Beer.createDefaultBeers());
   }
 
   // op open create tables if not exists
