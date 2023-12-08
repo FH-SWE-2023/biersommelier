@@ -72,6 +72,19 @@ class Beer extends DropdownOption {
     return true;
   }
 
+  static Future<void> toggleFavorite(String id) async {
+    final db = await DatabaseConnector().database;
+    final Beer? beer = await get(id);
+    if (beer != null) {
+      await db.update(
+        'beers',
+        {'isFavorite': beer.isFavorite ? 0 : 1},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
+  }
+
   // Insert a new beer into the database.
   static Future<void> insert(Beer beer) async {
     final db = await DatabaseConnector().database;

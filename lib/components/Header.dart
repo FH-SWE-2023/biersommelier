@@ -11,11 +11,16 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
   final Color backgroundColor;
   final HeaderIcon icon;
 
+  final Function()? onBack;
+  final Function()? onAdd;
+
   const Header({
     super.key,
     required this.title,
     required this.backgroundColor,
     required this.icon,
+    this.onBack,
+    this.onAdd,
   });
 
   @override
@@ -34,7 +39,11 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           ? <Widget>[
               IconButton(
                 icon: const Icon(Icons.add, size: 33.0),
-                onPressed: () {},
+                onPressed: () {
+                  if (onAdd != null) {
+                    onAdd!();
+                  }
+                },
                 color: Colors.black,
               )
             ]
@@ -46,8 +55,11 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
                 size: 45.0,
               ),
               onPressed: () {
-                //Navigator.pop(context);
-                //context.jump(RutPage.home);
+                if (onBack != null) {
+                  onBack!();
+                } else {
+                  Navigator.pop(context);
+                }
               },
               color: Colors.black,
             )

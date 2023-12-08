@@ -84,6 +84,20 @@ class Bar extends DropdownOption {
     return true;
   }
 
+  // toggle favorite
+  static Future<void> toggleFavorite(String id) async {
+    final db = await DatabaseConnector().database;
+    final Bar? bar = await get(id);
+    if (bar != null) {
+      await db.update(
+        'bars',
+        {'isFavorite': bar.isFavorite ? 0 : 1},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
+  }
+
   // Insert a new bar into the database.
   static Future<void> insert(Bar bar) async {
     final db = await DatabaseConnector().database;

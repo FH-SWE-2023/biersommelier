@@ -27,6 +27,48 @@ class Popup extends StatelessWidget {
     );
   }
 
+  static deleteFavorite({Function()? pressDelete, Function()? onAbort}) {
+    return Popup(
+      options: [
+        Option(
+          icon: 'assets/icons/delete.png',
+          label: 'Favorit Löschen',
+          color: Colors.red[900],
+          callback: pressDelete,
+        ),
+      ],
+      onAbort: onAbort,
+    );
+  }
+
+  // popup for edit, favorite, delete -> user can also give string for title and bool for favorite
+  static editExplore({Function()? pressEdit, Function()? pressFavorite, Function()? pressDelete, Function()? onAbort, required String title, bool favorite = false}) {
+    return Popup(
+      options: [
+        Option(
+          icon: 'assets/icons/pen_black.png',
+          label: '$title bearbeiten',
+          color: Colors.black,
+          callback: pressEdit,
+        ),
+        Option(
+          icon: 'assets/icons/heart.png',
+          label: favorite ? 'Favorit entfernen' : 'Favorisieren',
+          color: Colors.black,
+          callback: pressFavorite,
+        ),
+        Option(
+          icon: 'assets/icons/delete.png',
+          label: '$title löschen',
+          color: Colors.red[900],
+          callback: pressDelete,
+        ),
+      ],
+      onAbort: onAbort,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Stack(

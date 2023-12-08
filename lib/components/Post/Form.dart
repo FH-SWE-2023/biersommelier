@@ -14,6 +14,9 @@ import 'package:biersommelier/database/entities/Post.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 
+import 'package:biersommelier/router/Rut.dart';
+import '../../router/rut/RutPath.dart';
+
 class PostForm extends StatefulWidget {
   final Post? initialPost;
   final Function(Post) onSubmit;
@@ -39,6 +42,9 @@ class _PostFormState extends State<PostForm> {
   @override
   void initState() {
     super.initState();
+
+    // block routing
+    context.blockRouting();
 
     if (widget.initialPost != null) {
       _isEditing = true;
@@ -134,6 +140,10 @@ class _PostFormState extends State<PostForm> {
               title: _isEditing ? "Bearbeiten" : "Hinzufügen",
               backgroundColor: Colors.white,
               icon: HeaderIcon.back,
+              onBack: () {
+                // route to logbuch
+                context.jump(RutPage.log);
+              },
             ),
           ),
           Expanded(
