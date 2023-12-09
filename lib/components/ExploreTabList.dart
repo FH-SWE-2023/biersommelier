@@ -235,7 +235,6 @@ class ExploreList extends StatelessWidget {
                               Rut.of(context).showDialog(null);
                             },
                           ));
-                          Rut.of(context).showDialog(null);
                         },
                         onAbort: () {
                           Rut.of(context).showDialog(null);
