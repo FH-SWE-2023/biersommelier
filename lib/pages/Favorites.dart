@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/ExploreTabList.dart';
 
-
 class Favorites extends StatelessWidget {
   const Favorites({super.key});
 
@@ -12,21 +11,18 @@ class Favorites extends StatelessWidget {
     return const Center(
       child: SafeArea(
           child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: Header(
-                  title: "Favoriten",
-                  backgroundColor: Colors.white,
-                  icon: HeaderIcon.none,
-                ),
-              ),
-              Flexible(
-                fit: FlexFit.tight,
-                child: ExploreBar(onlyFavorites: true),
-              ),
-            ],
-          )),
+        children: [
+          Header(
+            title: "Favoriten",
+            backgroundColor: Colors.white,
+            icon: HeaderIcon.none,
+          ),
+          Flexible(
+            fit: FlexFit.tight,
+            child: ExploreBar(onlyFavorites: true),
+          ),
+        ],
+      )),
     );
   }
 }
