@@ -4,10 +4,13 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class ProgressIntroductionIndicator extends StatelessWidget {
   final PageController controller;
   final int count;
+  final Function()? onPressed;
+
   const ProgressIntroductionIndicator({
     super.key,
     required this.controller,
     required this.count,
+    this.onPressed,
   });
 
   @override
@@ -32,8 +35,8 @@ class ProgressIntroductionIndicator extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.chevron_right, size: 40),
+              onPressed: onPressed,
+              icon: const Icon(Icons.chevron_right, size: 40),
             ),
           )
         ],

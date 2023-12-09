@@ -1,3 +1,4 @@
+import 'package:biersommelier/components/introduction/IntroductionPage.dart';
 import 'package:flutter/material.dart';
 
 class PostsIntroduction extends StatelessWidget {
@@ -5,6 +6,12 @@ class PostsIntroduction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return IntroductionPage(
+      descriptions: [
+        'Erstelle Beiträge zu neuen Bieren und bewerte diese.',
+        'Schaue durch vergangene Beiträge und verliere nie wieder den Überblick!',
+      ],
+      preview: Image.asset('assets/introduction/post.png'),
+    );
   }
 }
