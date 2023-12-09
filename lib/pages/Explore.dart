@@ -2,6 +2,7 @@ import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/router/Rut.dart';
+import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
 
 import '../components/ExploreTabList.dart';
@@ -27,7 +28,7 @@ class Explore extends StatelessWidget {
                 onPressed: () {
                   Rut.of(context).showDialog(Popup.continueWorking(
                     pressContinue: () {
-                      Rut.of(context).showDialog(null);
+                      Rut.of(context).rebase(RutPath.introduction());
                     },
                     pressDelete: () {
                       Rut.of(context).showDialog(null);

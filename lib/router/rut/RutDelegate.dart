@@ -33,7 +33,8 @@ class RutDelegate extends RouterDelegate<RutPath>
             child: Stack(
               children: [
                 Scaffold(
-                  bottomNavigationBar: const NavBar(),
+                  bottomNavigationBar:
+                      path.hideStatusBar ? null : const NavBar(),
                   body: RutPath.findPage(path.page),
                 ),
                 if (path.dialog != null) path.dialog!,
