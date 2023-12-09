@@ -151,7 +151,7 @@ class ExploreList extends StatelessWidget {
                 leading: isBar
                     ? null
                     : FutureBuilder<Image>(
-                  future: imageManager.getImageByKey(item.id),
+                  future: imageManager.getImageByKey(item.imageId),
                   builder: (BuildContext context, AsyncSnapshot<Image> imageSnapshot) {
                     if (imageSnapshot.connectionState == ConnectionState.done && imageSnapshot.hasData) {
                       return SizedBox(
