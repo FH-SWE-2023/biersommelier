@@ -28,10 +28,10 @@ class Explore extends StatelessWidget {
                 onPressed: () {
                   Rut.of(context).showDialog(Popup.continueWorking(
                     pressContinue: () {
-                      Rut.of(context).rebase(RutPath.introduction());
+                      Rut.of(context).showDialog(null);
                     },
                     pressDelete: () {
-                      Rut.of(context).showDialog(null);
+                      Rut.of(context).rebase(RutPath.introduction());
                     },
                   ));
                 },
