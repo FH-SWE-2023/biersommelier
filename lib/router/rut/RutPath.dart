@@ -4,10 +4,19 @@ import 'package:biersommelier/pages/Explore.dart';
 import 'package:biersommelier/pages/Favorites.dart';
 import 'package:biersommelier/pages/Introduction.dart';
 import 'package:biersommelier/pages/Logbook.dart';
+import 'package:biersommelier/pages/LogoScreen.dart';
 
 import 'package:flutter/material.dart';
 
-enum RutPage { explore, beerCaptain, addPost, favorites, log, introduction }
+enum RutPage {
+  explore,
+  beerCaptain,
+  addPost,
+  favorites,
+  log,
+  introduction,
+  logoScreen,
+}
 
 class RutPath {
   RutPage page;
@@ -32,6 +41,14 @@ class RutPath {
     return RutPath(page: RutPage.log);
   }
 
+  static RutPath logoScreen() {
+    return RutPath(
+      page: RutPage.logoScreen,
+      dialog: null,
+      hideStatusBar: true,
+    );
+  }
+
   static Widget findPage(RutPage page) {
     switch (page) {
       case RutPage.explore:
@@ -51,6 +68,9 @@ class RutPath {
 
       case RutPage.introduction:
         return const Introduction();
+
+      case RutPage.logoScreen:
+        return const LogoScreen();
 
       default:
         return const Logbook();

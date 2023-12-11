@@ -18,29 +18,37 @@ class IntroductionPage extends StatelessWidget {
       children: [
         Flexible(
           flex: 1,
-          child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 250),
-              child: Builder(builder: (context) {
-                List<Widget> items = [];
-                items.add(const SizedBox(height: 10));
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 8,
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 290),
+              child: Builder(
+                builder: (context) {
+                  List<Widget> items = [];
+                  items.add(const SizedBox(height: 10));
 
-                for (String description in descriptions) {
-                  items.add(
-                    Text(
-                      description,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 14,
+                  for (String description in descriptions) {
+                    items.add(
+                      Text(
+                        description,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  );
-                  items.add(const SizedBox(height: 20));
-                }
+                    );
+                    items.add(const SizedBox(height: 20));
+                  }
 
-                return Column(
-                  children: items,
-                );
-              })),
+                  return Column(
+                    children: items,
+                  );
+                },
+              ),
+            ),
+          ),
         ),
         Flexible(
           flex: 3,
