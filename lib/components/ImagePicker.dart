@@ -1,12 +1,13 @@
 import 'dart:io';
-import 'package:biersommelier/components/Toast.dart';
 import 'package:flutter/material.dart';
+import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final Function(File?) onImageSelected;
 
-  const ImagePickerWidget({super.key, required this.onImageSelected});
+  const ImagePickerWidget({Key? key, required this.onImageSelected})
+      : super(key: key);
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
@@ -24,7 +25,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         showToast(context, "Falsches Bildformat (PNG/JPEG)", ToastLevel.danger);
       } else {
         final _i = File(pickedFile.path);
-        if (_i.lengthSync() > 50*1024*1024) {
+        if (_i.lengthSync() > 50 * 1024 * 1024) {
           // 50 * 1024*1024 = 50MB
           showToast(
               context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
@@ -42,46 +43,48 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     }
   }
 
-  void _showOptionsModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              onTap: () {
-                getImage();
-                Navigator.pop(context);
-              },
-              title: const Text("Bild ersetzen"),
-            ),
-            ListTile(
-              onTap: () {
-                setState(() {
-                  _image = null;
-                });
-                Navigator.pop(context);
-
-                // Callback aufrufen, um mitzuteilen, dass das Bild gelöscht wurde
-                widget.onImageSelected(null);
-              },
-              title: const Text("Bild löschen"),
-            ),
-          ],
-        );
-      },
+  void _showOptionsPopupMenu(BuildContext context, Offset position) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RelativeRect positionRelativeRect = RelativeRect.fromRect(
+      Rect.fromPoints(position, position),
+      Offset.zero & overlay.size,
     );
+
+    final result = await showMenu(
+      context: context,
+      position: positionRelativeRect,
+      items: [
+        PopupMenuItem(
+          onTap: () {
+            getImage();
+          },
+          child: const Text("Bild ersetzen"),
+        ),
+        PopupMenuItem(
+          onTap: () {
+            setState(() {
+              _image = null;
+            });
+            // Callback aufrufen, um mitzuteilen, dass das Bild gelöscht wurde
+            widget.onImageSelected(null);
+          },
+          child: const Text("Bild löschen"),
+        ),
+      ],
+    );
+
+    if (result != null) {}
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTapUp: (details) {
         if (_image == null) {
           getImage();
         } else {
-          _showOptionsModal();
+          _showOptionsPopupMenu(context, details.globalPosition);
         }
       },
       child: Container(
