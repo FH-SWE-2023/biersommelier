@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/ExploreTabList.dart';
 
-class Favorites extends StatelessWidget {
+class Favorites extends StatefulWidget {
   const Favorites({super.key});
 
   @override
@@ -11,8 +11,6 @@ class Favorites extends StatelessWidget {
 }
 
 class _FavoritesState extends State<Favorites> {
-  File? selectedImage;
-
   @override
   Widget build(BuildContext context) {
     return const Center(
