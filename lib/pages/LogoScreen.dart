@@ -23,7 +23,7 @@ class _LogoScreenState extends State<LogoScreen> with TickerProviderStateMixin {
       ),
     );
 
-    animation = CurvedAnimation(parent: controller!, curve: Curves.easeIn);
+    animation = CurvedAnimation(parent: controller!, curve: Curves.easeOut);
 
     controller!.forward();
 
@@ -55,9 +55,9 @@ class _LogoScreenState extends State<LogoScreen> with TickerProviderStateMixin {
                     child: Image.asset('assets/logo/logo.png'),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50),
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: FadeTransition(
                     opacity: animation!,
                     child: Image.asset('assets/logo/title.png'),

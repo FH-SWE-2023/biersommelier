@@ -7,7 +7,7 @@ class PostsIntroduction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IntroductionPage(
-      descriptions: [
+      descriptions: const [
         'Erstelle Beiträge zu neuen Bieren und bewerte diese.',
         'Schaue durch vergangene Beiträge und verliere nie wieder den Überblick!',
       ],

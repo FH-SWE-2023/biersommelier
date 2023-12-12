@@ -34,9 +34,13 @@ class ProgressIntroductionIndicator extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: IconButton(
-              onPressed: onPressed,
-              icon: const Icon(Icons.chevron_right, size: 40),
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: IconButton(
+                iconSize: 40,
+                onPressed: onPressed,
+                icon: const Icon(Icons.chevron_right),
+              ),
             ),
           )
         ],
