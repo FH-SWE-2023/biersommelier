@@ -15,10 +15,43 @@ class Explore extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Header(
+          Header(
               title: "Entdecken",
               backgroundColor: Colors.white,
-              icon: HeaderIcon.add),
+              icon: HeaderIcon.add,
+              onAdd: () => showMenu(
+                constraints: const BoxConstraints(
+                  maxWidth: 205
+                ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          8), // Adjust the radius as needed
+                    ),
+                    context: context,
+                    position: const RelativeRect.fromLTRB(10, 80, 0, 0),
+                    // you can change the position as needed
+                    items: <PopupMenuEntry>[
+                      PopupMenuItem(
+                        child: Row(
+                          children: [
+                            Image.asset('assets/icons/addBeer.png', scale: 3.7),
+                            Text('Lokal hinzufügen'),
+                          ],
+                        ),
+                        value: 'addBar',
+                      ),
+                      PopupMenuItem(
+                        child: Row(
+                          children: [
+                            Image.asset('assets/icons/addBeer.png', scale: 3.7),
+                            Text('Bier hinzufügen'),
+                          ],
+                        ),
+                        value: 'addBeer',
+                      ),
+                    ],
+                    elevation: 8.0,
+                  )),
           Flexible(
             fit: FlexFit.tight,
             flex: 2,
