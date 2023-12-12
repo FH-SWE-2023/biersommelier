@@ -7,6 +7,13 @@ class Favorites extends StatelessWidget {
   const Favorites({super.key});
 
   @override
+  _FavoritesState createState() => _FavoritesState();
+}
+
+class _FavoritesState extends State<Favorites> {
+  File? selectedImage;
+
+  @override
   Widget build(BuildContext context) {
     return const Center(
       child: SafeArea(
