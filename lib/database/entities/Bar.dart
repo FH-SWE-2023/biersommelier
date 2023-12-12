@@ -1,20 +1,23 @@
+import 'package:biersommelier/components/DropdownInputField.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import '../DatabaseConnector.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as maps
     show LatLng;
 
-class Bar {
+class Bar extends DropdownOption {
   String id;
   String name;
   maps.LatLng location;
   String address;
+  bool isFavorite;
 
   Bar(
       {required this.id,
       required this.name,
       required this.location,
-      required this.address});
+      required this.address,
+      this.isFavorite = false}) : super(name: name, address: address, icon: "pin.png");
 
   Map<String, dynamic> toMap() {
     return {
@@ -22,6 +25,7 @@ class Bar {
       'name': name,
       'location': location.toString(),
       'address': address,
+      'isFavorite': isFavorite ? 1 : 0,
     };
   }
 
@@ -34,6 +38,7 @@ class Bar {
         double.parse(map['location'].split(',')[1].split(')')[0]),
       ),
       address: map['address'],
+      isFavorite: map['isFavorite'] == 1,
     );
   }
 
@@ -48,9 +53,62 @@ class Bar {
         id TEXT PRIMARY KEY,
         name TEXT,
         location TEXT,
-        address TEXT
+        address TEXT,
+        isFavorite INTEGER
       )
     ''';
+  }
+
+  // create default bars
+  static String createDefaultBars() {
+    return '''
+      INSERT INTO bars (id, name, location, address, isFavorite)
+      VALUES
+        ('${generateUuid()}', 'Billiard Bar Downtown', '(50.775346, 6.083887)', 'Viktoriastraße 91, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Billiard Verein Aachen', '(50.775346, 6.083887)', 'Rote Sträse 39, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Lach Club Aachen', '(50.775346, 6.083887)', 'Blastraße 3, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Mizu Bar Aachen', '(50.775346, 6.083887)', 'Oralinastraße 69, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Ver-pufft', '(50.775346, 6.083887)', 'Ottstraße 420, 52066 Aachen', 0)
+    ''';
+  }
+
+  static Future<bool> updateTableColumns(Database db) async {
+    List<String> columnsToAdd = [
+      'id TEXT',
+      'name TEXT',
+      'location TEXT',
+      'address TEXT',
+      'isFavorite INTEGER',
+    ];
+
+    for (String column in columnsToAdd) {
+      try {
+        await db.execute('ALTER TABLE bars ADD $column');
+      } catch (e) {
+        // If there's an exception, it's likely because the column already exists.
+        // In that case, we don't need to do anything.
+        if (e.toString().contains('duplicate column name')) {
+          continue;
+        } else {
+          rethrow;
+        }
+      }
+    }
+    return true;
+  }
+
+  // toggle favorite
+  static Future<void> toggleFavorite(String id) async {
+    final db = await DatabaseConnector().database;
+    final Bar? bar = await get(id);
+    if (bar != null) {
+      await db.update(
+        'bars',
+        {'isFavorite': bar.isFavorite ? 0 : 1},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
   }
 
   // Insert a new bar into the database.
@@ -97,11 +155,41 @@ class Bar {
     return null;
   }
 
+  // get by name
+  static Future<Bar?> getByName(String name) async {
+    final db = await DatabaseConnector().database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('bars', where: 'name = ?', whereArgs: [name]);
+
+    if (maps.isNotEmpty) {
+      return Bar.fromMap(maps.first);
+    }
+
+    return null;
+  }
+
   // Retrieve all bars from the database.
-  static Future<List<Bar>> getAll() async {
+  static Future<List<Bar>> getAll({bool onlyFavorites = false}) async {
+    if (onlyFavorites) {
+      return getAllFavorites();
+    }
     final db = await DatabaseConnector().database;
     final List<Map<String, dynamic>> maps = await db.query(
       'bars',
+      limit: 500,
+    );
+
+    return List.generate(maps.length, (i) {
+      return Bar.fromMap(maps[i]);
+    });
+  }
+
+  // Retrieve all favorite bars from the database.
+  static Future<List<Bar>> getAllFavorites() async {
+    final db = await DatabaseConnector().database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'bars',
+      where: 'isFavorite = 1',
       orderBy: 'name COLLATE NOCASE ASC', // Sort alphabetically, ignoring case
       limit: 500,
     );

@@ -5,11 +5,17 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../database/entities/Bar.dart';
 
+import 'package:biersommelier/components/Post/Form.dart';
+import 'package:biersommelier/router/Rut.dart';
+
+import '../router/rut/RutPath.dart';
+
 class AddPost extends StatelessWidget {
   const AddPost({super.key});
 
   @override
   Widget build(BuildContext context) {
+  /*
     return Center(
       child: SafeArea(
           child: Column(
@@ -57,6 +63,14 @@ class AddPost extends StatelessWidget {
           )
         ],
       )),
+*/
+    return Scaffold(
+      body: PostForm(
+        onSubmit: (post) async {
+          context.unblockRouting();
+          context.jump(RutPage.log);
+        },
+      ),
     );
   }
 }
