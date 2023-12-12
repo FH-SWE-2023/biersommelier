@@ -33,15 +33,30 @@ class DatabaseConnector {
     String path = join(documentsDirectory.path, 'biersommelier.db');
 
     // Open/create the database at the given path.
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(path, version: 1, onCreate: _onCreate, onOpen: _onOpen);
   }
 
   // Create all the tables here
   Future _onCreate(Database db, int version) async {
-    // TABLE CREATION HERE
     await db.execute(Beer.createTable());
     await db.execute(Bar.createTable());
     await db.execute(Post.createTable());
+
+    // Create default entities
+    await db.execute(Bar.createDefaultBars());
+    await db.execute(Beer.createDefaultBeers());
+  }
+
+  // op open create tables if not exists
+  Future _onOpen(Database db) async {
+    await db.execute(Beer.createTable());
+    await db.execute(Bar.createTable());
+    await db.execute(Post.createTable());
+
+    // Update tables
+    await Beer.updateTableColumns(db);
+    await Bar.updateTableColumns(db);
+    await Post.updateTableColumns(db);
   }
 
   // Generic Query Execution, should not be used, just here for now

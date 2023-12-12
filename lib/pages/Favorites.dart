@@ -1,30 +1,33 @@
-import 'package:biersommelier/components/ActionButton.dart';
-import 'package:biersommelier/router/rut/RutExtension.dart';
 import 'package:flutter/material.dart';
 
-class Favorites extends StatelessWidget {
+import 'package:biersommelier/components/Header.dart';
+import 'package:biersommelier/components/ExploreTabList.dart';
+
+class Favorites extends StatefulWidget {
   const Favorites({super.key});
 
   @override
+  _FavoritesState createState() => _FavoritesState();
+}
+
+class _FavoritesState extends State<Favorites> {
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    return const Center(
+      child: SafeArea(
+          child: Column(
         children: [
-          const Text('Favorites'),
-          const SizedBox(height: 20),
-          ActionButton(
-            onPressed: () {
-              context.blockRouting(
-                description: 'Routing wieder freigeben?',
-                buttonSuccessText: 'Ja bitte',
-                buttonCancelText: 'Ne passt schon',
-              );
-            },
-            child: const Text('Routing blockieren'),
-          )
+          Header(
+            title: "Favoriten",
+            backgroundColor: Colors.white,
+            icon: HeaderIcon.none,
+          ),
+          Flexible(
+            fit: FlexFit.tight,
+            child: ExploreBar(onlyFavorites: true),
+          ),
         ],
-      ),
+      )),
     );
   }
 }
