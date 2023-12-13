@@ -2,6 +2,7 @@ import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/pages/AddBeer.dart';
+import 'package:biersommelier/pages/AddBar.dart';
 import 'package:biersommelier/router/Rut.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,12 @@ class Explore extends StatelessWidget {
                     items: <PopupMenuEntry>[
                       PopupMenuItem(
                         value: 'addBar',
+                        onTap: () {
+                          OverlayEntry? addPostOverlay;
+                          addPostOverlay = createAddBarOverlay(
+                              context, () => addPostOverlay?.remove());
+                          Overlay.of(context).insert(addPostOverlay);
+                        },
                         child: Row(
                           children: [
                             SizedBox(
