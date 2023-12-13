@@ -95,7 +95,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                 context: context,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
+                                    return 'Bier muss einen Namen haben';
                                   }
                                   return null;
                                 },
