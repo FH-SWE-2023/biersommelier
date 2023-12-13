@@ -1,6 +1,7 @@
 import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/Popup.dart';
+import 'package:biersommelier/pages/AddBeer.dart';
 import 'package:biersommelier/router/Rut.dart';
 import 'package:flutter/material.dart';
 
@@ -20,34 +21,39 @@ class Explore extends StatelessWidget {
               backgroundColor: Colors.white,
               icon: HeaderIcon.add,
               onAdd: () => showMenu(
-                constraints: const BoxConstraints(
-                  maxWidth: 205
-                ),
+                    constraints: const BoxConstraints(maxWidth: 205),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                           8), // Adjust the radius as needed
                     ),
                     context: context,
                     position: const RelativeRect.fromLTRB(10, 80, 0, 0),
-                    // you can change the position as needed
+
+                // you can change the position as needed
                     items: <PopupMenuEntry>[
                       PopupMenuItem(
+                        value: 'addBar',
                         child: Row(
                           children: [
-                            Image.asset('assets/icons/addBeer.png', scale: 3.7),
+                            Image.asset('assets/icons/addBar.png', scale: 2.1),
                             Text('Lokal hinzufügen'),
                           ],
                         ),
-                        value: 'addBar',
                       ),
                       PopupMenuItem(
+                        value: 'addBeer',
+                        onTap: () {
+
+                          OverlayEntry? addPostOverlay;
+                          addPostOverlay = createAddBeerOverlay(context, () => addPostOverlay?.remove());
+                          Overlay.of(context).insert(addPostOverlay);
+                        },
                         child: Row(
                           children: [
                             Image.asset('assets/icons/addBeer.png', scale: 3.7),
                             Text('Bier hinzufügen'),
                           ],
                         ),
-                        value: 'addBeer',
                       ),
                     ],
                     elevation: 8.0,
