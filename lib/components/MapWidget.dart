@@ -1,10 +1,17 @@
+import 'dart:io';
+
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+
+import 'package:flutter_map_cache/flutter_map_cache.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_file_store/dio_cache_interceptor_file_store.dart';
 
 /// A widget that displays a map with markers
 /// The map is based on OpenStreetMap
@@ -25,96 +32,120 @@ class MapWidget extends StatefulWidget {
 class _MapWidgetState extends State<MapWidget> {
   Bar? selectedBar;
 
+  // Create the cache store as a field variable
+  final Future<CacheStore> _cacheStoreFuture = _getCacheStore();
+
+  /// Get the CacheStore as a Future
+  static Future<CacheStore> _getCacheStore() async {
+    final dir = await getTemporaryDirectory();
+    return FileCacheStore('${dir.path}${Platform.pathSeparator}MapTiles');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        FlutterMap(
-          options: MapOptions(
-              initialCenter: widget.initialCenter,
-              initialZoom: 13,
-              maxZoom: 22,
-              onTap: (_, LatLng location) {
-                setState(() {
-                  selectedBar = null; // Unset the selected bar
-                });
-              }),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.example.app',
-              // tileProvider: FMTC.instance('mapStore').getTileProvider(),
-            ),
-            MarkerLayer(
-              markers: widget.bars.map((bar) => Marker(
-                width: 30.0,
-                height: 30.0,
-                point: bar.location,
-                child: GestureDetector(
-                    onTap: () {
+    return FutureBuilder<CacheStore>(
+      future: _cacheStoreFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final cacheStore = snapshot.data!;
+          return Stack(
+            children: [
+              FlutterMap(
+                options: MapOptions(
+                    initialCenter: widget.initialCenter,
+                    initialZoom: 13,
+                    maxZoom: 22,
+                    onTap: (_, LatLng location) {
                       setState(() {
-                        selectedBar = bar;
+                        selectedBar = null; // Unset the selected bar
                       });
-                    },
-                    child: Tooltip(
-                      preferBelow: false,
-                      textStyle: TextStyle(color: Theme.of(context).colorScheme.black),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.white,
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Theme.of(context).colorScheme.black.withOpacity(0.2),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
+                    }),
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.example.app',
+                    tileProvider: CachedTileProvider(
+                      maxStale: const Duration(days: 30),
+                      store: cacheStore,
+                    ),
+                  ),
+                  MarkerLayer(
+                    markers: widget.bars.map((bar) => Marker(
+                      width: 30.0,
+                      height: 30.0,
+                      point: bar.location,
+                      child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedBar = bar;
+                            });
+                          },
+                          child: Tooltip(
+                            preferBelow: false,
+                            textStyle: TextStyle(color: Theme.of(context).colorScheme.black),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.white,
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).colorScheme.black.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            message: bar.name,
+                            child: Image.asset(
+                              'assets/icons/map_pin.png',
+                            ),
+                          )),
+                    ))
+                        .toList(),
+                  ),
+                  RichAttributionWidget(
+                    showFlutterMapAttribution: false,
+                    attributions: [
+                      TextSourceAttribution(
+                        'OpenStreetMap contributors',
+                        onTap: () =>
+                            launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              if (selectedBar != null)
+                Positioned(
+                  bottom: 60,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(selectedBar!.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 10,),
+                          Text(selectedBar!.address),
                         ],
                       ),
-                      message: bar.name,
-                      child: Image.asset(
-                        'assets/icons/map_pin.png',
-                      ),
-                    )),
-              ))
-                  .toList(),
-            ),
-            RichAttributionWidget(
-              showFlutterMapAttribution: false,
-              attributions: [
-                TextSourceAttribution(
-                  'OpenStreetMap contributors',
-                  onTap: () =>
-                      launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+                    ),
+                  ),
                 ),
-              ],
-            ),
-          ],
-        ),
-        if (selectedBar != null)
-          Positioned(
-            bottom: 60,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(selectedBar!.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10,),
-                    Text(selectedBar!.address),
-                  ],
-                ),
-              ),
-            ),
-          ),
-      ],
+            ],
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }
