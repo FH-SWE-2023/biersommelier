@@ -50,7 +50,7 @@ class _MapWidgetState extends State<MapWidget> {
           final cacheStore = snapshot.data!;
           return Stack(
             children: [
-              FlutterMap(
+              FlutterMap( 
                 options: MapOptions(
                     initialCenter: widget.initialCenter,
                     initialZoom: 13,
