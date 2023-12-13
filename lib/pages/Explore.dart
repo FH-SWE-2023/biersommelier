@@ -12,23 +12,8 @@ class Explore extends StatefulWidget {
   State<Explore> createState() => _ExploreState();
 }
 
-class _ExploreState extends State<Explore> with SingleTickerProviderStateMixin {
-  AnimationController? _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1), // set the duration for your animation
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController!.dispose();
-    super.dispose();
-  }
+class _ExploreState extends State<Explore> {
+  bool _tabListExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +49,11 @@ class _ExploreState extends State<Explore> with SingleTickerProviderStateMixin {
             ],
           ),
         ),
-        AnimatedPositioned(
-          duration: _animationController!.duration!,
+        Positioned(
           bottom: 0,
-          child: SizedBox(
-            height: 55 + _animationController!.value * MediaQuery.of(context).size.height * 0.7,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            height: _tabListExpanded ? MediaQuery.of(context).size.height * 0.7 : 55,
             width: MediaQuery.of(context).size.width,
             child: Stack(
               clipBehavior: Clip.none,
@@ -86,19 +71,17 @@ class _ExploreState extends State<Explore> with SingleTickerProviderStateMixin {
                     child: RawMaterialButton(
                         onPressed: () {
                           setState(() {
-                            if (_animationController!.status == AnimationStatus.completed) {
-                              _animationController!.reverse();
-                            } else {
-                              _animationController!.forward();
-                            }
+                            _tabListExpanded = !_tabListExpanded;
                           });
                         },
-                        elevation: 2.0,
+                        elevation: 1,
                         fillColor: Theme.of(context).colorScheme.white,
                         padding: const EdgeInsets.all(3.0),
                         shape: const CircleBorder(),
                         child: Icon(
-                          _animationController!.status == AnimationStatus.completed ? Icons.keyboard_arrow_down_outlined : Icons.keyboard_arrow_up_outlined,
+                          _tabListExpanded
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_up,
                           color: Theme.of(context).colorScheme.secondary,
                           size: 40.0,
                         )),

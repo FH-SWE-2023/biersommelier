@@ -1,4 +1,5 @@
 import 'package:biersommelier/database/entities/Bar.dart';
+import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
@@ -13,8 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 class MapWidget extends StatefulWidget {
   /// A map of [LatLng]s to functions that are called when the marker is tapped
   final List<Bar> bars;
+  final LatLng initialCenter;
 
-  const MapWidget({super.key, required this.bars});
+  const MapWidget({super.key, required this.bars, this.initialCenter = const LatLng(50.775555, 6.083611)});
 
   @override
   State<MapWidget> createState() => _MapWidgetState();
@@ -28,10 +30,15 @@ class _MapWidgetState extends State<MapWidget> {
     return Stack(
       children: [
         FlutterMap(
-          options: const MapOptions(
-              initialCenter: LatLng(50.775555, 6.083611),
+          options: MapOptions(
+              initialCenter: widget.initialCenter,
               initialZoom: 13,
-              maxZoom: 22),
+              maxZoom: 22,
+              onTap: (_, LatLng location) {
+                setState(() {
+                  selectedBar = null; // Unset the selected bar
+                });
+              }),
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -40,8 +47,8 @@ class _MapWidgetState extends State<MapWidget> {
             ),
             MarkerLayer(
               markers: widget.bars.map((bar) => Marker(
-                width: 100.0,
-                height: 100.0,
+                width: 30.0,
+                height: 30.0,
                 point: bar.location,
                 child: GestureDetector(
                     onTap: () {
@@ -50,10 +57,23 @@ class _MapWidgetState extends State<MapWidget> {
                       });
                     },
                     child: Tooltip(
+                      preferBelow: false,
+                      textStyle: TextStyle(color: Theme.of(context).colorScheme.black),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.white,
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).colorScheme.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
                       message: bar.name,
-                      child: const Icon(
-                        Icons.pin_drop,
-                        color: Colors.red,
+                      child: Image.asset(
+                        'assets/icons/map_pin.png',
                       ),
                     )),
               ))
@@ -73,10 +93,10 @@ class _MapWidgetState extends State<MapWidget> {
         ),
         if (selectedBar != null)
           Positioned(
-            bottom: 0,
+            bottom: 60,
             child: Container(
               width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: const BoxDecoration(
