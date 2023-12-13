@@ -2,13 +2,13 @@ import 'package:biersommelier/components/DropdownInputField.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import '../DatabaseConnector.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as maps
-    show LatLng;
+import 'package:latlong2/latlong.dart';
+
 
 class Bar extends DropdownOption {
   String id;
   String name;
-  maps.LatLng location;
+  LatLng location;
   String address;
   bool isFavorite;
 
@@ -33,7 +33,7 @@ class Bar extends DropdownOption {
     return Bar(
       id: map['id'],
       name: map['name'],
-      location: maps.LatLng(
+      location: LatLng(
         double.parse(map['location'].split('(')[1].split(',')[0]),
         double.parse(map['location'].split(',')[1].split(')')[0]),
       ),
@@ -64,11 +64,11 @@ class Bar extends DropdownOption {
     return '''
       INSERT INTO bars (id, name, location, address, isFavorite)
       VALUES
-        ('${generateUuid()}', 'Billiard Bar Downtown', '(50.775346, 6.083887)', 'Viktoriastraße 91, 52066 Aachen', 0),
-        ('${generateUuid()}', 'Billiard Verein Aachen', '(50.775346, 6.083887)', 'Rote Sträse 39, 52066 Aachen', 0),
-        ('${generateUuid()}', 'Lach Club Aachen', '(50.775346, 6.083887)', 'Blastraße 3, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Billiard Bar Downtown', '(50.776346, 6.085887)', 'Viktoriastraße 91, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Billiard Verein Aachen', '(50.773346, 6.081887)', 'Rote Sträse 39, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Lach Club Aachen', '(50.795346, 6.073887)', 'Blastraße 3, 52066 Aachen', 0),
         ('${generateUuid()}', 'Mizu Bar Aachen', '(50.775346, 6.083887)', 'Oralinastraße 69, 52066 Aachen', 0),
-        ('${generateUuid()}', 'Ver-pufft', '(50.775346, 6.083887)', 'Ottstraße 420, 52066 Aachen', 0)
+        ('${generateUuid()}', 'Ver-pufft', '(50.779346, 6.081887)', 'Ottstraße 420, 52066 Aachen', 0)
     ''';
   }
 
