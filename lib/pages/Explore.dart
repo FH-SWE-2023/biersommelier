@@ -29,29 +29,34 @@ class Explore extends StatelessWidget {
                     context: context,
                     position: const RelativeRect.fromLTRB(10, 80, 0, 0),
 
-                // you can change the position as needed
+                    // Menu to get to the addBar and addBeer Page
                     items: <PopupMenuEntry>[
                       PopupMenuItem(
                         value: 'addBar',
                         child: Row(
                           children: [
-                            Image.asset('assets/icons/addBar.png', scale: 2.1),
-                            Text('Lokal hinzufügen'),
+                            SizedBox(
+                                width: 40,
+                                child: Image.asset('assets/icons/addBar.png',
+                                    scale: 2.1)),
+                            const Text('Lokal hinzufügen'),
                           ],
                         ),
                       ),
                       PopupMenuItem(
                         value: 'addBeer',
                         onTap: () {
-
                           OverlayEntry? addPostOverlay;
-                          addPostOverlay = createAddBeerOverlay(context, () => addPostOverlay?.remove());
+                          addPostOverlay = createAddBeerOverlay(
+                              context, () => addPostOverlay?.remove());
                           Overlay.of(context).insert(addPostOverlay);
                         },
                         child: Row(
                           children: [
-                            Image.asset('assets/icons/addBeer.png', scale: 3.7),
-                            Text('Bier hinzufügen'),
+                            SizedBox(
+                              width: 40,
+                                child: Image.asset('assets/icons/addBeer.png', scale: 3.7)),
+                            const Text('Bier hinzufügen'),
                           ],
                         ),
                       ),
