@@ -2,9 +2,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:biersommelier/components/CustomTextField.dart';
 import 'package:biersommelier/components/Header.dart';
-import 'package:biersommelier/components/ImagePicker.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
-import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -94,14 +92,14 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
                             onPressed: () async {
                               if(barNameController.text.isNotEmpty && barAdressController.text.isNotEmpty) {
                                 LatLng emptyLatLng = const LatLng(0, 0);
-                                //should enter a Bar to databank but doesnt work yet
+
                                 Bar.insert(Bar(
                                     id: Bar.generateUuid(),
                                     name: barNameController.text,
                                     location: emptyLatLng,
-                                    address: barAdressController.text,
-                                    isFavorite: false));
-
+                                    address: barAdressController.text
+                                  )
+                                );
                                 closeOverlay();
                               }
                             },
