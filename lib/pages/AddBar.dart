@@ -8,6 +8,7 @@ import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../components/CustomTextFormField.dart';
 import '../components/Popup.dart';
 import '../router/rut/RutPath.dart';
 
@@ -39,7 +40,9 @@ void showCancelConfirmationDialog(
 OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
   var barNameController = TextEditingController(text: "");
   var barAdressController = TextEditingController(text: "");
-  File? selectedImage;
+  final _formKeyLokal = GlobalKey<FormState>();
+  final _formKeyAdress = GlobalKey<FormState>();
+
   return OverlayEntry(
     opaque: false,
     builder: (context) => Positioned(
@@ -66,31 +69,87 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
                   color: Theme.of(context).colorScheme.white,
                   padding: const EdgeInsets.only(bottom: 25),
                   child: Column(
-                    children: [
-                      TextFieldWithLabel(
-                          label: "Lokal",
-                          textField: CustomTextField(
-                            context: context,
-                            controller: barNameController,
-                          )),
-                      Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextFieldWithLabel(
-                                    label: "Adresse",
-                                    textField: CustomTextField(
-                                      context: context,
-                                      controller: barAdressController,
-                                    )),
-                              ])),
+                    //barNameController
+                  children: [
+                  // Labe for Lokal Textfield
+                  Container(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+                    alignment: Alignment.topLeft,
+                    child: const Text("Lokal",
+                        style: TextStyle(
+                          fontSize: 16,
+                        )
+                    )),
+                      Form(
+                        key: _formKeyLokal,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                child: CustomTextFormField(
+                                  controller: barNameController,
+                                  //Dier Teil wird nicht benutzt
+                                  decoration: const InputDecoration(
+                                      labelText: "Lokal"
+                                  ),
+                                  context: context,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Das Lokal muss einen Namen haben';
+                                    }
+                                    return null;
+                                  },
+                                )
+                            ),
+                            // Other widgets...
+                          ],
+                        ),
+                      ),
+
+                    Container(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+                        alignment: Alignment.topLeft,
+                        child: const Text("Adresse",
+                            style: TextStyle(
+                              fontSize: 16,
+                            )
+                        )),
+                    Form(
+                      key: _formKeyAdress,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                              child: CustomTextFormField(
+                                controller: barAdressController,
+                                //Dier Teil wird nicht benutzt
+                                decoration: const InputDecoration(
+                                    labelText: "Adresse"
+                                ),
+                                context: context,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Das Lokal muss einen Adresse besitzen';
+                                  }
+                                  return null;
+                                },
+                              )
+                          ),
+                          // Other widgets...
+                        ],
+                      ),
+                    ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           RawMaterialButton(
                             onPressed: () async {
-                              if(barNameController.text.isNotEmpty && barAdressController.text.isNotEmpty) {
+                              // check all input
+                              bool testLokal = _formKeyLokal.currentState!.validate();
+                              bool testAdress = _formKeyAdress.currentState!.validate();
+
+                              // checking input and wirte in database
+                              if(testLokal && testAdress) {
                                 LatLng emptyLatLng = const LatLng(0, 0);
 
                                 Bar.insert(Bar(
@@ -130,8 +189,9 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
                   ),
                 ),
               )
-            ],
-          ),
+
+        ]
+        ),
         ),
       ),
     ),
