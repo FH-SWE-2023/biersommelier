@@ -3,6 +3,7 @@ import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/InheritedRut.dart';
 import 'package:biersommelier/router/rut/JumpAuthorizer.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
+import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class RutDelegate extends RouterDelegate<RutPath>
@@ -33,6 +34,7 @@ class RutDelegate extends RouterDelegate<RutPath>
             child: Stack(
               children: [
                 Scaffold(
+                  backgroundColor: Theme.of(context).colorScheme.white,
                   bottomNavigationBar: const NavBar(),
                   body: RutPath.findPage(path.page),
                 ),
