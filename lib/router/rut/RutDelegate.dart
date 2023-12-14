@@ -14,11 +14,7 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   RutDelegate(this.rut);
 
-  RutPath path = RutPath(
-    page: RutPage.logoScreen,
-    hideStatusBar: true,
-    dialog: null,
-  );
+  RutPath path = RutPath(page: RutPage.log);
   JumpAuthorizer authorizer = JumpAuthorizer(
     defaultDescription: 'Willst du diese Seite wirklich verlassen?',
     defaultButtonSuccessText: 'Bestätigen',
@@ -37,8 +33,7 @@ class RutDelegate extends RouterDelegate<RutPath>
             child: Stack(
               children: [
                 Scaffold(
-                  bottomNavigationBar:
-                      path.hideStatusBar ? null : const NavBar(),
+                  bottomNavigationBar: const NavBar(),
                   body: RutPath.findPage(path.page),
                 ),
                 if (path.dialog != null) path.dialog!,
