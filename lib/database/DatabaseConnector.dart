@@ -9,6 +9,8 @@ import 'entities/Post.dart' show Post;
 class DatabaseConnector {
   static Database? _database;
 
+  bool _isFirstLaunch = false;
+
   // Private constructor to prevent direct instantiation.
   DatabaseConnector._privateConstructor();
 
@@ -26,6 +28,12 @@ class DatabaseConnector {
     return _database!;
   }
 
+  get isFirstLaunch => _isFirstLaunch;
+
+  void introductionComplete() {
+    _isFirstLaunch = false;
+  }
+
   // Initialize the database.
   Future<Database> _initDatabase() async {
     // Get the directory path for both Android and iOS to store the database.
@@ -38,6 +46,8 @@ class DatabaseConnector {
 
   // Create all the tables here
   Future _onCreate(Database db, int version) async {
+    _isFirstLaunch = true;
+
     await db.execute(Beer.createTable());
     await db.execute(Bar.createTable());
     await db.execute(Post.createTable());
