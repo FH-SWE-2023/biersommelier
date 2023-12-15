@@ -58,11 +58,11 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           onTap: () {
             getImage();
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.edit_outlined),
-              Text("Bild ersetzen"),
+              Image.asset('assets/icons/pen_black.png'), // Statt Icon(Icons.edit_outlined)
+              const Text("Bild ersetzen"),
             ],
           ),
         ),
@@ -74,11 +74,11 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
             // Callback aufrufen, um mitzuteilen, dass das Bild gelöscht wurde
             widget.onImageSelected(null);
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.delete_outline, color: Colors.red),
-              Text("Bild löschen"),
+              Image.asset('assets/icons/pen_black.png'), // Statt Icon(Icons.edit_outlined)
+              const Text("Bild löschen"),
             ],
           ),
         ),
