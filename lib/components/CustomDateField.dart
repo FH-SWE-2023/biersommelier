@@ -56,9 +56,10 @@ class DateFieldWithLabel extends StatelessWidget {
 }
 
 class CustomDateField extends DateTimeFormField {
+  final BuildContext context;
 
     CustomDateField({
-    required BuildContext context,
+    required this.context,
     super.key,
     super.onSaved,
     super.validator,

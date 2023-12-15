@@ -49,28 +49,29 @@ class ConfirmationDialog extends StatelessWidget {
                     fontSize: 20.0, fontWeight: FontWeight.w400),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(
-                  onPressed: onConfirm,
-                  child: Text(
-                    confirmButtonText,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 20.0,
-                    ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: onConfirm,
+                child: Text(
+                  confirmButtonText,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
                   ),
                 ),
-                TextButton(
-                  onPressed: onCancel,
-                  child: Text(
-                    cancelButtonText,
-                    style: const TextStyle(color: Colors.black, fontSize: 20.0),
-                  ),
+              ),
+              const SizedBox(width: 20.0), 
+              TextButton(
+                onPressed: onCancel,
+                child: Text(
+                  cancelButtonText,
+                  style: const TextStyle(color: Colors.black, fontSize: 20.0),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
           ],
         ),
       ),
