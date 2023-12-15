@@ -9,30 +9,30 @@ import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../components/CustomTextFormField.dart';
 import '../components/Popup.dart';
 import '../router/rut/RutPath.dart';
 
 ///
 /// Funktion to Close the add Beer Overlay with warning Dialog
 ///
-void showCancelConfirmationDialog(BuildContext context, Function closeOverlay, bool formIsEmpty){
-    if (formIsEmpty) {
-      closeOverlay();
-      return;
-    }
-    OverlayEntry? popUpOverlay;
-    popUpOverlay = OverlayEntry(
-        opaque: false,
-        maintainState: false,
-        builder: (context) => Popup.continueWorking(
-        pressContinue: () {
-          popUpOverlay?.remove();
-        },
-        pressDelete: () {
-          popUpOverlay?.remove();
-          closeOverlay();
-        }));
-    Overlay.of(context).insert(popUpOverlay);
+void showCancelConfirmationDialog(
+    BuildContext context, Function closeOverlay, bool formIsEmpty) {
+  if (formIsEmpty) {
+    closeOverlay();
+    return;
+  }
+  OverlayEntry? popUpOverlay;
+  popUpOverlay = OverlayEntry(
+      opaque: false,
+      maintainState: false,
+      builder: (context) => Popup.continueWorking(pressContinue: () {
+            popUpOverlay?.remove();
+          }, pressDelete: () {
+            popUpOverlay?.remove();
+            closeOverlay();
+          }));
+  Overlay.of(context).insert(popUpOverlay);
 }
 
 ///
@@ -40,7 +40,9 @@ void showCancelConfirmationDialog(BuildContext context, Function closeOverlay, b
 ///
 OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
   var beerNameController = TextEditingController(text: "");
+  final _formKey = GlobalKey<FormState>();
   File? selectedImage;
+
   return OverlayEntry(
     opaque: false,
     builder: (context) => Positioned(
@@ -58,7 +60,8 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                 backgroundColor: Theme.of(context).colorScheme.white,
                 icon: HeaderIcon.back,
                 onBack: () {
-                  showCancelConfirmationDialog(context, closeOverlay, beerNameController.text.isEmpty);
+                  showCancelConfirmationDialog(
+                      context, closeOverlay, beerNameController.text.isEmpty);
                   //Go Back
                 },
               ),
@@ -68,12 +71,40 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                   padding: const EdgeInsets.only(bottom: 25),
                   child: Column(
                     children: [
-                      TextFieldWithLabel(
-                          label: "Bier",
-                          textField: CustomTextField(
-                            context: context,
-                            controller: beerNameController,
-                          )),
+                      // Labe for Bier Textfield
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+                          alignment: Alignment.topLeft,
+                          child: const Text("Bier",
+                              style: TextStyle(
+                                  fontSize: 16,
+                              )
+                      )),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                              child: CustomTextFormField(
+                                controller: beerNameController,
+                                //Dier Teil wird nicht benutzt
+                                decoration: const InputDecoration(
+                                  labelText: "Bier"
+                                ),
+                                context: context,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bier muss einen Namen haben';
+                                  }
+                                  return null;
+                                },
+                              )
+                            ),
+                            // Other widgets...
+                          ],
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -90,38 +121,52 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                               .textTheme
                                               .bodyLarge),
                                     ),
-                                    ImagePickerWidget(
-                                        onImageSelected: (file) {selectedImage = file;})
+                                    ImagePickerWidget(onImageSelected: (file) {
+                                      selectedImage = file;
+                                    })
                                   ])),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               RawMaterialButton(
                                 onPressed: () async {
-
                                   // Check input
-                                  if (selectedImage != null) {
-                                    var imageId = await ImageManager().saveImage(selectedImage!);
-                                    Beer.insert(Beer(id: Beer.generateUuid(), name: beerNameController.text, imageId: imageId));
-                                  } else {
-                                    Beer.insert(Beer(id: Beer.generateUuid(), name: beerNameController.text, imageId: ""));
+                                  if (_formKey.currentState!.validate()) {
+                                    if (selectedImage != null) {
+                                      var imageId = await ImageManager()
+                                          .saveImage(selectedImage!);
+                                      Beer.insert(Beer(
+                                          id: Beer.generateUuid(),
+                                          name: beerNameController.text,
+                                          imageId: imageId));
+                                    } else {
+                                      Beer.insert(Beer(
+                                          id: Beer.generateUuid(),
+                                          name: beerNameController.text,
+                                          imageId: ""));
+                                    }
+                                    closeOverlay();
                                   }
-                                  closeOverlay();
                                 },
-                                fillColor: Theme.of(context).colorScheme.success,
+                                fillColor:
+                                    Theme.of(context).colorScheme.success,
                                 shape: const CircleBorder(),
                                 padding: const EdgeInsets.all(6.0),
-                                child:
-                                Image.asset('assets/icons/checkmark.png', scale: 3.7),
+                                child: Image.asset('assets/icons/checkmark.png',
+                                    scale: 3.7),
                               ),
                               RawMaterialButton(
                                 onPressed: () {
-                                  showCancelConfirmationDialog(context, closeOverlay, beerNameController.text.isEmpty);},
+                                  showCancelConfirmationDialog(
+                                      context,
+                                      closeOverlay,
+                                      beerNameController.text.isEmpty);
+                                },
                                 fillColor: Theme.of(context).colorScheme.error,
                                 padding: const EdgeInsets.all(6.0),
                                 shape: const CircleBorder(),
-                                child:
-                                Image.asset('assets/icons/cross.png', scale: 3.7),
+                                child: Image.asset('assets/icons/cross.png',
+                                    scale: 3.7),
                               ),
                             ],
                           ),
