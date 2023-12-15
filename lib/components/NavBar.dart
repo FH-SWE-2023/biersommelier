@@ -41,6 +41,7 @@ class _NavBarState extends State<NavBar> {
         (key) => indexToPage[key] == context.path.page,
         orElse: () => 0);
     return NavigationBar(
+      elevation: 4,
       onDestinationSelected: navigateTo,
       selectedIndex: pageIndex,
       backgroundColor: Theme.of(context).colorScheme.white,
@@ -57,7 +58,7 @@ class _NavBarState extends State<NavBar> {
         OverflowBox(
             maxHeight: double.infinity,
             child: Container(
-                transform: Matrix4.translationValues(0, -17, 0),
+                transform: Matrix4.translationValues(0, -9, 0),
                 child: Column(
                   children: [
                     RawMaterialButton(
