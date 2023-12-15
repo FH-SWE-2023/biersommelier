@@ -53,126 +53,111 @@ class _BeerCaptainState extends State<BeerCaptain> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Positioned(
-            width: MediaQuery.of(context).size.width,
-            top: 120,
-            child: Column(
-                children: !show
-                    ? [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 48, top: 56, right: 48, bottom: 63),
-                    child: Text(
-                      "Der Bierkapitän gibt dir Empfehlungen, welches Lokal und Bier du probieren könntest.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.fontSize),
-                    ),
-                  ),
-                ]
-                    : [
-                  Padding(
-                    padding:
-                    const EdgeInsets.only(left: 48, top: 16, right: 48),
-                    child: Column(
-                      children: [
-                        Card(
-                          child: ListTile(
-                            leading: null,
-                            title: Text(bars[barRandom].name),
-                            subtitle: Text(bars[barRandom].address),
-                            titleTextStyle:
-                            Theme.of(context).textTheme.displayMedium,
-                            textColor: Colors.black,
-                          ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            subtitle: const Text(""),
-                            title: Container(
-                                transform: Matrix4.translationValues(0, 8, 0),
-                                child: Text(beers[beerRandom].name)),
-                            leading: SizedBox(
-                              width: 50.0,
-                              height: 50.0,
-                              child: FutureBuilder<Image>(
-                                future: imageManager.getImageByKey(
-                                    beers[beerRandom].imageId),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<Image> imageSnapshot) {
-                                  if (imageSnapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      imageSnapshot.hasData) {
-                                    return imageSnapshot.data!;
-                                  } else if (imageSnapshot.hasError) {
-                                    return const Icon(Icons.error);
-                                  } else {
-                                    return const CircularProgressIndicator();
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ]),
+          const Header(
+            title: "Bierkapitän",
+            backgroundColor: Colors.white,
+            icon: HeaderIcon.none,
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Header(
-                title: "Bierkapitän",
-                backgroundColor: Colors.white,
-                icon: HeaderIcon.none,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Image(image: AssetImage('assets/demo/Beercaptain.png')),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.brown.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 20,
-                          offset: const Offset(0, -10), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: TextButton(
-                      onPressed: generate,
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        foregroundColor: Theme.of(context).colorScheme.white,
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
-                      ),
-                      child: const Text(
-                        'Generieren',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+              children: !show
+                  ? [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 48, top: 56, right: 48, bottom: 63),
+                        child: Text(
+                          "Der Bierkapitän gibt dir Empfehlungen, welches Lokal und Bier du probieren könntest.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.fontSize),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    ]
+                  : [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 48, top: 16, right: 48),
+                        child: Column(
+                          children: [
+                            Card(
+                              child: ListTile(
+                                leading: null,
+                                title: Text(bars[barRandom].name),
+                                subtitle: Text(bars[barRandom].address),
+                                titleTextStyle:
+                                    Theme.of(context).textTheme.displayMedium,
+                                textColor: Colors.black,
+                              ),
+                            ),
+                            Card(
+                              child: ListTile(
+                                subtitle: Text(""),
+                                title: Text(beers[beerRandom].name),
+                                leading: SizedBox(
+                                  width: 50.0,
+                                  height: 50.0,
+                                  child: FutureBuilder<Image>(
+                                    future: imageManager.getImageByKey(
+                                        beers[beerRandom].imageId),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<Image> imageSnapshot) {
+                                      if (imageSnapshot.connectionState ==
+                                              ConnectionState.done &&
+                                          imageSnapshot.hasData) {
+                                        return SizedBox(
+                                          child: imageSnapshot.data,
+                                        );
+                                      } else if (imageSnapshot.hasError) {
+                                        return const Icon(Icons.error);
+                                      } else {
+                                        return const SizedBox(
+                                          width: 50.0,
+                                          height: 50.0,
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ]),
+          const Image(image: AssetImage('assets/demo/Beercaptain.png')),
+          Container(
+            margin: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.brown.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 20,
+                  offset: const Offset(0, -10), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextButton(
+              onPressed: generate,
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.white,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
               ),
-            ],
+              child: const Text(
+                'Generieren',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
         ],
       ),

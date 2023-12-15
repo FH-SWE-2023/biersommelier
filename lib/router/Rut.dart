@@ -60,6 +60,11 @@ class Rut implements RouterConfig<RutPath> {
     return _delegate.jump(page, change: change);
   }
 
+  void rebase(RutPath path) {
+    _delegate.path = path;
+    _delegate.reload();
+  }
+
   void showDialog(Widget? dialog) {
     _delegate.path.dialog = dialog;
     _delegate.reload();
