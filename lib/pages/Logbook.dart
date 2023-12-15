@@ -1,6 +1,9 @@
+import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
+import 'package:biersommelier/router/Rut.dart';
+import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
 import 'package:biersommelier/components/Post.dart';
 import 'package:biersommelier/database/entities/Post.dart' as db_post;
@@ -76,12 +79,23 @@ class Logbook extends StatelessWidget {
                                       return Column(
                                         children: [
                                           Post(
+                                            id: post.id,
                                             bar: bar.name,
                                             beer: beer.name,
                                             created: post.date,
                                             description: post.description,
                                             image: image,
                                             rating: post.rating,
+                                            pressDelete: (id) {
+                                              db_post.Post.delete(id);
+                                              showToast(context, "Beitrag gelöscht!", ToastLevel.success);
+                                              Rut.of(context).showDialog(null);
+                                            },
+                                            pressEdit: (id) {
+                                              // TODO: route to AddPost page and pass post
+                                              Rut.of(context).showDialog(null);
+                                              Rut.of(context).jump(RutPage.addPost, args: {'post': post});
+                                            },
                                           ),
                                           if (index != items.length - 1)
                                             const DecoratedBox(

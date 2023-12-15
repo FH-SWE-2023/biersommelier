@@ -1,3 +1,4 @@
+import 'package:biersommelier/database/entities/Post.dart';
 import 'package:biersommelier/router/rut/InheritedRut.dart';
 import 'package:biersommelier/router/rut/RutDelegate.dart';
 import 'package:biersommelier/router/rut/RutParser.dart';
@@ -56,7 +57,8 @@ class Rut implements RouterConfig<RutPath> {
     _delegate.unblockRouting();
   }
 
-  void jump(RutPage page, {Function(bool)? change}) async {
+  void jump(RutPage page, {Function(bool)? change, Map<String, Post> args = const {}}) async {
+    // TODO work with args
     return _delegate.jump(page, change: change);
   }
 
