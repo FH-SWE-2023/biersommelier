@@ -6,8 +6,7 @@ import 'package:biersommelier/imagemanager/ImageManager.dart';
 class ImagePickerWidget extends StatefulWidget {
   final Function(File?) onImageSelected;
 
-  const ImagePickerWidget({Key? key, required this.onImageSelected})
-      : super(key: key);
+  const ImagePickerWidget({super.key, required this.onImageSelected});
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
@@ -59,7 +58,13 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           onTap: () {
             getImage();
           },
-          child: const Text("Bild ersetzen"),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(Icons.edit_outlined),
+              Text("Bild ersetzen"),
+            ],
+          ),
         ),
         PopupMenuItem(
           onTap: () {
@@ -69,7 +74,13 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
             // Callback aufrufen, um mitzuteilen, dass das Bild gelöscht wurde
             widget.onImageSelected(null);
           },
-          child: const Text("Bild löschen"),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(Icons.delete_outline, color: Colors.red),
+              Text("Bild löschen"),
+            ],
+          ),
         ),
       ],
     );
