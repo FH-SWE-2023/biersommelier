@@ -19,8 +19,16 @@ extension RutContext on BuildContext {
     Rut.of(this).unblockRouting();
   }
 
-  void jump(RutPage page, {Function(bool)? change}) async {
-    return Rut.of(this).jump(page, change: change);
+  void jump(
+    RutPage page, {
+    Function(bool)? change,
+    Map<String, Object> arguments = const {},
+  }) async {
+    return Rut.of(this).jump(
+      page,
+      change: change,
+      arguments: arguments,
+    );
   }
 
   RutPath get path {
