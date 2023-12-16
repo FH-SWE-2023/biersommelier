@@ -53,6 +53,13 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     final result = await showMenu(
       context: context,
       position: positionRelativeRect,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(
+            10.0,
+          ),
+        ),
+      ),
       items: [
         PopupMenuItem(
           onTap: () {
@@ -61,7 +68,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset('assets/icons/pen_black.png'), // Statt Icon(Icons.edit_outlined)
+              Image.asset(
+                'assets/icons/pen_black.png',
+                fit: BoxFit.cover,
+                width: 25,
+                height: 25,
+              ), // Statt Icon(Icons.edit_outlined)
               const Text("Bild ersetzen"),
             ],
           ),
@@ -77,7 +89,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset('assets/icons/pen_black.png'), // Statt Icon(Icons.edit_outlined)
+              Image.asset(
+                'assets/icons/delete.png',
+                fit: BoxFit.cover,
+                width: 25,
+                height: 25,
+              ), // Statt Icon(Icons.edit_outlined)
               const Text("Bild löschen"),
             ],
           ),
