@@ -40,8 +40,7 @@ class CustomTextFormField extends TextFormField {
     MouseCursor? cursor,
     super.enableIMEPersonalizedLearning = false,
     String labelText = "",
-    super.validator,
-    required InputDecoration decoration,
+    super.validator
   }) : super(
     decoration: getCustomInputDecoration(context, labelText, label1Text: ''),
     mouseCursor: cursor,

@@ -164,8 +164,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
                                     child: CustomTextFormField(
                                       controller: barNameController,
-                                      decoration:
-                                          const InputDecoration(labelText: "Name"),
+                                      labelText: "Name",
                                       context: context,
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -192,8 +191,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
                                     child: CustomTextFormField(
                                       controller: barAddressController,
-                                      decoration: const InputDecoration(
-                                          labelText: "Adresse"),
+                                      labelText: "Adresse",
                                       context: context,
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
