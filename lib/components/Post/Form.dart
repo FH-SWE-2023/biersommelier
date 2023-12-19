@@ -12,7 +12,6 @@ import 'package:biersommelier/components/CustomTimeField.dart';
 import 'package:biersommelier/components/CustomRatingField.dart';
 import 'package:biersommelier/components/ActionButton.dart';
 import 'package:biersommelier/components/Toast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:biersommelier/database/entities/Post.dart';
@@ -20,7 +19,7 @@ import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 
 import 'package:biersommelier/router/Rut.dart';
-import '../../router/rut/RutPath.dart';
+import 'package:biersommelier/router/rut/RutPath.dart';
 
 class PostForm extends StatefulWidget {
   final Post? initialPost;
@@ -100,11 +99,10 @@ class _PostFormState extends State<PostForm> {
       return;
     }
 
-    ImageManager im = ImageManager();
     String imageTag = '';
 
     if (_image != null) {
-      imageTag = await im.saveImage(_image!);
+      imageTag = await ImageManager().saveImage(_image!);
     }
 
     // Create or update a Post object
@@ -243,16 +241,25 @@ class _PostFormState extends State<PostForm> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Row(children: [
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 2.5,
-                            child: ImagePickerWidget(
-                              onImageSelected: (file) {
-                                _image = file;
-                              },
-                            ))
-                      ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
+                            child: Text("Bild hinzufügen", style: Theme.of(context).textTheme.bodyLarge),
+                          ),
+                          Row(children: [
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.width / 2.5,
+                                child: ImagePickerWidget(
+                                  onImageSelected: (file) {
+                                    _image = file;
+                                  },
+                                ))
+                          ]),
+                        ],
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
