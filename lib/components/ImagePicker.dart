@@ -19,21 +19,16 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     try {
       final pickedFile = await ImageManager().pickImage();
 
-      if (!(pickedFile.path.endsWith(".png") ||
-          pickedFile.path.endsWith(".jpeg"))) {
-        showToast(context, "Falsches Bildformat (PNG/JPEG)", ToastLevel.danger);
+      final _i = File(pickedFile.path);
+      if (_i.lengthSync() > 50 * 1024 * 1024) {
+        // 50 * 1024*1024 = 50MB
+        showToast(
+            context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
       } else {
-        final _i = File(pickedFile.path);
-        if (_i.lengthSync() > 50 * 1024 * 1024) {
-          // 50 * 1024*1024 = 50MB
-          showToast(
-              context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
-        } else {
-          setState(() {
-            _image = _i;
-          });
-          widget.onImageSelected(_image);
-        }
+        setState(() {
+          _image = _i;
+        });
+        widget.onImageSelected(_image);
       }
     } catch (e) {
       if (e.toString() != "Exception: No image selected") {
@@ -68,12 +63,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                'assets/icons/pen_black.png',
-                fit: BoxFit.cover,
-                width: 25,
-                height: 25,
-              ), // Statt Icon(Icons.edit_outlined)
+              Image.asset('assets/icons/pen_black.png', scale: 3.5,), // Statt Icon(Icons.edit_outlined)
               const Text("Bild ersetzen"),
             ],
           ),
@@ -89,12 +79,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                'assets/icons/delete.png',
-                fit: BoxFit.cover,
-                width: 25,
-                height: 25,
-              ), // Statt Icon(Icons.edit_outlined)
+              Image.asset('assets/icons/delete.png', scale: 3.5),
               const Text("Bild löschen"),
             ],
           ),
@@ -119,11 +104,11 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         width: 200,
         height: 200,
         decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.onPrimary,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: _image == null
-            ? const Icon(Icons.add, size: 100)
+            ? Image.asset('assets/icons/circle_plus.png', scale: 2,)
             : Image.file(_image!, fit: BoxFit.cover),
       ),
     );

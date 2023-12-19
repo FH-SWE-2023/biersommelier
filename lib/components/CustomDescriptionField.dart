@@ -85,17 +85,17 @@ class CustomDescriptionField extends TextField {
             filled: true,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(16),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(16),
             ),
             labelStyle: TextStyle(
                 color: Theme.of(context).colorScheme.secondary, 
                 fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize
                 ),
-              fillColor: Color.fromARGB(255, 240, 236, 225)
+              fillColor: Theme.of(context).colorScheme.onPrimary
           ),
           keyboardType: TextInputType.multiline,
           mouseCursor: cursor,

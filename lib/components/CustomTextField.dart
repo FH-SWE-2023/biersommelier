@@ -56,16 +56,16 @@ InputDecoration getCustomInputDecoration(
       filled: true,
       enabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(color: Colors.transparent),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
       ),
       labelStyle: TextStyle(
           color: Theme.of(context).colorScheme.secondary,
           fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize),
-      fillColor: const Color.fromARGB(255, 240, 236, 225));
+      fillColor: Theme.of(context).colorScheme.onPrimary);
 }
 
 /// TextFieldWithLabel is a stateless widget that provides a text input field with a label.
