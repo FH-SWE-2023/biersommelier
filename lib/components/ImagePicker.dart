@@ -61,7 +61,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset('assets/icons/pen_black.png'), // Statt Icon(Icons.edit_outlined)
+              Image.asset('assets/icons/pen_black.png', scale: 3.5,), // Statt Icon(Icons.edit_outlined)
               const Text("Bild ersetzen"),
             ],
           ),
@@ -77,7 +77,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset('assets/icons/pen_black.png'), // Statt Icon(Icons.edit_outlined)
+              Image.asset('assets/icons/delete.png', scale: 3.5),
               const Text("Bild löschen"),
             ],
           ),
