@@ -17,7 +17,7 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   RutPath path = RutPath(
     page: RutPage.logoScreen,
-    hideStatusBar: true,
+    hideStatusBar: false,
     dialog: null,
   );
   JumpAuthorizer authorizer = JumpAuthorizer(

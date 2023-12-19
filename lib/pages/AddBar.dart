@@ -68,9 +68,9 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
     Placemark placemark = placemarks.first;
     setState(() {
       // Temporarily remove the listener and set the address
-      barAddressController.removeListener(_onBarNameChanged);
+      barAddressController.removeListener(_onBarAddressChanged);
       barAddressController.text = placemark.street ?? '$latitude, $longitude';
-      barAddressController.addListener(_onBarNameChanged);
+      barAddressController.addListener(_onBarAddressChanged);
       // Update the bars list
       bars = [
         Bar(
@@ -80,19 +80,35 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
           address: "",
         )
       ];
+      if (submitAttempted) {
+        formKeyAddress.currentState!.validate();
+      }
     });
   }
 
   void _onBarNameChanged() {
+    if (submitAttempted) {
+      setState(() {
+        formKeyBar.currentState!.validate();
+      });
+    }
+  }
+
+  void _onBarAddressChanged() {
     setState(() {
       geocodeAddress(barAddressController.text);
+
+      if (submitAttempted) {
+        formKeyAddress.currentState!.validate();
+      }
     });
   }
 
   @override
   void initState() {
     super.initState();
-    barAddressController.addListener(_onBarNameChanged);
+    barNameController.addListener(_onBarNameChanged);
+    barAddressController.addListener(_onBarAddressChanged);
   }
 
   @override
@@ -101,144 +117,149 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: Material(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Header(
-                title: "Lokal hinzufügen",
-                backgroundColor: Theme.of(context).colorScheme.white,
-                icon: HeaderIcon.back,
-                onBack: () {
-                  showCancelConfirmationDialog(
-                      context,
-                      widget.closeOverlay,
-                      barNameController.text.isEmpty,
-                      barAddressController.text.isEmpty);
-                },
-              ),
-              Expanded(
-                  child: MapWidget(
-                bars: bars,
-                onTap: (LatLng loc) {
-                  reverseGeocodeLatLng(loc.latitude, loc.longitude);
-                },
-                onMarkerTap: (Bar bar) => {},
-              )),
-              KeyboardVisibilityBuilder(
-                builder: (context, isKeyboardVisible) {
-                  return Container(
-                    color: Theme.of(context).colorScheme.white,
-                    padding: EdgeInsets.only(bottom: isKeyboardVisible ? 300 : 25),
-                    child: Column(
-                      children: [
-                        Container(
-                            padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
-                            alignment: Alignment.topLeft,
-                            child: const Text("Lokal",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                ))),
-                        Form(
-                          key: formKeyBar,
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-                                  child: CustomTextFormField(
-                                    controller: barNameController,
-                                    //Dier Teil wird nicht benutzt
-                                    decoration:
-                                        const InputDecoration(labelText: "Lokal"),
-                                    context: context,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Das Lokal muss einen Namen haben';
-                                      }
-                                      return null;
-                                    },
-                                  )),
-                            ],
-                          ),
-                        ),
-                        Container(
-                            padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
-                            alignment: Alignment.topLeft,
-                            child: const Text("Addresse",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                ))),
-                        Form(
-                          key: formKeyAddress,
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-                                  child: CustomTextFormField(
-                                    controller: barAddressController,
-                                    decoration: const InputDecoration(
-                                        labelText: "Addresse"),
-                                    context: context,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Das Lokal muss einen Addresse besitzen';
-                                      } else if (bars.isEmpty) {
-                                        return 'Die Addresse ist ungültig';
-                                      }
-                                      return null;
-                                    },
-                                  )),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            RawMaterialButton(
-                              onPressed: () async {
-                                // Validate all fields
-                                bool testLokal =
-                                    formKeyBar.currentState!.validate();
-                                bool testAddress =
-                                    formKeyAddress.currentState!.validate();
-
-                                // If all fields are valid, insert the bar into the database
-                                if (testLokal && testAddress && bars.isNotEmpty) {
-                                  Bar.insert(Bar(
-                                      id: Bar.generateUuid(),
-                                      name: barNameController.text,
-                                      location: bars[0].location,
-                                      address: barAddressController.text));
-                                  widget.closeOverlay(barsUpdated: true);
-                                }
-                              },
-                              fillColor: Theme.of(context).colorScheme.success,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset('assets/icons/checkmark.png',
-                                  scale: 3.7),
+        child: KeyboardDismissOnTap(
+          dismissOnCapturedTaps: true,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Header(
+                  title: "Lokal hinzufügen",
+                  backgroundColor: Theme.of(context).colorScheme.white,
+                  icon: HeaderIcon.back,
+                  onBack: () {
+                    showCancelConfirmationDialog(
+                        context,
+                        widget.closeOverlay,
+                        barNameController.text.isEmpty,
+                        barAddressController.text.isEmpty);
+                  },
+                ),
+                Expanded(
+                    child: MapWidget(
+                  bars: bars,
+                  onTap: (LatLng loc) {
+                    reverseGeocodeLatLng(loc.latitude, loc.longitude);
+                  },
+                  onMarkerTap: (Bar bar) => {},
+                )),
+                KeyboardVisibilityBuilder(
+                  builder: (context, isKeyboardVisible) {
+                    return Container(
+                      color: Theme.of(context).colorScheme.white,
+                      padding: EdgeInsets.only(bottom: isKeyboardVisible ? 300 : 25),
+                      child: Column(
+                        children: [
+                          Container(
+                              padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+                              alignment: Alignment.topLeft,
+                              child: const Text("Lokal",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ))),
+                          Form(
+                            key: formKeyBar,
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                    child: CustomTextFormField(
+                                      controller: barNameController,
+                                      //Dier Teil wird nicht benutzt
+                                      decoration:
+                                          const InputDecoration(labelText: "Lokal"),
+                                      context: context,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Das Lokal muss einen Namen haben';
+                                        }
+                                        return null;
+                                      },
+                                    )),
+                              ],
                             ),
-                            RawMaterialButton(
-                              onPressed: () {
-                                showCancelConfirmationDialog(
-                                    context,
-                                    widget.closeOverlay,
-                                    barNameController.text.isEmpty,
-                                    barAddressController.text.isEmpty);
-                              },
-                              fillColor: Theme.of(context).colorScheme.error,
-                              padding: const EdgeInsets.all(6.0),
-                              shape: const CircleBorder(),
-                              child:
-                                  Image.asset('assets/icons/cross.png', scale: 3.7),
+                          ),
+                          Container(
+                              padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+                              alignment: Alignment.topLeft,
+                              child: const Text("Addresse",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ))),
+                          Form(
+                            key: formKeyAddress,
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                    child: CustomTextFormField(
+                                      controller: barAddressController,
+                                      decoration: const InputDecoration(
+                                          labelText: "Addresse"),
+                                      context: context,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Das Lokal muss einen Addresse besitzen';
+                                        } else if (bars.isEmpty) {
+                                          return 'Die Addresse ist ungültig';
+                                        }
+                                        return null;
+                                      },
+                                    )),
+                              ],
                             ),
-                          ],
-                        )
-                      ],
-                    ),
-                  );
-                }
-              )
-            ]),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              RawMaterialButton(
+                                onPressed: () async {
+                                  // Validate all fields
+                                  bool testLokal =
+                                      formKeyBar.currentState!.validate();
+                                  bool testAddress =
+                                      formKeyAddress.currentState!.validate();
+                    
+                                  // If all fields are valid, insert the bar into the database
+                                  if (testLokal && testAddress && bars.isNotEmpty) {
+                                    Bar.insert(Bar(
+                                        id: Bar.generateUuid(),
+                                        name: barNameController.text,
+                                        location: bars[0].location,
+                                        address: barAddressController.text));
+                                    widget.closeOverlay(barsUpdated: true);
+                                  } else {
+                                    submitAttempted = true;
+                                  }
+                                },
+                                fillColor: Theme.of(context).colorScheme.success,
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(6.0),
+                                child: Image.asset('assets/icons/checkmark.png',
+                                    scale: 3.7),
+                              ),
+                              RawMaterialButton(
+                                onPressed: () {
+                                  showCancelConfirmationDialog(
+                                      context,
+                                      widget.closeOverlay,
+                                      barNameController.text.isEmpty,
+                                      barAddressController.text.isEmpty);
+                                },
+                                fillColor: Theme.of(context).colorScheme.error,
+                                padding: const EdgeInsets.all(6.0),
+                                shape: const CircleBorder(),
+                                child:
+                                    Image.asset('assets/icons/cross.png', scale: 3.7),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                )
+              ]),
+        ),
       ),
     );
   }

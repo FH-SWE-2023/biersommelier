@@ -54,6 +54,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   geocoding: ^2.1.1
   connectivity_plus: ^5.0.2
+  flutter_keyboard_visibility: ^5.4.1
 
 dev_dependencies:
   flutter_test:
