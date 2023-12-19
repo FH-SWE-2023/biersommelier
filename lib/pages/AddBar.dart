@@ -11,7 +11,7 @@ import 'package:biersommelier/components/Popup.dart';
 
 
 /// Create an overlay for adding a bar
-OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
+OverlayEntry createAddBarOverlay(BuildContext context, Function({bool barsUpdated}) closeOverlay) {
   return OverlayEntry(
     opaque: true,
     builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay),
@@ -19,7 +19,7 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
 }
 
 class AddBarOverlayContent extends StatefulWidget {
-  final Function closeOverlay;
+  final Function({bool barsUpdated}) closeOverlay;
 
   AddBarOverlayContent({super.key, required this.closeOverlay});
 
@@ -206,7 +206,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     name: barNameController.text,
                                     location: bars[0].location,
                                     address: barAddressController.text));
-                                widget.closeOverlay();
+                                widget.closeOverlay(barsUpdated: true);
                               }
                             },
                             fillColor: Theme.of(context).colorScheme.success,
@@ -244,7 +244,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
 
 /// Close the overlay and show a confirmation dialog if the user has entered
 /// data in the text fields
-void showCancelConfirmationDialog(BuildContext context, Function closeOverlay,
+void showCancelConfirmationDialog(BuildContext context, Function({bool barsUpdated}) closeOverlay,
     bool nameIsEmpty, bool adressIsEmpty) {
   if (nameIsEmpty && adressIsEmpty) {
     closeOverlay();
