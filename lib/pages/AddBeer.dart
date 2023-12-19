@@ -1,17 +1,14 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:biersommelier/components/CustomTextField.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/ImagePicker.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
-import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 import '../components/CustomTextFormField.dart';
 import '../components/Popup.dart';
-import '../router/rut/RutPath.dart';
 
 ///
 /// Funktion to Close the add Beer Overlay with warning Dialog
@@ -88,10 +85,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                               padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
                               child: CustomTextFormField(
                                 controller: beerNameController,
-                                //Dier Teil wird nicht benutzt
-                                decoration: const InputDecoration(
-                                  labelText: "Bier"
-                                ),
+                                labelText: "Bier",
                                 context: context,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
