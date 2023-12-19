@@ -17,7 +17,7 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   RutPath path = RutPath(
     page: RutPage.logoScreen,
-    hideStatusBar: false,
+    hideStatusBar: true,
     dialog: null,
   );
   JumpAuthorizer authorizer = JumpAuthorizer(
@@ -39,7 +39,8 @@ class RutDelegate extends RouterDelegate<RutPath>
               children: [
                 Scaffold(
                   backgroundColor: Theme.of(context).colorScheme.white,
-                  bottomNavigationBar: path.hideStatusBar ? null : const NavBar(),
+                  bottomNavigationBar:
+                      path.hideStatusBar ? null : const NavBar(),
                   body: RutPath.findPage(path.page),
                 ),
                 if (path.dialog != null) path.dialog!,
