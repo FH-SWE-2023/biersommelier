@@ -4,30 +4,11 @@ import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geocoding/geocoding.dart';
 
 import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
 
-/// Close the overlay and show a confirmation dialog if the user has entered
-/// data in the text fields
-void showCancelConfirmationDialog(BuildContext context, Function closeOverlay,
-    bool nameIsEmpty, bool adressIsEmpty) {
-  if (nameIsEmpty && adressIsEmpty) {
-    closeOverlay();
-    return;
-  }
-  OverlayEntry? popUpOverlay;
-  popUpOverlay = OverlayEntry(
-      opaque: false,
-      maintainState: false,
-      builder: (context) => Popup.continueWorking(pressContinue: () {
-            popUpOverlay?.remove();
-          }, pressDelete: () {
-            popUpOverlay?.remove();
-            closeOverlay();
-          }));
-  Overlay.of(context).insert(popUpOverlay);
-}
 
 /// Create an overlay for adding a bar
 OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
@@ -53,24 +34,61 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   GlobalKey<FormState> formKeyAddress = GlobalKey<FormState>();
   List<Bar> bars = [];
 
-  @override
-  void initState() {
-    super.initState();
-    barAddressController.addListener(() {
-      var latLong = barAddressController.text.split(',');
-      var lat = double.parse(latLong[0]);
-      var long = double.parse(latLong[1]);
+  /// GeoCode the address and update the bars list
+  geocodeAddress(String address) async {
+    List<Location> locations = await locationFromAddress(address, localeIdentifier: 'de_DE');
+    // Use the first location
+    try {
+      Location location = locations.first;
       setState(() {
         bars = [
           Bar(
-            id: Bar.generateUuid(),
-            name: barNameController.text,
-            location: LatLng(lat, long),
-            address: barAddressController.text,
+            id: "",
+            name: "",
+            location: LatLng(location.latitude, location.longitude),
+            address: "",
           )
         ];
       });
+    } catch (e) {
+      setState(() {
+        bars = [];
+      });
+    }
+  }
+
+  reverseGeocodeLatLng(double latitude, double longitude) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'de_DE');
+    // Use the first placemark
+    Placemark placemark = placemarks.first;
+    setState(() {
+      // Temporarily remove the listener and set the address
+      barAddressController.removeListener(_onBarNameChanged);
+      barAddressController.text = placemark.street ?? '$latitude, $longitude';
+      barAddressController.addListener(_onBarNameChanged);
+      // Update the bars list
+      bars = [
+        Bar(
+          id: "",
+          name: "",
+          location: LatLng(latitude, longitude),
+          address: "",
+        )
+      ];
+      print(LatLng(latitude, longitude));
     });
+  }
+
+  void _onBarNameChanged() {
+    setState(() {
+      geocodeAddress(barAddressController.text);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    barAddressController.addListener(_onBarNameChanged);
   }
 
   @override
@@ -100,9 +118,8 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                   child: Material(
                       child: MapWidget(
                 bars: bars,
-                onTap: (LatLng loc) => {
-                  setState(() => barAddressController.text =
-                      '${loc.latitude}, ${loc.longitude}')
+                onTap: (LatLng loc) {
+                  reverseGeocodeLatLng(loc.latitude, loc.longitude);
                 },
                 onMarkerTap: (Bar bar) => {},
               ))),
@@ -222,4 +239,26 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
       ),
     );
   }
+}
+
+
+/// Close the overlay and show a confirmation dialog if the user has entered
+/// data in the text fields
+void showCancelConfirmationDialog(BuildContext context, Function closeOverlay,
+    bool nameIsEmpty, bool adressIsEmpty) {
+  if (nameIsEmpty && adressIsEmpty) {
+    closeOverlay();
+    return;
+  }
+  OverlayEntry? popUpOverlay;
+  popUpOverlay = OverlayEntry(
+      opaque: false,
+      maintainState: false,
+      builder: (context) => Popup.continueWorking(pressContinue: () {
+        popUpOverlay?.remove();
+      }, pressDelete: () {
+        popUpOverlay?.remove();
+        closeOverlay();
+      }));
+  Overlay.of(context).insert(popUpOverlay);
 }
