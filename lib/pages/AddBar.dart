@@ -1,22 +1,17 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-import 'package:biersommelier/components/CustomTextField.dart';
 import 'package:biersommelier/components/Header.dart';
+import 'package:biersommelier/components/MapWidget.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
-import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
-import '../components/CustomTextFormField.dart';
-import '../components/Popup.dart';
-import '../router/rut/RutPath.dart';
+import 'package:biersommelier/components/CustomTextFormField.dart';
+import 'package:biersommelier/components/Popup.dart';
 
-///
-/// Function to Close the add Bar Overlay with warning Dialog
-///
-void showCancelConfirmationDialog(
-    BuildContext context, Function closeOverlay, bool nameIsEmpty, bool adressIsEmpty) {
+/// Close the overlay and show a confirmation dialog if the user has entered
+/// data in the text fields
+void showCancelConfirmationDialog(BuildContext context, Function closeOverlay,
+    bool nameIsEmpty, bool adressIsEmpty) {
   if (nameIsEmpty && adressIsEmpty) {
     closeOverlay();
     return;
@@ -34,25 +29,59 @@ void showCancelConfirmationDialog(
   Overlay.of(context).insert(popUpOverlay);
 }
 
-///
-/// Overlay to add a Bar
-///
+/// Create an overlay for adding a bar
 OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
-  var barNameController = TextEditingController(text: "");
-  var barAdressController = TextEditingController(text: "");
-  final _formKeyLokal = GlobalKey<FormState>();
-  final _formKeyAdress = GlobalKey<FormState>();
-
   return OverlayEntry(
-    opaque: false,
-    builder: (context) => Positioned(
+    opaque: true,
+    builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay),
+  );
+}
+
+class AddBarOverlayContent extends StatefulWidget {
+  final Function closeOverlay;
+
+  AddBarOverlayContent({super.key, required this.closeOverlay});
+
+  @override
+  _AddBarOverlayContentState createState() => _AddBarOverlayContentState();
+}
+
+class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
+  TextEditingController barNameController = TextEditingController(text: "");
+  TextEditingController barAddressController = TextEditingController(text: "");
+  GlobalKey<FormState> formKeyBar = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyAddress = GlobalKey<FormState>();
+  List<Bar> bars = [];
+
+  @override
+  void initState() {
+    super.initState();
+    barAddressController.addListener(() {
+      var latLong = barAddressController.text.split(',');
+      var lat = double.parse(latLong[0]);
+      var long = double.parse(latLong[1]);
+      setState(() {
+        bars = [
+          Bar(
+            id: Bar.generateUuid(),
+            name: barNameController.text,
+            location: LatLng(lat, long),
+            address: barAddressController.text,
+          )
+        ];
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: Container(
-          color: Colors.black.withOpacity(0.5),
-          child: Column(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Header(
@@ -61,37 +90,47 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
                 icon: HeaderIcon.back,
                 onBack: () {
                   showCancelConfirmationDialog(
-                      context, closeOverlay, barNameController.text.isEmpty, barAdressController.text.isEmpty);
+                      context,
+                      widget.closeOverlay,
+                      barNameController.text.isEmpty,
+                      barAddressController.text.isEmpty);
                 },
               ),
+              Expanded(
+                  child: Material(
+                      child: MapWidget(
+                bars: bars,
+                onTap: (LatLng loc) => {
+                  setState(() => barAddressController.text =
+                      '${loc.latitude}, ${loc.longitude}')
+                },
+                onMarkerTap: (Bar bar) => {},
+              ))),
               Material(
                 child: Container(
                   color: Theme.of(context).colorScheme.white,
                   padding: const EdgeInsets.only(bottom: 25),
                   child: Column(
-                    //barNameController
-                  children: [
-                  // Labe for Lokal Textfield
-                  Container(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
-                    alignment: Alignment.topLeft,
-                    child: const Text("Lokal",
-                        style: TextStyle(
-                          fontSize: 16,
-                        )
-                    )),
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+                          alignment: Alignment.topLeft,
+                          child: const Text("Lokal",
+                              style: TextStyle(
+                                fontSize: 16,
+                              ))),
                       Form(
-                        key: _formKeyLokal,
+                        key: formKeyBar,
                         child: Column(
                           children: <Widget>[
                             Padding(
-                                padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 6, 16, 16),
                                 child: CustomTextFormField(
                                   controller: barNameController,
                                   //Dier Teil wird nicht benutzt
-                                  decoration: const InputDecoration(
-                                      labelText: "Lokal"
-                                  ),
+                                  decoration:
+                                      const InputDecoration(labelText: "Lokal"),
                                   context: context,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -99,71 +138,61 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
                                     }
                                     return null;
                                   },
-                                )
-                            ),
-                            // Other widgets...
+                                )),
                           ],
                         ),
                       ),
-
-                    Container(
-                        padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
-                        alignment: Alignment.topLeft,
-                        child: const Text("Adresse",
-                            style: TextStyle(
-                              fontSize: 16,
-                            )
-                        )),
-                    Form(
-                      key: _formKeyAdress,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-                              child: CustomTextFormField(
-                                controller: barAdressController,
-                                //Dier Teil wird nicht benutzt
-                                decoration: const InputDecoration(
-                                    labelText: "Adresse"
-                                ),
-                                context: context,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Das Lokal muss einen Adresse besitzen';
-                                  }
-                                  return null;
-                                },
-                              )
-                          ),
-                          // Other widgets...
-                        ],
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+                          alignment: Alignment.topLeft,
+                          child: const Text("Addresse",
+                              style: TextStyle(
+                                fontSize: 16,
+                              ))),
+                      Form(
+                        key: formKeyAddress,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                child: CustomTextFormField(
+                                  controller: barAddressController,
+                                  decoration: const InputDecoration(
+                                      labelText: "Addresse"),
+                                  context: context,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Das Lokal muss einen Addresse besitzen';
+                                    }
+                                    return null;
+                                  },
+                                )),
+                          ],
+                        ),
                       ),
-                    ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           RawMaterialButton(
                             onPressed: () async {
-                              // check all input
-                              bool testLokal = _formKeyLokal.currentState!.validate();
-                              bool testAdress = _formKeyAdress.currentState!.validate();
+                              // Validate all fields
+                              bool testLokal =
+                                  formKeyBar.currentState!.validate();
+                              bool testAddress =
+                                  formKeyAddress.currentState!.validate();
 
-                              // checking input and wirte in database
-                              if(testLokal && testAdress) {
-                                LatLng emptyLatLng = const LatLng(0, 0);
-
+                              // If all fields are valid, insert the bar into the database
+                              if (testLokal && testAddress) {
                                 Bar.insert(Bar(
                                     id: Bar.generateUuid(),
                                     name: barNameController.text,
-                                    location: emptyLatLng,
-                                    address: barAdressController.text
-                                  )
-                                );
-                                closeOverlay();
+                                    location: bars[0].location,
+                                    address: barAddressController.text));
+                                widget.closeOverlay();
                               }
                             },
-                            fillColor:
-                                Theme.of(context).colorScheme.success,
+                            fillColor: Theme.of(context).colorScheme.success,
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(6.0),
                             child: Image.asset('assets/icons/checkmark.png',
@@ -173,9 +202,9 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
                             onPressed: () {
                               showCancelConfirmationDialog(
                                   context,
-                                  closeOverlay,
+                                  widget.closeOverlay,
                                   barNameController.text.isEmpty,
-                                  barAdressController.text.isEmpty);
+                                  barAddressController.text.isEmpty);
                             },
                             fillColor: Theme.of(context).colorScheme.error,
                             padding: const EdgeInsets.all(6.0),
@@ -189,11 +218,8 @@ OverlayEntry createAddBarOverlay(BuildContext context, Function closeOverlay) {
                   ),
                 ),
               )
-
-        ]
-        ),
-        ),
+            ]),
       ),
-    ),
-  );
+    );
+  }
 }
