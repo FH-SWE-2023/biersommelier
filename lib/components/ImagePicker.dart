@@ -19,21 +19,16 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     try {
       final pickedFile = await ImageManager().pickImage();
 
-      if (!(pickedFile.path.endsWith(".png") ||
-          pickedFile.path.endsWith(".jpeg"))) {
-        showToast(context, "Falsches Bildformat (PNG/JPEG)", ToastLevel.danger);
+      final _i = File(pickedFile.path);
+      if (_i.lengthSync() > 50 * 1024 * 1024) {
+        // 50 * 1024*1024 = 50MB
+        showToast(
+            context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
       } else {
-        final _i = File(pickedFile.path);
-        if (_i.lengthSync() > 50 * 1024 * 1024) {
-          // 50 * 1024*1024 = 50MB
-          showToast(
-              context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
-        } else {
-          setState(() {
-            _image = _i;
-          });
-          widget.onImageSelected(_image);
-        }
+        setState(() {
+          _image = _i;
+        });
+        widget.onImageSelected(_image);
       }
     } catch (e) {
       if (e.toString() != "Exception: No image selected") {
@@ -109,11 +104,11 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         width: 200,
         height: 200,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 240, 236, 225),
-          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.onPrimary,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: _image == null
-            ? Image.asset('assets/icons/circle_plus.png')
+            ? Image.asset('assets/icons/circle_plus.png', scale: 2,)
             : Image.file(_image!, fit: BoxFit.cover),
       ),
     );
