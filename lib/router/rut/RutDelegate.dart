@@ -3,6 +3,7 @@ import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/InheritedRut.dart';
 import 'package:biersommelier/router/rut/JumpAuthorizer.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
+import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class RutDelegate extends RouterDelegate<RutPath>
@@ -14,7 +15,11 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   RutDelegate(this.rut);
 
-  RutPath path = RutPath(page: RutPage.log);
+  RutPath path = RutPath(
+    page: RutPage.logoScreen,
+    hideStatusBar: true,
+    dialog: null,
+  );
   JumpAuthorizer authorizer = JumpAuthorizer(
     defaultDescription: 'Willst du diese Seite wirklich verlassen?',
     defaultButtonSuccessText: 'Bestätigen',
@@ -33,7 +38,8 @@ class RutDelegate extends RouterDelegate<RutPath>
             child: Stack(
               children: [
                 Scaffold(
-                  bottomNavigationBar: const NavBar(),
+                  backgroundColor: Theme.of(context).colorScheme.white,
+                  bottomNavigationBar: path.hideStatusBar ? null : const NavBar(),
                   body: RutPath.findPage(path.page),
                 ),
                 if (path.dialog != null) path.dialog!,
