@@ -164,9 +164,8 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
                                     child: CustomTextFormField(
                                       controller: barNameController,
-                                      //Dier Teil wird nicht benutzt
                                       decoration:
-                                          const InputDecoration(labelText: "Lokal"),
+                                          const InputDecoration(labelText: "Name"),
                                       context: context,
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -181,7 +180,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                           Container(
                               padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
                               alignment: Alignment.topLeft,
-                              child: const Text("Addresse",
+                              child: const Text("Adresse",
                                   style: TextStyle(
                                     fontSize: 16,
                                   ))),
@@ -194,13 +193,13 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     child: CustomTextFormField(
                                       controller: barAddressController,
                                       decoration: const InputDecoration(
-                                          labelText: "Addresse"),
+                                          labelText: "Adresse"),
                                       context: context,
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return 'Das Lokal muss einen Addresse besitzen';
+                                          return 'Das Lokal muss einen Adresse besitzen';
                                         } else if (bars.isEmpty) {
-                                          return 'Die Addresse ist ungültig';
+                                          return 'Die Adresse ist ungültig';
                                         }
                                         return null;
                                       },
@@ -213,12 +212,12 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                             children: [
                               RawMaterialButton(
                                 onPressed: () async {
-                                  // Validate all fields
+                                  // Run the validators on both forms
                                   bool testLokal =
                                       formKeyBar.currentState!.validate();
                                   bool testAddress =
                                       formKeyAddress.currentState!.validate();
-                    
+
                                   // If all fields are valid, insert the bar into the database
                                   if (testLokal && testAddress && bars.isNotEmpty) {
                                     Bar.insert(Bar(
