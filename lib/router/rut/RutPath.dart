@@ -22,11 +22,13 @@ class RutPath {
   RutPage page;
   Widget? dialog;
   bool hideStatusBar = false;
+  Map<String, Object> arguments;
 
   RutPath({
     required this.page,
     this.dialog,
     this.hideStatusBar = false,
+    this.arguments = const {},
   });
 
   static RutPath introduction() {

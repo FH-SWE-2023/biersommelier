@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:biersommelier/components/ImagePicker.dart';
+import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:flutter/material.dart';
 
 import 'package:biersommelier/components/Header.dart';
@@ -15,7 +19,7 @@ import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 
 import 'package:biersommelier/router/Rut.dart';
-import '../../router/rut/RutPath.dart';
+import 'package:biersommelier/router/rut/RutPath.dart';
 
 class PostForm extends StatefulWidget {
   final Post? initialPost;
@@ -36,6 +40,7 @@ class _PostFormState extends State<PostForm> {
 
   Bar? _bar;
   Beer? _beer;
+  File? _image;
 
   bool _isLoading = false;
 
@@ -94,10 +99,16 @@ class _PostFormState extends State<PostForm> {
       return;
     }
 
+    String imageTag = '';
+
+    if (_image != null) {
+      imageTag = await ImageManager().saveImage(_image!);
+    }
+
     // Create or update a Post object
     final post = Post(
       id: widget.initialPost?.id ?? const Uuid().v4(),
-      imageId: '',
+      imageId: imageTag,
       // Update as needed
       rating: _rating,
       barId: _bar!.id,
@@ -152,12 +163,14 @@ class _PostFormState extends State<PostForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    buildPaddedDropdownInputField(context, "Lokal", Bar.getAll(), (selectedBar) {
+                    buildPaddedDropdownInputField(
+                        context, "Lokal", Bar.getAll(), (selectedBar) {
                       setState(() {
                         _bar = selectedBar;
                       });
                     }),
-                    buildPaddedDropdownInputField(context, "Bier", Beer.getAll(), (selectedBeer) {
+                    buildPaddedDropdownInputField(
+                        context, "Bier", Beer.getAll(), (selectedBeer) {
                       setState(() {
                         _beer = selectedBeer;
                       });
@@ -228,13 +241,24 @@ class _PostFormState extends State<PostForm> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: OutlinedButton.icon(
-                        icon: const Icon(Icons.camera_alt),
-                        label: const Text('Foto hinzufügen'),
-                        onPressed: () {
-                          showToast(context, "Not yet implemented!",
-                              ToastLevel.warning);
-                        },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
+                            child: Text("Bild hinzufügen", style: Theme.of(context).textTheme.bodyLarge),
+                          ),
+                          Row(children: [
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.width / 2.5,
+                                child: ImagePickerWidget(
+                                  onImageSelected: (file) {
+                                    _image = file;
+                                  },
+                                ))
+                          ]),
+                        ],
                       ),
                     ),
                     Padding(
@@ -258,9 +282,12 @@ class _PostFormState extends State<PostForm> {
   }
 }
 
-
 /// Helper functions to build the dropdown lists
-Widget buildPaddedDropdownInputField<T extends DropdownOption>(BuildContext context, String label, Future<List<T>> future, Function setStateFunction) {
+Widget buildPaddedDropdownInputField<T extends DropdownOption>(
+    BuildContext context,
+    String label,
+    Future<List<T>> future,
+    Function setStateFunction) {
   return Padding(
     padding: const EdgeInsets.all(16),
     child: Column(
@@ -268,8 +295,7 @@ Widget buildPaddedDropdownInputField<T extends DropdownOption>(BuildContext cont
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(label,
-              style: Theme.of(context).textTheme.bodyLarge),
+          child: Text(label, style: Theme.of(context).textTheme.bodyLarge),
         ),
         FutureBuilder<List<T>>(
           future: future,

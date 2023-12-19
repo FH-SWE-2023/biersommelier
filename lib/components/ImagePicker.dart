@@ -53,6 +53,13 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     final result = await showMenu(
       context: context,
       position: positionRelativeRect,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(
+            10.0,
+          ),
+        ),
+      ),
       items: [
         PopupMenuItem(
           onTap: () {
