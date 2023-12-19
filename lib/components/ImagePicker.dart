@@ -102,11 +102,11 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         width: 200,
         height: 200,
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: const Color.fromARGB(255, 240, 236, 225),
           borderRadius: BorderRadius.circular(10),
         ),
         child: _image == null
-            ? const Icon(Icons.add, size: 100)
+            ? Image.asset('assets/icons/circle_plus.png')
             : Image.file(_image!, fit: BoxFit.cover),
       ),
     );
