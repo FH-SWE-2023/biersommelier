@@ -5,8 +5,9 @@ import 'package:biersommelier/imagemanager/ImageManager.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final Function(File?) onImageSelected;
+  final ImageManager imageManager;
 
-  const ImagePickerWidget({super.key, required this.onImageSelected});
+  const ImagePickerWidget({super.key, required this.onImageSelected, required this.imageManager});
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
@@ -17,7 +18,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
   Future getImage() async {
     try {
-      final pickedFile = await ImageManager().pickImage();
+      final pickedFile = await widget.imageManager.pickImage();
 
       final _i = File(pickedFile.path);
       if (_i.lengthSync() > 50 * 1024 * 1024) {

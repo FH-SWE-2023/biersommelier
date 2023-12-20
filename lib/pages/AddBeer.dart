@@ -74,27 +74,26 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                           alignment: Alignment.topLeft,
                           child: const Text("Bier",
                               style: TextStyle(
-                                  fontSize: 16,
-                              )
-                      )),
+                                fontSize: 16,
+                              ))),
                       Form(
                         key: _formKey,
                         child: Column(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-                              child: CustomTextFormField(
-                                controller: beerNameController,
-                                labelText: "Bier",
-                                context: context,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bier muss einen Namen haben';
-                                  }
-                                  return null;
-                                },
-                              )
-                            ),
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                child: CustomTextFormField(
+                                  controller: beerNameController,
+                                  labelText: "Bier",
+                                  context: context,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Bier muss einen Namen haben';
+                                    }
+                                    return null;
+                                  },
+                                )),
                             // Other widgets...
                           ],
                         ),
@@ -115,9 +114,12 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                               .textTheme
                                               .bodyLarge),
                                     ),
-                                    ImagePickerWidget(onImageSelected: (file) {
-                                      selectedImage = file;
-                                    })
+                                    ImagePickerWidget(
+                                      onImageSelected: (file) {
+                                        selectedImage = file;
+                                      },
+                                      imageManager: ImageManager(),
+                                    )
                                   ])),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,

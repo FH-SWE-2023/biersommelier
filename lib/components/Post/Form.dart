@@ -256,6 +256,7 @@ class _PostFormState extends State<PostForm> {
                                   onImageSelected: (file) {
                                     _image = file;
                                   },
+                                  imageManager: ImageManager(),
                                 ))
                           ]),
                         ],
