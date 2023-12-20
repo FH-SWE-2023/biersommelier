@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/MapWidget.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
@@ -33,16 +35,24 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   TextEditingController barAddressController = TextEditingController(text: "");
   GlobalKey<FormState> formKeyBar = GlobalKey<FormState>();
   GlobalKey<FormState> formKeyAddress = GlobalKey<FormState>();
+  Timer? _debounceAddress;
+  FocusNode focusNodeAddress = FocusNode();
+  /// The bars that are currently displayed on the map
   List<Bar> bars = [];
+  /// Whether the user has tried to submit the form at least once
   bool submitAttempted = false;
+  /// Key of the map
+  GlobalKey<MapWidgetState> mapKey = GlobalKey<MapWidgetState>();
 
   /// GeoCode the address and update the bars list
-  geocodeAddress(String address) async {
+  /// Returns true if the address is valid, false otherwise
+  Future<bool> geocodeAddress(String address) async {
     try {
       List<Location> locations =
           await locationFromAddress(address, localeIdentifier: 'de_DE');
       // Use the first location
       Location location = locations.first;
+
       setState(() {
         bars = [
           Bar(
@@ -53,10 +63,12 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
           )
         ];
       });
+      return true;
     } catch (e) {
       setState(() {
         bars = [];
       });
+      return false;
     }
   }
 
@@ -64,12 +76,20 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         latitude, longitude,
         localeIdentifier: 'de_DE');
-    // Use the first placemark
-    Placemark placemark = placemarks.first;
+    String address;
+    try {
+      // Use the first placemark
+      Placemark placemark = placemarks.first;
+      address = "${placemark.street}, ${placemark.postalCode} ${placemark.locality}, ${placemark.isoCountryCode}";
+    } catch (e) {
+      address = '$latitude, $longitude';
+    }
+
+
     setState(() {
       // Temporarily remove the listener and set the address
       barAddressController.removeListener(_onBarAddressChanged);
-      barAddressController.text = placemark.street ?? '$latitude, $longitude';
+      barAddressController.text = address;
       barAddressController.addListener(_onBarAddressChanged);
       // Update the bars list
       bars = [
@@ -80,28 +100,42 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
           address: "",
         )
       ];
-      if (submitAttempted) {
-        formKeyAddress.currentState!.validate();
-      }
+      formKeyAddress.currentState!.validate();
     });
   }
 
+  /// Called when the name field changes
   void _onBarNameChanged() {
+    // If the user has tried to submit the form at least once
     if (submitAttempted) {
       setState(() {
+        // Run the validator
         formKeyBar.currentState!.validate();
       });
     }
   }
 
+  /// Called when the address field changes
   void _onBarAddressChanged() {
-    setState(() {
-      geocodeAddress(barAddressController.text);
-
-      if (submitAttempted) {
+    // Debounce the address field
+    if (_debounceAddress?.isActive ?? false) _debounceAddress?.cancel();
+    _debounceAddress = Timer(const Duration(milliseconds: 500), () {
+      setState(() async {
+        // Geocode the address
+        await geocodeAddress(barAddressController.text);
+        // Run the validator
         formKeyAddress.currentState!.validate();
-      }
+      });
     });
+  }
+
+  /// Called when the address field focus changes
+  void _obBarAddressFocusChanged() async {
+    // If the address field lost focus and the bars list is not empty
+    if (!focusNodeAddress.hasFocus && bars.isNotEmpty) {
+      // Move the map to the location of the bar
+      mapKey.currentState?.mapController.move(bars.first.location, 13);
+    }
   }
 
   @override
@@ -109,6 +143,17 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
     super.initState();
     barNameController.addListener(_onBarNameChanged);
     barAddressController.addListener(_onBarAddressChanged);
+    focusNodeAddress.addListener(_obBarAddressFocusChanged);
+  }
+
+  @override
+  void dispose() {
+    barNameController.dispose();
+    barAddressController.dispose();
+    _debounceAddress?.cancel();
+    focusNodeAddress.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -136,6 +181,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                 ),
                 Expanded(
                     child: MapWidget(
+                      key: mapKey,
                   bars: bars,
                   onTap: (LatLng loc) {
                     reverseGeocodeLatLng(loc.latitude, loc.longitude);
@@ -194,6 +240,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                       const EdgeInsets.fromLTRB(16, 6, 16, 16),
                                   child: CustomTextFormField(
                                     controller: barAddressController,
+                                    focusNode: focusNodeAddress,
                                     labelText: "Adresse",
                                     context: context,
                                     validator: (value) {
@@ -220,13 +267,11 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     formKeyAddress.currentState!.validate();
 
                                 // If all fields are valid, insert the bar into the database
-                                if (testLokal &&
-                                    testAddress &&
-                                    bars.isNotEmpty) {
+                                if (testLokal && testAddress) {
                                   Bar.insert(Bar(
                                       id: Bar.generateUuid(),
                                       name: barNameController.text,
-                                      location: bars[0].location,
+                                      location: bars.first.location,
                                       address: barAddressController.text));
                                   widget.closeOverlay(barsUpdated: true);
                                 } else {
@@ -266,17 +311,18 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   }
 }
 
-/// Close the overlay and show a confirmation dialog if the user has entered
-/// data in the text fields
+/// Show a confirmation dialog when the user tries to cancel the overlay
 void showCancelConfirmationDialog(
     BuildContext context,
     Function({bool barsUpdated}) closeOverlay,
     bool nameIsEmpty,
-    bool adressIsEmpty) {
-  if (nameIsEmpty && adressIsEmpty) {
+    bool addressIsEmpty) {
+  // If both fields are empty, close the overlay
+  if (nameIsEmpty && addressIsEmpty) {
     closeOverlay();
     return;
   }
+  // Otherwise, show a confirmation dialog
   OverlayEntry? popUpOverlay;
   popUpOverlay = OverlayEntry(
       opaque: false,

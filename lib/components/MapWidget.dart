@@ -37,10 +37,10 @@ class MapWidget extends StatefulWidget {
       {super.key, required this.bars, this.onTap, this.onMarkerTap});
 
   @override
-  State<MapWidget> createState() => _MapWidgetState();
+  State<MapWidget> createState() => MapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> {
+class MapWidgetState extends State<MapWidget> {
   Bar? selectedBar;
 
   // Create the cache store as a field variable
