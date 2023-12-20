@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'entities/Beer.dart' show Beer;
 import 'entities/Bar.dart' show Bar;
+import 'entities/MapCenter.dart';
 import 'entities/Post.dart' show Post;
 
 class DatabaseConnector {
@@ -51,10 +52,12 @@ class DatabaseConnector {
     await db.execute(Beer.createTable());
     await db.execute(Bar.createTable());
     await db.execute(Post.createTable());
+    await db.execute(MapCenter.createTable());
 
     // Create default entities
     await db.execute(Bar.createDefaultBars());
     await db.execute(Beer.createDefaultBeers());
+    await db.execute(MapCenter.createDefaultMapCenter());
   }
 
   // op open create tables if not exists
@@ -62,6 +65,7 @@ class DatabaseConnector {
     await db.execute(Beer.createTable());
     await db.execute(Bar.createTable());
     await db.execute(Post.createTable());
+    await db.execute(MapCenter.createTable());
 
     // Update tables
     await Beer.updateTableColumns(db);
