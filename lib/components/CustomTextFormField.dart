@@ -40,8 +40,7 @@ class CustomTextFormField extends TextFormField {
     MouseCursor? cursor,
     super.enableIMEPersonalizedLearning = false,
     String labelText = "",
-    super.validator,
-    required InputDecoration decoration,
+    super.validator
   }) : super(
     decoration: getCustomInputDecoration(context, labelText, label1Text: ''),
     mouseCursor: cursor,
@@ -58,16 +57,16 @@ InputDecoration getCustomInputDecoration(
       filled: true,
       enabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(color: Colors.transparent),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
       ),
       labelStyle: TextStyle(
           color: Theme.of(context).colorScheme.secondary,
           fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize),
-      fillColor: const Color.fromARGB(255, 240, 236, 225));
+      fillColor: Theme.of(context).colorScheme.onPrimary);
 }
 
 class TextFieldWithLabel extends StatelessWidget {

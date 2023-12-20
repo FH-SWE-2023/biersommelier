@@ -52,6 +52,9 @@ dependencies:
   dio_cache_interceptor_file_store: ^1.2.3
   dio_cache_interceptor: ^3.5.0
   smooth_page_indicator: ^1.1.0
+  geocoding: ^2.1.1
+  connectivity_plus: ^5.0.2
+  flutter_keyboard_visibility: ^5.4.1
 
 dev_dependencies:
   flutter_test:

@@ -17,13 +17,17 @@ import 'package:dio_cache_interceptor_file_store/dio_cache_interceptor_file_stor
 /// The map is based on OpenStreetMap
 /// The markers are given as a list of [LatLng]s
 /// The map is cached for offline use
-/// TODO: The map can be downloaded for offline use: https://fmtc.jaffaketchup.dev/bulk-downloading/introduction
 class MapWidget extends StatefulWidget {
   /// A map of [LatLng]s to functions that are called when the marker is tapped
   final List<Bar> bars;
+  /// The initial center of the map
   final LatLng initialCenter;
+  /// A function that is called when the map is tapped
+  final Function(LatLng)? onTap;
+  /// A function that is called when a marker is tapped
+  final Function(Bar)? onMarkerTap;
 
-  const MapWidget({super.key, required this.bars, this.initialCenter = const LatLng(50.775555, 6.083611)});
+  const MapWidget({super.key, required this.bars, this.initialCenter = const LatLng(50.775555, 6.083611), this.onTap, this.onMarkerTap});
 
   @override
   State<MapWidget> createState() => _MapWidgetState();
@@ -57,7 +61,11 @@ class _MapWidgetState extends State<MapWidget> {
                     maxZoom: 22,
                     onTap: (_, LatLng location) {
                       setState(() {
-                        selectedBar = null; // Unset the selected bar
+                        if (widget.onTap != null) {
+                          widget.onTap!(location);
+                        } else {
+                          selectedBar = null;
+                        }
                       });
                     }),
                 children: [
@@ -77,7 +85,11 @@ class _MapWidgetState extends State<MapWidget> {
                       child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              selectedBar = bar;
+                              if (widget.onMarkerTap != null) {
+                                widget.onMarkerTap!(bar);
+                              } else {
+                                  selectedBar = bar;
+                              }
                             });
                           },
                           child: Tooltip(
