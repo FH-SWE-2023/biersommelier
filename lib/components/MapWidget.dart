@@ -53,6 +53,7 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   final mapController = MapController();
+  final double initialZoom = 13;
 
   final tooltipKey = GlobalKey<TooltipState>();
 
@@ -62,7 +63,7 @@ class _MapWidgetState extends State<MapWidget> {
         future: MapCenter.get(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final mapCenter = snapshot.data!;
+            var mapCenter = snapshot.data!;
             return FutureBuilder<CacheStore>(
               future: _cacheStoreFuture,
               builder: (context, snapshot) {
@@ -74,7 +75,7 @@ class _MapWidgetState extends State<MapWidget> {
                         mapController: mapController,
                         options: MapOptions(
                             initialCenter: mapCenter,
-                            initialZoom: 13,
+                            initialZoom: initialZoom,
                             maxZoom: 22,
                             onTap: (_, LatLng location) {
                               setState(() {
@@ -90,7 +91,7 @@ class _MapWidgetState extends State<MapWidget> {
                             },
                             onLongPress: (_, __) {
                               final location = mapController.camera.center;
-                              setMapCenter(location, context);
+                              setMapCenter(location, () => {mapCenter = location}, context);
                             }),
                         children: [
                           TileLayer(
@@ -170,6 +171,18 @@ class _MapWidgetState extends State<MapWidget> {
                                     ))
                                 .toList(),
                           ),
+                          ControlsLayer(
+                            child: Tooltip(
+                              message: 'Karte Zentrieren',
+                              child: IconButton(
+                                icon: const Icon(Icons.my_location),
+                                color: const Color(0xFF706f6f),
+                                onPressed: () {
+                                  mapController.moveAndRotate(mapCenter, initialZoom, 0);
+                                },
+                              ),
+                            ),
+                          ),
                           RichAttributionWidget(
                             showFlutterMapAttribution: false,
                             attributions: [
@@ -234,7 +247,7 @@ class _MapWidgetState extends State<MapWidget> {
 }
 
 /// Show a popup with the option to set the map center to the given location
-void setMapCenter(LatLng location, BuildContext context) {
+void setMapCenter(LatLng location, Function onConfirm, BuildContext context) {
   OverlayEntry? popUpOverlay;
   popUpOverlay = OverlayEntry(
       opaque: false,
@@ -250,6 +263,7 @@ void setMapCenter(LatLng location, BuildContext context) {
                 callback: () {
                   popUpOverlay?.remove();
                   MapCenter.set(location);
+                  onConfirm();
                   showToast(context, "Zentrum erfolgreich gesetzt!", ToastLevel.success);
                 },
               ),
@@ -264,4 +278,22 @@ void setMapCenter(LatLng location, BuildContext context) {
             ],
           ));
   Overlay.of(context).insert(popUpOverlay);
+}
+
+
+class ControlsLayer extends StatelessWidget {
+  final Widget child;
+
+  const ControlsLayer({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 7, left: 7),
+        child: child,
+      ),
+    );
+  }
 }
