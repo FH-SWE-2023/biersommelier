@@ -45,6 +45,8 @@ class _MapWidgetState extends State<MapWidget> {
     return FileCacheStore('${dir.path}${Platform.pathSeparator}MapTiles');
   }
 
+  final tooltipKey = GlobalKey<TooltipState>();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<CacheStore>(
@@ -64,6 +66,9 @@ class _MapWidgetState extends State<MapWidget> {
                         if (widget.onTap != null) {
                           widget.onTap!(location);
                         } else {
+                          // Hide the tooltip if it is visible
+                          tooltipKey.currentState?.deactivate();
+                          // Unselect the selected bar
                           selectedBar = null;
                         }
                       });
@@ -83,35 +88,45 @@ class _MapWidgetState extends State<MapWidget> {
                       height: 30.0,
                       point: bar.location,
                       child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (widget.onMarkerTap != null) {
-                                widget.onMarkerTap!(bar);
-                              } else {
-                                  selectedBar = bar;
-                              }
-                            });
-                          },
-                          child: Tooltip(
-                            preferBelow: false,
-                            textStyle: TextStyle(color: Theme.of(context).colorScheme.black),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.white,
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Theme.of(context).colorScheme.black.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
+                              onTap: () {
+                                setState(() {
+                                  if (widget.onMarkerTap != null) {
+                                    widget.onMarkerTap!(bar);
+                                  } else {
+                                      // Hide the tooltip if it is already visible
+                                      tooltipKey.currentState?.deactivate();
+                                      // Set the selected bar to the tapped bar
+                                      selectedBar = bar;
+                                      // Show the tooltip above the tapped marker
+                                      tooltipKey.currentState?.ensureTooltipVisible();
+                                  }
+                                });
+                              },
+                              child: Tooltip(
+                                // Show the tooltip programmatically if the marker is selected
+                                key: selectedBar == bar || (selectedBar == null && widget.bars.indexOf(bar) == 0) ? tooltipKey : null,
+                                triggerMode: TooltipTriggerMode.manual,
+                                preferBelow: false,
+                                showDuration: const Duration(seconds: 10),
+                                textStyle: TextStyle(color: Theme.of(context).colorScheme.black),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.white,
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Theme.of(context).colorScheme.black.withOpacity(0.2),
+                                      spreadRadius: 1,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            message: bar.name,
-                            child: Image.asset(
-                              'assets/icons/map_pin.png',
-                            ),
-                          )),
+                                message: bar.name,
+                                child: Image.asset(
+                                  'assets/icons/map_pin.png',
+                                ),
+                              )
+                      ),
                     ))
                         .toList(),
                   ),
