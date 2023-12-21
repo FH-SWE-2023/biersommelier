@@ -41,7 +41,7 @@ class Post extends StatelessWidget {
 
     if (duration.inDays > 0) {
       int days = duration.inDays;
-      return '$days Tage${days > 1 ? 's' : ''}';
+      return '$days Tag${days > 1 ? 'e' : ''}';
     } else if (duration.inHours > 0) {
       int hours = duration.inHours;
       return '$hours Stunde${hours > 1 ? 'n' : ''}';
@@ -119,16 +119,19 @@ class Post extends StatelessWidget {
                       pressDelete: () {
                         // show confirmation dialog
                         Rut.of(context).showDialog(ConfirmationDialog(
-                          description: 'Bist du sicher, dass du\ndiesen Beitrag löschen\nmöchtest?',
+                          description:
+                              'Bist du sicher, dass du\ndiesen Beitrag löschen\nmöchtest?',
                           onConfirm: () {
                             dbPost.Post.delete(id).then((_) {
                               // show toast
-                              showToast(context, "Beitrag gelöscht!", ToastLevel.success);
+                              showToast(context, "Beitrag gelöscht!",
+                                  ToastLevel.success);
 
                               Rut.of(context).showDialog(null);
 
                               // TODO: reload of page not working
-                              Rut.of(context).rebase(RutPath(page: RutPage.log));
+                              Rut.of(context)
+                                  .rebase(RutPath(page: RutPage.log));
                             });
                           },
                           onCancel: () {
