@@ -1,9 +1,6 @@
-import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
-import 'package:biersommelier/router/Rut.dart';
-import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
 import 'package:biersommelier/components/Post.dart';
 import 'package:biersommelier/database/entities/Post.dart' as db_post;
@@ -11,9 +8,14 @@ import 'package:biersommelier/components/Header.dart';
 
 Future<List<db_post.Post>> posts = db_post.Post.getAll();
 
-class Logbook extends StatelessWidget {
+class Logbook extends StatefulWidget {
   const Logbook({super.key});
 
+  @override
+  State<Logbook> createState() => _LogbookState();
+}
+
+class _LogbookState extends State<Logbook> {
   @override
   Widget build(BuildContext context) {
     ImageManager im = ImageManager();
@@ -86,6 +88,7 @@ class Logbook extends StatelessWidget {
                                             description: post.description,
                                             image: image,
                                             rating: post.rating,
+                                            onDelete: () => setState(() {}),
                                           ),
                                           if (index != items.length - 1)
                                             const DecoratedBox(
