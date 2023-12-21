@@ -38,6 +38,7 @@ class RutDelegate extends RouterDelegate<RutPath>
             child: Stack(
               children: [
                 Scaffold(
+                  backgroundColor: Theme.of(context).colorScheme.white,
                   bottomNavigationBar:
                       path.hideStatusBar ? null : const NavBar(),
                   body: RutPath.findPage(path.page),
@@ -97,9 +98,14 @@ class RutDelegate extends RouterDelegate<RutPath>
     reload();
   }
 
-  void jump(RutPage page, {Function(bool)? change}) async {
+  void jump(
+    RutPage page, {
+    Function(bool)? change,
+    Map<String, Object> arguments = const {},
+  }) async {
     authorizer.authorizeJump(rut, (authorized) {
       if (authorized) {
+        path.arguments = arguments;
         changePage(page);
       }
 

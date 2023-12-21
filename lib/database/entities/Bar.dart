@@ -23,7 +23,7 @@ class Bar extends DropdownOption {
     return {
       'id': id,
       'name': name,
-      'location': location.toString(),
+      'location': '(${location.latitude},${location.longitude})',
       'address': address,
       'isFavorite': isFavorite ? 1 : 0,
     };

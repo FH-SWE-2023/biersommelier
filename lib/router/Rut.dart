@@ -57,9 +57,12 @@ class Rut implements RouterConfig<RutPath> {
     _delegate.unblockRouting();
   }
 
-  void jump(RutPage page, {Function(bool)? change, Map<String, Post> args = const {}}) async {
-    // TODO work with args
-    return _delegate.jump(page, change: change);
+  void jump(
+    RutPage page, {
+    Function(bool)? change,
+    Map<String, Object> arguments = const {},
+  }) async {
+    return _delegate.jump(page, change: change, arguments: arguments);
   }
 
   void rebase(RutPath path) {

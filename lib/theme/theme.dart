@@ -18,7 +18,7 @@ final theme = ThemeData(
     surface: Color(0xFFFFFFFF),
     background: Color(0xFFFFFFFF),
     error: Color(0xFFC00000),
-    onPrimary: Color(0xF0ECE1),
+    onPrimary: Color(0xFFF0ECE1),
     onSecondary: Color(0xFFFFFFFF),
     onSurface: Color(0xFF171000),
     onBackground: Color(0xFF171000),
