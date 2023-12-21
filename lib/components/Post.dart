@@ -1,5 +1,13 @@
+import 'package:biersommelier/components/ConfirmationDialog.dart';
+import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/components/Post/RateBar.dart';
+import 'package:biersommelier/components/Toast.dart';
 import 'package:flutter/material.dart';
+
+import 'package:biersommelier/database/entities/Post.dart' as dbPost;
+
+import 'package:biersommelier/router/Rut.dart';
+import 'package:biersommelier/router/rut/RutPath.dart';
 
 /// Ein Beitrag mit dem Aussehen nach Lastenheft Screen `a102`
 ///
@@ -15,15 +23,23 @@ class Post extends StatelessWidget {
   final DateTime created;
   final String beer;
   final int rating;
+  final String id;
+
+  final dynamic Function(String) pressEdit;
+  final dynamic Function(String) pressDelete;
 
   const Post({
     super.key,
+    required this.id,
     required this.image,
     required this.description,
     required this.bar,
     required this.created,
     required this.beer,
     required this.rating,
+
+    required this.pressEdit,
+    required this.pressDelete,
   });
 
   String _getVocalTime(DateTime time) {
@@ -96,7 +112,24 @@ class Post extends StatelessWidget {
                   constraints: const BoxConstraints(),
                   icon: const Icon(Icons.more_horiz),
                   color: Colors.grey[800],
-                  onPressed: () {},
+                  onPressed: () {
+                    Rut.of(context).showDialog(Popup.editLogbook(
+                      pressEdit: pressEdit(id),
+                      pressDelete: () {
+                        // show confirmation dialog
+                        Rut.of(context).showDialog(ConfirmationDialog(
+                          description: 'Bist du sicher, dass du\ndiesen Beitrag löschen\nmöchtest?',
+                          onConfirm: pressDelete(id),
+                          onCancel: () {
+                            Rut.of(context).showDialog(null);
+                          },
+                        ));
+                      },
+                      onAbort: () {
+                        Rut.of(context).showDialog(null);
+                      },
+                    ));
+                  },
                 ),
               ],
             ),

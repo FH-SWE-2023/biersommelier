@@ -68,6 +68,26 @@ class Popup extends StatelessWidget {
     );
   }
 
+  static editLogbook({Function()? pressEdit, Function()? pressDelete, Function()? onAbort}) {
+    return Popup(
+      options: [
+        Option(
+          icon: 'assets/icons/pen_black.png',
+          label: 'Beitrag bearbeiten',
+          color: Colors.black,
+          callback: pressEdit,
+        ),
+        Option(
+          icon: 'assets/icons/delete.png',
+          label: 'Beitrag löschen',
+          color: Colors.red[900],
+          callback: pressDelete,
+        ),
+      ],
+      onAbort: onAbort,
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
