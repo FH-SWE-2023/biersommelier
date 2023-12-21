@@ -14,7 +14,7 @@ class AddPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // check if post is in path.arguments
-    if (context.path.arguments != null && context.path.arguments["post"] != null) {
+    if (context.path.arguments["post"] != null) {
       // check if conversion is possible
       if (context.path.arguments["post"] is Post) {
         return Scaffold(
@@ -28,7 +28,6 @@ class AddPost extends StatelessWidget {
         );
       }
     }
-
 
     return Scaffold(
       body: PostForm(
