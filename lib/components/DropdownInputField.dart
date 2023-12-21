@@ -10,10 +10,20 @@ abstract class DropdownOption {
   DropdownOption({required this.name, required this.icon, this.address});
 }
 
+/// DropdownInputField is a stateless widget that provides an input field with a dropdown list of options.
+/// It uses the Autocomplete widget of Flutter to provide suggestions as the user types in the input field.
 class DropdownInputField<Option extends DropdownOption> extends StatelessWidget {
+
+  /// Label of the input field
   final String labelText;
+
+  /// List of options to choose from
   final List<Option> optionsList;
+
+  /// Function to call when a bar is selected
   final Function(Option) onOptionSelected;
+
+  /// Default value of the input field
   final String? defaultValue;
 
   const DropdownInputField({
