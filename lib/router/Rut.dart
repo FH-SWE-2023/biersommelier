@@ -1,3 +1,4 @@
+import 'package:biersommelier/database/entities/Post.dart';
 import 'package:biersommelier/router/rut/InheritedRut.dart';
 import 'package:biersommelier/router/rut/RutDelegate.dart';
 import 'package:biersommelier/router/rut/RutParser.dart';

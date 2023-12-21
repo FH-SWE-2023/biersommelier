@@ -8,9 +8,14 @@ import 'package:biersommelier/components/Header.dart';
 
 Future<List<db_post.Post>> posts = db_post.Post.getAll();
 
-class Logbook extends StatelessWidget {
+class Logbook extends StatefulWidget {
   const Logbook({super.key});
 
+  @override
+  State<Logbook> createState() => _LogbookState();
+}
+
+class _LogbookState extends State<Logbook> {
   @override
   Widget build(BuildContext context) {
     ImageManager im = ImageManager();
@@ -76,12 +81,14 @@ class Logbook extends StatelessWidget {
                                       return Column(
                                         children: [
                                           Post(
+                                            id: post.id,
                                             bar: bar.name,
                                             beer: beer.name,
                                             created: post.date,
                                             description: post.description,
                                             image: image,
                                             rating: post.rating,
+                                            onDelete: () => setState(() {}),
                                           ),
                                           if (index != items.length - 1)
                                             const DecoratedBox(
