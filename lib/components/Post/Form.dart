@@ -56,16 +56,22 @@ class _PostFormState extends State<PostForm> {
     }
 
     if (_isEditing) {
-      // if bar and beer exist dont exist, error
-      if (_bar == null || _beer == null) {
-        showToast(
-            context, "Lokal oder Bier nicht gefunden!", ToastLevel.danger);
-        return;
-      }
+      // fill _bar and _beer using Bar.get(id) and Beer.get(id) which return Future<Bar> and Future<Beer> respectively
+      Bar.get(widget.initialPost!.barId).then((bar) {
+        setState(() {
+          _bar = bar;
+        });
+      });
+
+      Beer.get(widget.initialPost!.beerId).then((beer) {
+        setState(() {
+          _beer = beer;
+        });
+      });
+
 
       // Bar name
-      _descriptionController =
-          TextEditingController(text: widget.initialPost!.description);
+      _descriptionController = TextEditingController(text: widget.initialPost!.description);
       _selectedDate = widget.initialPost!.date;
       _rating = widget.initialPost!.rating;
     } else {
@@ -168,13 +174,19 @@ class _PostFormState extends State<PostForm> {
                       setState(() {
                         _bar = selectedBar;
                       });
-                    }),
+                    },
+                        _isEditing
+                            ? _bar?.name
+                            : null), // set default value to the bar of the initial post if editing
                     buildPaddedDropdownInputField(
                         context, "Bier", Beer.getAll(), (selectedBeer) {
                       setState(() {
                         _beer = selectedBeer;
                       });
-                    }),
+                    },
+                        _isEditing
+                            ? _beer?.name
+                            : null), // set default value to the beer of the initial post if editing
                     CustomRatingField(
                       initialRating: _rating,
                       onRatingSelected: (rating) {
@@ -287,7 +299,8 @@ Widget buildPaddedDropdownInputField<T extends DropdownOption>(
     BuildContext context,
     String label,
     Future<List<T>> future,
-    Function setStateFunction) {
+    Function setStateFunction,
+    String? defaultValue) {
   return Padding(
     padding: const EdgeInsets.all(16),
     child: Column(
@@ -309,6 +322,7 @@ Widget buildPaddedDropdownInputField<T extends DropdownOption>(
               onOptionSelected: (selectedItem) {
                 setStateFunction(selectedItem);
               },
+              defaultValue: defaultValue,
             );
           },
         )

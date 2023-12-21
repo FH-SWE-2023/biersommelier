@@ -25,9 +25,6 @@ class Post extends StatelessWidget {
   final int rating;
   final String id;
 
-  final dynamic Function(String) pressEdit;
-  final dynamic Function(String) pressDelete;
-
   const Post({
     super.key,
     required this.id,
@@ -37,9 +34,6 @@ class Post extends StatelessWidget {
     required this.created,
     required this.beer,
     required this.rating,
-
-    required this.pressEdit,
-    required this.pressDelete,
   });
 
   String _getVocalTime(DateTime time) {
@@ -114,12 +108,29 @@ class Post extends StatelessWidget {
                   color: Colors.grey[800],
                   onPressed: () {
                     Rut.of(context).showDialog(Popup.editLogbook(
-                      pressEdit: pressEdit(id),
+                      pressEdit: () {
+                        Rut.of(context).showDialog(null);
+                        dbPost.Post.get(id).then((post) {
+                          Rut.of(context).jump(RutPage.addPost, arguments: {
+                            'post': post!,
+                          });
+                        });
+                      },
                       pressDelete: () {
                         // show confirmation dialog
                         Rut.of(context).showDialog(ConfirmationDialog(
                           description: 'Bist du sicher, dass du\ndiesen Beitrag löschen\nmöchtest?',
-                          onConfirm: pressDelete(id),
+                          onConfirm: () {
+                            dbPost.Post.delete(id).then((_) {
+                              // show toast
+                              showToast(context, "Beitrag gelöscht!", ToastLevel.success);
+
+                              Rut.of(context).showDialog(null);
+
+                              // TODO: reload of page not working
+                              Rut.of(context).rebase(RutPath(page: RutPage.log));
+                            });
+                          },
                           onCancel: () {
                             Rut.of(context).showDialog(null);
                           },

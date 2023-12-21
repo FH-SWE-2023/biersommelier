@@ -86,16 +86,6 @@ class Logbook extends StatelessWidget {
                                             description: post.description,
                                             image: image,
                                             rating: post.rating,
-                                            pressDelete: (id) {
-                                              db_post.Post.delete(id);
-                                              showToast(context, "Beitrag gelöscht!", ToastLevel.success);
-                                              Rut.of(context).showDialog(null);
-                                            },
-                                            pressEdit: (id) {
-                                              // TODO: route to AddPost page and pass post
-                                              Rut.of(context).showDialog(null);
-                                              Rut.of(context).jump(RutPage.addPost, args: {'post': post});
-                                            },
                                           ),
                                           if (index != items.length - 1)
                                             const DecoratedBox(

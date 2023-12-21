@@ -1,10 +1,5 @@
-import 'package:biersommelier/components/DropdownInputField.dart';
-import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/database/entities/Post.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../database/entities/Bar.dart';
 
 import 'package:biersommelier/components/Post/Form.dart';
 import 'package:biersommelier/router/Rut.dart';
@@ -18,6 +13,23 @@ class AddPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // check if post is in path.arguments
+    if (context.path.arguments != null && context.path.arguments["post"] != null) {
+      // check if conversion is possible
+      if (context.path.arguments["post"] is Post) {
+        return Scaffold(
+          body: PostForm(
+            onSubmit: (post) async {
+              context.unblockRouting();
+              context.jump(RutPage.log);
+            },
+            initialPost: context.path.arguments["post"] as Post,
+          ),
+        );
+      }
+    }
+
+
     return Scaffold(
       body: PostForm(
         onSubmit: (post) async {
