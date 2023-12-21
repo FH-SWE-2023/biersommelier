@@ -25,6 +25,9 @@ class Post extends StatelessWidget {
   final int rating;
   final String id;
 
+  final Function()? onDelete;
+  final Function()? onChange;
+
   const Post({
     super.key,
     required this.id,
@@ -34,6 +37,8 @@ class Post extends StatelessWidget {
     required this.created,
     required this.beer,
     required this.rating,
+    this.onDelete,
+    this.onChange,
   });
 
   String _getVocalTime(DateTime time) {
@@ -114,6 +119,8 @@ class Post extends StatelessWidget {
                           Rut.of(context).jump(RutPage.addPost, arguments: {
                             'post': post!,
                           });
+
+                          onChange?.call();
                         });
                       },
                       pressDelete: () {
@@ -129,9 +136,7 @@ class Post extends StatelessWidget {
 
                               Rut.of(context).showDialog(null);
 
-                              // TODO: reload of page not working
-                              Rut.of(context)
-                                  .rebase(RutPath(page: RutPage.log));
+                              onDelete?.call();
                             });
                           },
                           onCancel: () {
