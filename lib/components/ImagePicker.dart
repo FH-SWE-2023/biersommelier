@@ -6,14 +6,15 @@ import 'package:biersommelier/imagemanager/ImageManager.dart';
 class ImagePickerWidget extends StatefulWidget {
   final Function(File?) onImageSelected;
 
-  const ImagePickerWidget({super.key, required this.onImageSelected});
+  File? image;
+
+  ImagePickerWidget({super.key, required this.onImageSelected, this.image});
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
 }
 
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
-  File? _image;
 
   Future getImage() async {
     try {
@@ -26,9 +27,9 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
             context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
       } else {
         setState(() {
-          _image = _i;
+          widget.image = _i;
         });
-        widget.onImageSelected(_image);
+        widget.onImageSelected(widget.image);
       }
     } catch (e) {
       if (e.toString() != "Exception: No image selected") {
@@ -71,7 +72,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         PopupMenuItem(
           onTap: () {
             setState(() {
-              _image = null;
+              widget.image = null;
             });
             // Callback aufrufen, um mitzuteilen, dass das Bild gelöscht wurde
             widget.onImageSelected(null);
@@ -94,7 +95,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapUp: (details) {
-        if (_image == null) {
+        if (widget.image == null) {
           getImage();
         } else {
           _showOptionsPopupMenu(context, details.globalPosition);
@@ -107,9 +108,9 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           color: Theme.of(context).colorScheme.onPrimary,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: _image == null
+        child: widget.image == null
             ? Image.asset('assets/icons/circle_plus.png', scale: 2,)
-            : Image.file(_image!, fit: BoxFit.cover),
+            : Image.file(widget.image!, fit: BoxFit.cover),
       ),
     );
   }

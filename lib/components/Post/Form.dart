@@ -69,6 +69,13 @@ class _PostFormState extends State<PostForm> {
         });
       });
 
+      // fill image
+      ImageManager().getImageFileByKey(widget.initialPost!.imageId).then((image) {
+        setState(() {
+          _image = image;
+        });
+      });
+
 
       // Bar name
       _descriptionController = TextEditingController(text: widget.initialPost!.description);
@@ -268,6 +275,7 @@ class _PostFormState extends State<PostForm> {
                                   onImageSelected: (file) {
                                     _image = file;
                                   },
+                                  image: _image,
                                 ))
                           ]),
                         ],
