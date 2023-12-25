@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/MapWidget.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
+import 'package:biersommelier/providers/BarChanged.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -11,10 +12,11 @@ import 'package:geocoding/geocoding.dart';
 
 import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
+import 'package:provider/provider.dart';
 
 /// Create an overlay for adding a bar
 OverlayEntry createAddBarOverlay(
-    BuildContext context, Function({bool barsUpdated}) closeOverlay) {
+    BuildContext context, Function() closeOverlay) {
   return OverlayEntry(
     opaque: true,
     builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay),
@@ -22,7 +24,7 @@ OverlayEntry createAddBarOverlay(
 }
 
 class AddBarOverlayContent extends StatefulWidget {
-  final Function({bool barsUpdated}) closeOverlay;
+  final Function() closeOverlay;
 
   const AddBarOverlayContent({super.key, required this.closeOverlay});
 
@@ -73,11 +75,11 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   }
 
   reverseGeocodeLatLng(double latitude, double longitude) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        latitude, longitude,
-        localeIdentifier: 'de_DE');
     String address;
     try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          latitude, longitude,
+          localeIdentifier: 'de_DE');
       // Use the first placemark
       Placemark placemark = placemarks.first;
       address = "${placemark.street}, ${placemark.postalCode} ${placemark.locality}, ${placemark.isoCountryCode}";
@@ -273,7 +275,8 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                       name: barNameController.text,
                                       location: bars.first.location,
                                       address: barAddressController.text));
-                                  widget.closeOverlay(barsUpdated: true);
+                                  Provider.of<BarChanged>(context, listen: false).notify();
+                                  widget.closeOverlay();
                                 } else {
                                   submitAttempted = true;
                                 }
@@ -314,7 +317,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
 /// Show a confirmation dialog when the user tries to cancel the overlay
 void showCancelConfirmationDialog(
     BuildContext context,
-    Function({bool barsUpdated}) closeOverlay,
+    Function() closeOverlay,
     bool nameIsEmpty,
     bool addressIsEmpty) {
   // If both fields are empty, close the overlay

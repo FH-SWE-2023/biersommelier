@@ -71,6 +71,7 @@ class DatabaseConnector {
     await Beer.updateTableColumns(db);
     await Bar.updateTableColumns(db);
     await Post.updateTableColumns(db);
+    await MapCenter.updateTableColumns(db);
   }
 
   // Generic Query Execution, should not be used, just here for now

@@ -7,6 +7,9 @@ import 'package:biersommelier/pages/AddBeer.dart';
 import 'package:biersommelier/pages/AddBar.dart';
 import 'package:flutter/material.dart';
 
+import 'package:biersommelier/providers/BarChanged.dart';
+import 'package:provider/provider.dart';
+
 class Explore extends StatefulWidget {
   const Explore({super.key});
 
@@ -16,18 +19,10 @@ class Explore extends StatefulWidget {
 
 class _ExploreState extends State<Explore> {
   final ValueNotifier<bool> _tabListExpanded = ValueNotifier<bool>(false);
-  Future<List<Bar>>? _bars;
-
-  void onBarsUpdated() {
-    setState(() {
-      _bars = Bar.getAll();
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _bars = Bar.getAll();
   }
 
   @override
@@ -58,13 +53,7 @@ class _ExploreState extends State<Explore> {
                             value: 'addBar',
                             onTap: () {
                               OverlayEntry? addPostOverlay;
-                              addPostOverlay = createAddBarOverlay(context,
-                                  ({bool barsUpdated = false}) {
-                                addPostOverlay?.remove();
-                                if (barsUpdated) {
-                                  onBarsUpdated();
-                                }
-                              });
+                              addPostOverlay = createAddBarOverlay(context, () {addPostOverlay?.remove();});
                               Overlay.of(context).insert(addPostOverlay);
                             },
                             child: Row(
@@ -101,28 +90,32 @@ class _ExploreState extends State<Explore> {
                         elevation: 8.0,
                       )),
               Expanded(
-                  child: FutureBuilder<List<Bar>>(
-                      future: _bars,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<Bar>> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (snapshot.hasData) {
-                          final bars = snapshot.data!;
-                          return MapWidget(
-                            bars: bars,
-                          );
-                        } else {
-                          return const MapWidget(
-                            bars: [],
-                          );
-                        }
-                      })),
+                  child: Consumer<BarChanged>(
+                    builder: (context, barChanged, child) {
+                      return FutureBuilder<List<Bar>>(
+                          future: Bar.getAll(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<Bar>> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (snapshot.hasData) {
+                              final bars = snapshot.data!;
+                              return MapWidget(
+                                bars: bars,
+                              );
+                            } else {
+                              return const MapWidget(
+                                bars: [],
+                              );
+                            }
+                          });
+                    }
+                  )),
               const SizedBox(
                 height: 55,
               )
@@ -155,10 +148,7 @@ class _ExploreState extends State<Explore> {
                             alignment: Alignment.topCenter,
                             child: RawMaterialButton(
                                 onPressed: () {
-                                  setState(() {
-                                    _tabListExpanded.value =
-                                        !_tabListExpanded.value;
-                                  });
+                                  _tabListExpanded.value = !_tabListExpanded.value;
                                 },
                                 elevation: 1,
                                 fillColor: Theme.of(context).colorScheme.white,
