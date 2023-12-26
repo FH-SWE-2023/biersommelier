@@ -5,6 +5,7 @@ import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/MapCenter.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -115,7 +116,8 @@ class MapWidgetState extends State<MapWidget> {
                                               if (widget.onMarkerTap != null) {
                                                 widget.onMarkerTap!(bar);
                                               } else {
-                                                // Hide the tooltip if it is already visible
+                                                if (selectedBar == bar) return;
+                                                // Hide the tooltip if it is visible above another marker
                                                 tooltipKey.currentState
                                                     ?.deactivate();
                                                 // Set the selected bar to the tapped bar
@@ -123,6 +125,8 @@ class MapWidgetState extends State<MapWidget> {
                                                 // Show the tooltip above the tapped marker
                                                 tooltipKey.currentState
                                                     ?.ensureTooltipVisible();
+                                                // Give haptic feedback
+                                                HapticFeedback.lightImpact();
                                               }
                                             });
                                           },
