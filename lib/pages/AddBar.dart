@@ -16,25 +16,28 @@ import 'package:provider/provider.dart';
 
 /// Create an overlay for adding a bar
 OverlayEntry createAddBarOverlay(
-    BuildContext context, Function() closeOverlay) {
+    BuildContext context, Function() closeOverlay, Bar? initialBar) {
   return OverlayEntry(
     opaque: true,
-    builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay),
+    builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay, initialBar: initialBar),
   );
 }
 
 class AddBarOverlayContent extends StatefulWidget {
   final Function() closeOverlay;
 
-  const AddBarOverlayContent({super.key, required this.closeOverlay});
+  final Bar? initialBar;
+
+  const AddBarOverlayContent({super.key, required this.closeOverlay, this.initialBar});
 
   @override
   _AddBarOverlayContentState createState() => _AddBarOverlayContentState();
 }
 
 class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
-  TextEditingController barNameController = TextEditingController(text: "");
-  TextEditingController barAddressController = TextEditingController(text: "");
+  late bool editing;
+  late TextEditingController barNameController;
+  late TextEditingController barAddressController;
   GlobalKey<FormState> formKeyBar = GlobalKey<FormState>();
   GlobalKey<FormState> formKeyAddress = GlobalKey<FormState>();
   Timer? _debounceAddress;
@@ -143,6 +146,17 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   @override
   void initState() {
     super.initState();
+
+    editing = widget.initialBar != null;
+    barNameController = TextEditingController(text: editing ? widget.initialBar!.name : "");
+    barAddressController = TextEditingController(text: editing ? widget.initialBar!.address : "");
+
+    // if editing, set map pin to bar location
+    if (editing) {
+      bars = [widget.initialBar!];
+      _obBarAddressFocusChanged();
+    }
+
     barNameController.addListener(_onBarNameChanged);
     barAddressController.addListener(_onBarAddressChanged);
     focusNodeAddress.addListener(_obBarAddressFocusChanged);

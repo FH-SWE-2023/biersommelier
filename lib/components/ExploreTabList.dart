@@ -13,6 +13,9 @@ import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/components/ConfirmationDialog.dart';
 import 'package:biersommelier/router/Rut.dart';
 
+import '../pages/AddBar.dart';
+import '../pages/AddBeer.dart';
+
 /// Creates the ExploreBar Component which contains the ExploreTabBar and the ExploreList with Locals and Beers
 class ExploreBar extends StatefulWidget {
   final bool onlyFavorites;
@@ -200,9 +203,14 @@ class ExploreList extends StatelessWidget {
                         } else {
                           Rut.of(context).showDialog(Popup.editExplore(
                             pressEdit: () {
-                              //show not implemented toast
-                              showToast(context, "Not yet implemented!", ToastLevel.warning);
                               Rut.of(context).showDialog(null);
+                              OverlayEntry? addPostOverlay;
+                              if (isBar) {
+                                addPostOverlay = createAddBarOverlay(context, () => addPostOverlay?.remove(), item);
+                              } else {
+                                addPostOverlay = createAddBeerOverlay(context, () => addPostOverlay?.remove(), item);
+                              }
+                              Overlay.of(context).insert(addPostOverlay);
                             },
                             pressFavorite: () {
                               if (isBar) {

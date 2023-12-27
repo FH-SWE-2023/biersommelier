@@ -55,7 +55,7 @@ class _ExploreState extends State<Explore> {
                               OverlayEntry? addPostOverlay;
                               addPostOverlay = createAddBarOverlay(context, () {
                                 addPostOverlay?.remove();
-                              });
+                              }, null);
                               Overlay.of(context).insert(addPostOverlay);
                             },
                             child: Row(
@@ -74,7 +74,7 @@ class _ExploreState extends State<Explore> {
                             onTap: () {
                               OverlayEntry? addPostOverlay;
                               addPostOverlay = createAddBeerOverlay(
-                                  context, () => addPostOverlay?.remove());
+                                  context, () => addPostOverlay?.remove(), null);
                               Overlay.of(context).insert(addPostOverlay);
                             },
                             child: Row(

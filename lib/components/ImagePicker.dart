@@ -16,6 +16,7 @@ class ImagePickerWidget extends StatefulWidget {
 
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
+
   Future getImage() async {
     try {
       final pickedFile = await ImageManager().pickImage();
@@ -91,6 +92,24 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     if (result != null) {}
   }
 
+  ImageProvider getImageProvider() {
+    // Attempt to determine if the image is a local file or an asset
+    final String imagePath = widget.image!.path;
+    try {
+      // Check if the path is a local file
+      final File imageFile = File(imagePath);
+      if (imageFile.existsSync()) {
+        return FileImage(imageFile);  // Use the image as a local file
+      }
+    } catch (e) {
+      // If there's an error, assume the path references an asset
+    }
+
+    var fileName = imagePath.split('/').last;
+    fileName = fileName.replaceAll('.jpg', '.png');
+    return AssetImage('assets/demo/$fileName');
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -110,7 +129,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         ),
         child: widget.image == null
             ? Image.asset('assets/icons/circle_plus.png', scale: 2,)
-            : Image.file(widget.image!, fit: BoxFit.cover),
+            : Image(image: getImageProvider(), fit: BoxFit.cover),
       ),
     );
   }
