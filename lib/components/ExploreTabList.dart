@@ -1,3 +1,4 @@
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:flutter/material.dart';
 
 import '../database/entities/Bar.dart';
@@ -5,7 +6,6 @@ import '../database/entities/Beer.dart';
 
 import '../imagemanager/ImageManager.dart';
 import 'package:biersommelier/components/Popup.dart';
-import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/components/ConfirmationDialog.dart';
 import 'package:biersommelier/router/Rut.dart';
 
@@ -55,8 +55,16 @@ class _ExploreBarState extends State<ExploreBar>
           child: TabBarView(
             controller: _tabController,
             children: [
-              ExploreList(key: ValueKey('bar-$refreshKey'), isBar: true, onlyFavorites: widget.onlyFavorites, onChanged: refresh), // For 'Lokale' which represents bars
-              ExploreList(key: ValueKey('beer-$refreshKey'), isBar: false, onlyFavorites: widget.onlyFavorites, onChanged: refresh), // For 'Biere' which represents beers
+              ExploreList(
+                  key: ValueKey('bar-$refreshKey'),
+                  isBar: true,
+                  onlyFavorites: widget.onlyFavorites,
+                  onChanged: refresh), // For 'Lokale' which represents bars
+              ExploreList(
+                  key: ValueKey('beer-$refreshKey'),
+                  isBar: false,
+                  onlyFavorites: widget.onlyFavorites,
+                  onChanged: refresh), // For 'Biere' which represents beers
             ],
           ),
         ),
@@ -119,8 +127,11 @@ class ExploreList extends StatelessWidget {
   final bool onlyFavorites;
   final Function onChanged;
 
-  ExploreList({super.key, required this.isBar, required this.onlyFavorites, required this.onChanged});
-
+  ExploreList(
+      {super.key,
+      required this.isBar,
+      required this.onlyFavorites,
+      required this.onChanged});
 
   final ImageManager imageManager = ImageManager(); // Instance of ImageManager
 
@@ -135,7 +146,6 @@ class ExploreList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           throw snapshot.error!;
-          return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
           final items = snapshot.data!;
 
@@ -149,25 +159,28 @@ class ExploreList extends StatelessWidget {
                 leading: isBar
                     ? null
                     : FutureBuilder<Image>(
-                  future: imageManager.getImageByKey(item.imageId),
-                  builder: (BuildContext context, AsyncSnapshot<Image> imageSnapshot) {
-                    if (imageSnapshot.connectionState == ConnectionState.done && imageSnapshot.hasData) {
-                      return SizedBox(
-                        width: 50.0,
-                        height: 50.0,
-                        child: imageSnapshot.data,
-                      );
-                    } else if (imageSnapshot.hasError) {
-                      return const Icon(Icons.error);
-                    } else {
-                      return const SizedBox(
-                        width: 50.0,
-                        height: 50.0,
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                ),
+                        future: imageManager.getImageByKey(item.imageId),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Image> imageSnapshot) {
+                          if (imageSnapshot.connectionState ==
+                                  ConnectionState.done &&
+                              imageSnapshot.hasData) {
+                            return SizedBox(
+                              width: 50.0,
+                              height: 50.0,
+                              child: imageSnapshot.data,
+                            );
+                          } else if (imageSnapshot.hasError) {
+                            return const Icon(Icons.error);
+                          } else {
+                            return const SizedBox(
+                              width: 50.0,
+                              height: 50.0,
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
                 title: Text(item.name),
                 subtitle: isBar ? Text(item.address) : const SizedBox.shrink(),
                 trailing: IconButton(
@@ -178,15 +191,23 @@ class ExploreList extends StatelessWidget {
                         pressDelete: () {
                           // show confirmation dialog
                           Rut.of(context).showDialog(ConfirmationDialog(
-                            description: 'Bist du sicher, dass du\ndiesen Favoriten löschen\nmöchtest?',
+                            description:
+                                'Bist du sicher, dass du\ndiesen Favoriten löschen\nmöchtest?',
                             onConfirm: () {
                               if (isBar) {
-                                Bar.toggleFavorite(item.id).then((_) => onChanged()); // Update here
+                                Bar.toggleFavorite(item.id)
+                                    .then((_) => onChanged()); // Update here
                               } else {
-                                Beer.toggleFavorite(item.id).then((_) => onChanged()); // Update here
+                                Beer.toggleFavorite(item.id)
+                                    .then((_) => onChanged()); // Update here
                               }
-                              // show toast
-                              showToast(context, "Favorit gelöscht!", ToastLevel.success);
+
+                              context.showToast(
+                                Toast.levelToast(
+                                  message: "Favorit gelöscht!",
+                                  level: ToastLevel.success,
+                                ),
+                              );
 
                               Rut.of(context).showDialog(null);
                             },
@@ -203,29 +224,42 @@ class ExploreList extends StatelessWidget {
                       Rut.of(context).showDialog(Popup.editExplore(
                         pressEdit: () {
                           //show not implemented toast
-                          showToast(context, "Not yet implemented!", ToastLevel.warning);
+                          context.showToast(
+                            Toast.levelToast(
+                              message: "Not yet implemented!",
+                              level: ToastLevel.warning,
+                            ),
+                          );
                           Rut.of(context).showDialog(null);
                         },
                         pressFavorite: () {
                           if (isBar) {
-                            Bar.toggleFavorite(item.id).then((_) => onChanged()); // Update here
+                            Bar.toggleFavorite(item.id)
+                                .then((_) => onChanged()); // Update here
                           } else {
-                            Beer.toggleFavorite(item.id).then((_) => onChanged()); // Update here
+                            Beer.toggleFavorite(item.id)
+                                .then((_) => onChanged()); // Update here
                           }
                           Rut.of(context).showDialog(null);
                         },
                         pressDelete: () {
                           // show confirmation dialog
                           Rut.of(context).showDialog(ConfirmationDialog(
-                            description: 'Bist du sicher, dass du\ndieses ${isBar ? 'Lokal' : 'Bier'} löschen\nmöchtest?',
+                            description:
+                                'Bist du sicher, dass du\ndieses ${isBar ? 'Lokal' : 'Bier'} löschen\nmöchtest?',
                             onConfirm: () {
                               if (isBar) {
-                                Bar.delete(item.id).then((_) => onChanged()); // Update here
+                                Bar.delete(item.id)
+                                    .then((_) => onChanged()); // Update here
                               } else {
-                                Beer.delete(item.id).then((_) => onChanged()); // Update here
+                                Beer.delete(item.id)
+                                    .then((_) => onChanged()); // Update here
                               }
                               // show toast
-                              showToast(context, "${isBar ? 'Lokal' : 'Bier'} gelöscht!", ToastLevel.success);
+                              context.showToast(Toast.levelToast(
+                                  message:
+                                      "${isBar ? 'Lokal' : 'Bier'} gelöscht!",
+                                  level: ToastLevel.success));
 
                               Rut.of(context).showDialog(null);
                             },
@@ -253,4 +287,3 @@ class ExploreList extends StatelessWidget {
     );
   }
 }
-
