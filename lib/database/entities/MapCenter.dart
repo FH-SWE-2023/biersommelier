@@ -29,8 +29,8 @@ class MapCenter {
   static String createTable() {
     return '''
      CREATE TABLE IF NOT EXISTS MapCenter (
-       lat REAL NOT NULL,
-       lng REAL NOT NULL
+       lat REAL NOT NULL DEFAULT 0.0,
+       lng REAL NOT NULL DEFAULT 0.0
      )
    ''';
   }
