@@ -1,3 +1,4 @@
+import 'package:biersommelier/database/DatabaseConnector.dart';
 import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,11 @@ class _LogoScreenState extends State<LogoScreen> with TickerProviderStateMixin {
     controller!.forward();
 
     Future.delayed(const Duration(seconds: 3), () {
-      Rut.of(context).rebase(RutPath.homePage());
+      if (DatabaseConnector.isFirstLaunch) {
+        Rut.of(context).rebase(RutPath.introduction());
+      } else {
+        Rut.of(context).rebase(RutPath.homePage());
+      }
     });
   }
 

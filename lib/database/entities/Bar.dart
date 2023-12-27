@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 import '../DatabaseConnector.dart';
 import 'package:latlong2/latlong.dart';
 
-
 class Bar extends DropdownOption {
   String id;
   String name;
@@ -17,7 +16,8 @@ class Bar extends DropdownOption {
       required this.name,
       required this.location,
       required this.address,
-      this.isFavorite = false}) : super(name: name, address: address, icon: "pin.png");
+      this.isFavorite = false})
+      : super(name: name, address: address, icon: "pin.png");
 
   Map<String, dynamic> toMap() {
     return {
@@ -99,7 +99,7 @@ class Bar extends DropdownOption {
 
   // toggle favorite
   static Future<void> toggleFavorite(String id) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final Bar? bar = await get(id);
     if (bar != null) {
       await db.update(
@@ -113,7 +113,7 @@ class Bar extends DropdownOption {
 
   // Insert a new bar into the database.
   static Future<void> insert(Bar bar) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.insert(
       'bars',
       bar.toMap(),
@@ -123,7 +123,7 @@ class Bar extends DropdownOption {
 
   // Update a bar in the database.
   static Future<void> update(Bar bar) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.update(
       'bars',
       bar.toMap(),
@@ -134,7 +134,7 @@ class Bar extends DropdownOption {
 
   // Delete a bar from the database.
   static Future<void> delete(String id) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.delete(
       'bars',
       where: 'id = ?',
@@ -144,7 +144,7 @@ class Bar extends DropdownOption {
 
   // Retrieve a bar from the database.
   static Future<Bar?> get(String id) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps =
         await db.query('bars', where: 'id = ?', whereArgs: [id]);
 
@@ -157,7 +157,7 @@ class Bar extends DropdownOption {
 
   // get by name
   static Future<Bar?> getByName(String name) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps =
         await db.query('bars', where: 'name = ?', whereArgs: [name]);
 
@@ -173,7 +173,7 @@ class Bar extends DropdownOption {
     if (onlyFavorites) {
       return getAllFavorites();
     }
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'bars',
       limit: 500,
@@ -186,7 +186,7 @@ class Bar extends DropdownOption {
 
   // Retrieve all favorite bars from the database.
   static Future<List<Bar>> getAllFavorites() async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'bars',
       where: 'isFavorite = 1',

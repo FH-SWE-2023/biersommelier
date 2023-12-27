@@ -57,7 +57,6 @@ class Post {
     return await Bar.get(post.barId);
   }
 
-
   static String generateUuid() {
     const uuid = Uuid();
     return uuid.v4();
@@ -106,7 +105,7 @@ class Post {
 
   // Insert a new Post into the database.
   static Future<void> insert(Post post) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.insert(
       'posts',
       post.toMap(),
@@ -116,7 +115,7 @@ class Post {
 
   // Update a Post in the database.
   static Future<void> update(Post post) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.update(
       'posts',
       post.toMap(),
@@ -127,7 +126,7 @@ class Post {
 
   // Delete a Post from the database.
   static Future<void> delete(String id) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.delete(
       'posts',
       where: 'id = ?',
@@ -137,7 +136,7 @@ class Post {
 
   // Retrieve a post from the database.
   static Future<Post?> get(String id) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps =
         await db.query('posts', where: 'id = ?', whereArgs: [id]);
 
@@ -150,7 +149,7 @@ class Post {
 
   // Retrieve all Posts from the database.
   static Future<List<Post>> getAll() async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps = await db.query('posts', limit: 500);
 
     return List.generate(maps.length, (i) {
