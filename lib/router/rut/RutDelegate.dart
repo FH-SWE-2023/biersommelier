@@ -3,6 +3,9 @@ import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/InheritedRut.dart';
 import 'package:biersommelier/router/rut/JumpAuthorizer.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
+import 'package:biersommelier/router/rut/toast/ToastController.dart';
+import 'package:biersommelier/router/rut/toast/ToastDisplay.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -20,11 +23,14 @@ class RutDelegate extends RouterDelegate<RutPath>
     hideStatusBar: true,
     dialog: null,
   );
+
   JumpAuthorizer authorizer = JumpAuthorizer(
     defaultDescription: 'Willst du diese Seite wirklich verlassen?',
     defaultButtonSuccessText: 'Bestätigen',
     defaultButtonCancelText: 'Abbrechen',
   );
+
+  ToastController toastController = ToastController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,10 @@ class RutDelegate extends RouterDelegate<RutPath>
                   body: RutPath.findPage(path.page),
                 ),
                 if (path.dialog != null) path.dialog!,
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: ToastDisplay(toastController),
+                )
               ],
             ),
           ),
@@ -96,6 +106,10 @@ class RutDelegate extends RouterDelegate<RutPath>
   void changePage(RutPage page) {
     path.page = page;
     reload();
+  }
+
+  void showToast(Toast toast) {
+    toastController.addToast(toast);
   }
 
   void jump(
