@@ -43,8 +43,8 @@ class MapCenter {
 
   static Future<bool> updateTableColumns(Database db) async {
     List<String> columnsToAdd = [
-      'lat REAL NOT NULL',
-      'lng REAL NOT NULL',
+      'lat REAL NOT NULL DEFAULT 0.0',
+      'lng REAL NOT NULL DEFAULT 0.0',
     ];
 
     for (String column in columnsToAdd) {
