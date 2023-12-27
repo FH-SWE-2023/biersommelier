@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:biersommelier/components/ImagePicker.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:biersommelier/providers/PostChanged.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,6 @@ import 'package:biersommelier/components/DropdownInputField.dart';
 import 'package:biersommelier/components/CustomTimeField.dart';
 import 'package:biersommelier/components/CustomRatingField.dart';
 import 'package:biersommelier/components/ActionButton.dart';
-import 'package:biersommelier/components/Toast.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -72,15 +72,17 @@ class _PostFormState extends State<PostForm> {
       });
 
       // fill image
-      ImageManager().getImageFileByKey(widget.initialPost!.imageId).then((image) {
+      ImageManager()
+          .getImageFileByKey(widget.initialPost!.imageId)
+          .then((image) {
         setState(() {
           _image = image;
         });
       });
 
-
       // Bar name
-      _descriptionController = TextEditingController(text: widget.initialPost!.description);
+      _descriptionController =
+          TextEditingController(text: widget.initialPost!.description);
       _selectedDate = widget.initialPost!.date;
       _rating = widget.initialPost!.rating;
     } else {
@@ -92,7 +94,12 @@ class _PostFormState extends State<PostForm> {
 
   Future<void> _submitForm() async {
     if (_descriptionController.text.isEmpty || _rating == 0) {
-      showToast(context, "Bitte fülle alle Felder aus!", ToastLevel.danger);
+      context.showToast(
+        Toast.levelToast(
+          message: "Bitte fülle alle Felder aus!",
+          level: ToastLevel.danger,
+        ),
+      );
       return;
     }
 
@@ -107,7 +114,12 @@ class _PostFormState extends State<PostForm> {
 
     // Check if bar and beer exist, give error if not
     if (_bar == null || _beer == null) {
-      showToast(context, "Lokal oder Bier nicht gefunden!", ToastLevel.danger);
+      context.showToast(
+        Toast.levelToast(
+          message: "Lokal oder Bier nicht gefunden!",
+          level: ToastLevel.danger,
+        ),
+      );
       setState(() {
         _isLoading = false;
       });
@@ -142,7 +154,12 @@ class _PostFormState extends State<PostForm> {
 
     // show toast
     if (context.mounted) {
-      showToast(context, "Beitrag hinzugefügt", ToastLevel.success);
+      context.showToast(
+        Toast.levelToast(
+          message: "Beitrag hinzugefügt",
+          level: ToastLevel.success,
+        ),
+      );
     }
 
     widget.onSubmit(post);
@@ -268,7 +285,8 @@ class _PostFormState extends State<PostForm> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
-                            child: Text("Bild hinzufügen", style: Theme.of(context).textTheme.bodyLarge),
+                            child: Text("Bild hinzufügen",
+                                style: Theme.of(context).textTheme.bodyLarge),
                           ),
                           Row(children: [
                             SizedBox(

@@ -1,5 +1,6 @@
 import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:flutter/material.dart';
 
 extension RutContext on BuildContext {
@@ -29,6 +30,10 @@ extension RutContext on BuildContext {
       change: change,
       arguments: arguments,
     );
+  }
+
+  void showToast(Toast toast) {
+    Rut.of(this).showToast(toast);
   }
 
   RutPath get path {

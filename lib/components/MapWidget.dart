@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/MapCenter.dart';
+import 'package:biersommelier/router/rut/RutExtension.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,7 +93,8 @@ class MapWidgetState extends State<MapWidget> {
                             },
                             onLongPress: (_, __) {
                               final location = mapController.camera.center;
-                              setMapCenter(location, () => {mapCenter = location}, context);
+                              setMapCenter(location,
+                                  () => {mapCenter = location}, context);
                             }),
                         children: [
                           TileLayer(
@@ -182,7 +184,8 @@ class MapWidgetState extends State<MapWidget> {
                                 icon: const Icon(Icons.my_location),
                                 color: const Color(0xFF706f6f),
                                 onPressed: () {
-                                  mapController.moveAndRotate(mapCenter, initialZoom, 0);
+                                  mapController.moveAndRotate(
+                                      mapCenter, initialZoom, 0);
                                 },
                               ),
                             ),
@@ -268,7 +271,12 @@ void setMapCenter(LatLng location, Function onConfirm, BuildContext context) {
                   popUpOverlay?.remove();
                   MapCenter.set(location);
                   onConfirm();
-                  showToast(context, "Zentrum erfolgreich gesetzt!", ToastLevel.success);
+                  context.showToast(
+                    Toast.levelToast(
+                      message: "Zentrum erfolgreich gesetzt!",
+                      level: ToastLevel.success,
+                    ),
+                  );
                 },
               ),
               Option(
@@ -283,7 +291,6 @@ void setMapCenter(LatLng location, Function onConfirm, BuildContext context) {
           ));
   Overlay.of(context).insert(popUpOverlay);
 }
-
 
 class ControlsLayer extends StatelessWidget {
   final Widget child;

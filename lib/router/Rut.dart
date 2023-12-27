@@ -3,6 +3,7 @@ import 'package:biersommelier/router/rut/InheritedRut.dart';
 import 'package:biersommelier/router/rut/RutDelegate.dart';
 import 'package:biersommelier/router/rut/RutParser.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:flutter/material.dart';
 
 export 'rut/RutExtension.dart';
@@ -73,6 +74,10 @@ class Rut implements RouterConfig<RutPath> {
   void showDialog(Widget? dialog) {
     _delegate.path.dialog = dialog;
     _delegate.reload();
+  }
+
+  void showToast(Toast toast) {
+    _delegate.showToast(toast);
   }
 
   RutPath get path {

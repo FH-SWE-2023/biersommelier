@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
-import 'package:biersommelier/components/Toast.dart';
+import 'package:biersommelier/router/rut/RutExtension.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:biersommelier/components/Header.dart';
@@ -34,7 +35,12 @@ class _BeerCaptainState extends State<BeerCaptain> {
 
   void generate() {
     if (bars.isEmpty || beers.isEmpty) {
-      showToast(context, "Lokal- oder Bierliste leer", ToastLevel.warning);
+      context.showToast(
+        Toast.levelToast(
+          message: "Lokal- oder Bierliste leer",
+          level: ToastLevel.warning,
+        ),
+      );
       return;
     }
     setState(() {
@@ -77,7 +83,8 @@ class _BeerCaptainState extends State<BeerCaptain> {
                           color: Colors.brown.withOpacity(0.5),
                           spreadRadius: 1,
                           blurRadius: 20,
-                          offset: const Offset(0, -10), // changes position of shadow
+                          offset: const Offset(
+                              0, -10), // changes position of shadow
                         ),
                       ],
                     ),
@@ -88,7 +95,8 @@ class _BeerCaptainState extends State<BeerCaptain> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         foregroundColor: Theme.of(context).colorScheme.white,
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
                       ),
                       child: const Text(
                         'Generieren',
@@ -110,68 +118,69 @@ class _BeerCaptainState extends State<BeerCaptain> {
             child: Column(
                 children: !show
                     ? [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 48, top: 56, right: 48, bottom: 63),
-                    child: Text(
-                      "Der Bierkapitän gibt dir Empfehlungen, welches Lokal und Bier du probieren könntest.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.fontSize),
-                    ),
-                  ),
-                ]
-                    : [
-                  Padding(
-                    padding:
-                    const EdgeInsets.only(left: 48, top: 16, right: 48),
-                    child: Column(
-                      children: [
-                        Card(
-                          child: ListTile(
-                            leading: null,
-                            title: Text(bars[barRandom].name),
-                            subtitle: Text(bars[barRandom].address),
-                            titleTextStyle:
-                            Theme.of(context).textTheme.displayMedium,
-                            textColor: Colors.black,
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 48, top: 56, right: 48, bottom: 63),
+                          child: Text(
+                            "Der Bierkapitän gibt dir Empfehlungen, welches Lokal und Bier du probieren könntest.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.fontSize),
                           ),
                         ),
-                        Card(
-                          child: ListTile(
-                            subtitle: const Text(""),
-                            title: Container(
-                                transform: Matrix4.translationValues(0, 8, 0),
-                                child: Text(beers[beerRandom].name)),
-                            leading: SizedBox(
-                              width: 50.0,
-                              height: 50.0,
-                              child: FutureBuilder<Image>(
-                                future: imageManager.getImageByKey(
-                                    beers[beerRandom].imageId),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<Image> imageSnapshot) {
-                                  if (imageSnapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      imageSnapshot.hasData) {
-                                    return imageSnapshot.data!;
-                                  } else if (imageSnapshot.hasError) {
-                                    return const Icon(Icons.error);
-                                  } else {
-                                    return const CircularProgressIndicator();
-                                  }
-                                },
+                      ]
+                    : [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 48, top: 16, right: 48),
+                          child: Column(
+                            children: [
+                              Card(
+                                child: ListTile(
+                                  leading: null,
+                                  title: Text(bars[barRandom].name),
+                                  subtitle: Text(bars[barRandom].address),
+                                  titleTextStyle:
+                                      Theme.of(context).textTheme.displayMedium,
+                                  textColor: Colors.black,
+                                ),
                               ),
-                            ),
+                              Card(
+                                child: ListTile(
+                                  subtitle: const Text(""),
+                                  title: Container(
+                                      transform:
+                                          Matrix4.translationValues(0, 8, 0),
+                                      child: Text(beers[beerRandom].name)),
+                                  leading: SizedBox(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    child: FutureBuilder<Image>(
+                                      future: imageManager.getImageByKey(
+                                          beers[beerRandom].imageId),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<Image> imageSnapshot) {
+                                        if (imageSnapshot.connectionState ==
+                                                ConnectionState.done &&
+                                            imageSnapshot.hasData) {
+                                          return imageSnapshot.data!;
+                                        } else if (imageSnapshot.hasError) {
+                                          return const Icon(Icons.error);
+                                        } else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
                         )
-                      ],
-                    ),
-                  )
-                ]),
+                      ]),
           ),
         ],
       ),

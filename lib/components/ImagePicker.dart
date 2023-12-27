@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:biersommelier/router/rut/RutExtension.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:flutter/material.dart';
-import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 
 class ImagePickerWidget extends StatefulWidget {
@@ -15,7 +16,6 @@ class ImagePickerWidget extends StatefulWidget {
 }
 
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
-
   Future getImage() async {
     try {
       final pickedFile = await ImageManager().pickImage();
@@ -23,8 +23,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       final _i = File(pickedFile.path);
       if (_i.lengthSync() > 50 * 1024 * 1024) {
         // 50 * 1024*1024 = 50MB
-        showToast(
-            context, "Bilddatei zu groß (max. 50MB)", ToastLevel.danger);
+        context.showToast(
+          Toast.levelToast(
+            message: "Bilddatei zu groß (max. 50MB)",
+            level: ToastLevel.danger,
+          ),
+        );
       } else {
         setState(() {
           widget.image = _i;
@@ -33,7 +37,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       }
     } catch (e) {
       if (e.toString() != "Exception: No image selected") {
-        showToast(context, "Fehler beim Laden des Bildes", ToastLevel.danger);
+        context.showToast(
+          Toast.levelToast(
+            message: "Fehler beim Laden des Bildes",
+            level: ToastLevel.danger,
+          ),
+        );
       }
     }
   }
@@ -64,7 +73,10 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset('assets/icons/pen_black.png', scale: 3.5,), // Statt Icon(Icons.edit_outlined)
+              Image.asset(
+                'assets/icons/pen_black.png',
+                scale: 3.5,
+              ), // Statt Icon(Icons.edit_outlined)
               const Text("Bild ersetzen"),
             ],
           ),
@@ -109,7 +121,10 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           borderRadius: BorderRadius.circular(16),
         ),
         child: widget.image == null
-            ? Image.asset('assets/icons/circle_plus.png', scale: 2,)
+            ? Image.asset(
+                'assets/icons/circle_plus.png',
+                scale: 2,
+              )
             : Image.file(widget.image!, fit: BoxFit.cover),
       ),
     );
