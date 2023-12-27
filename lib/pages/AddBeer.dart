@@ -138,18 +138,29 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay, B
                                 onPressed: () async {
                                   // Check input
                                   if (_formKey.currentState!.validate()) {
-                                    if (selectedImage != null) {
-                                      var imageId = await ImageManager()
-                                          .saveImage(selectedImage!);
-                                      Beer.insert(Beer(
-                                          id: Beer.generateUuid(),
+                                    if (editing) {
+                                      // delete old image if new image is selected
+                                      await ImageManager().deleteImage(initialBeer!.imageId);
+                                      var imageId = await ImageManager().saveImage(selectedImage!);
+
+                                      Beer.update(Beer(
+                                          id: initialBeer!.id,
                                           name: beerNameController.text,
                                           imageId: imageId));
                                     } else {
-                                      Beer.insert(Beer(
-                                          id: Beer.generateUuid(),
-                                          name: beerNameController.text,
-                                          imageId: ""));
+                                      if (selectedImage != null) {
+                                        var imageId = await ImageManager()
+                                            .saveImage(selectedImage!);
+                                        Beer.insert(Beer(
+                                            id: Beer.generateUuid(),
+                                            name: beerNameController.text,
+                                            imageId: imageId));
+                                      } else {
+                                        Beer.insert(Beer(
+                                            id: Beer.generateUuid(),
+                                            name: beerNameController.text,
+                                            imageId: ""));
+                                      }
                                     }
                                     Provider.of<BeerChanged>(context, listen: false).notify();
                                     closeOverlay();

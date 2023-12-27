@@ -284,11 +284,18 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
 
                                 // If all fields are valid, insert the bar into the database
                                 if (testLokal && testAddress) {
-                                  Bar.insert(Bar(
-                                      id: Bar.generateUuid(),
-                                      name: barNameController.text,
-                                      location: bars.first.location,
-                                      address: barAddressController.text));
+                                  if (editing) {
+                                    Bar bar = widget.initialBar!;
+                                    bar.name = barNameController.text;
+                                    bar.address = barAddressController.text;
+                                    await Bar.update(bar);
+                                  } else {
+                                    await Bar.insert(Bar(
+                                        id: Bar.generateUuid(),
+                                        name: barNameController.text,
+                                        location: bars.first.location,
+                                        address: barAddressController.text));
+                                  }
                                   Provider.of<BarChanged>(context, listen: false).notify();
                                   widget.closeOverlay();
                                 } else {
