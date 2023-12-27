@@ -1,4 +1,3 @@
-//import 'package:biersommelier/components/ActionButton.dart';
 import 'dart:math';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/router/rut/RutExtension.dart';
@@ -61,6 +60,58 @@ class _BeerCaptainState extends State<BeerCaptain> {
     return Center(
       child: Stack(
         children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Header(
+                title: "Bierkapitän",
+                backgroundColor: Colors.white,
+                icon: HeaderIcon.none,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Image(image: AssetImage('assets/demo/Beercaptain.png')),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.brown.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 20,
+                          offset: const Offset(
+                              0, -10), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: TextButton(
+                      onPressed: generate,
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        foregroundColor: Theme.of(context).colorScheme.white,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                      ),
+                      child: const Text(
+                        'Generieren',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
           Positioned(
             width: MediaQuery.of(context).size.width,
             top: 120,
@@ -130,58 +181,6 @@ class _BeerCaptainState extends State<BeerCaptain> {
                           ),
                         )
                       ]),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Header(
-                title: "Bierkapitän",
-                backgroundColor: Colors.white,
-                icon: HeaderIcon.none,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Image(image: AssetImage('assets/demo/Beercaptain.png')),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.brown.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 20,
-                          offset: const Offset(
-                              0, -10), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: TextButton(
-                      onPressed: generate,
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        foregroundColor: Theme.of(context).colorScheme.white,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondary,
-                      ),
-                      child: const Text(
-                        'Generieren',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ],
           ),
         ],
       ),

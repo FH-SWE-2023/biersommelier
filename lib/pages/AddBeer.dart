@@ -4,11 +4,13 @@ import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/ImagePicker.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
+import 'package:biersommelier/providers/BeerChanged.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../components/CustomTextFormField.dart';
-import '../components/Popup.dart';
+import 'package:biersommelier/components/CustomTextFormField.dart';
+import 'package:biersommelier/components/Popup.dart';
 
 ///
 /// Funktion to Close the add Beer Overlay with warning Dialog
@@ -139,6 +141,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                           name: beerNameController.text,
                                           imageId: ""));
                                     }
+                                    Provider.of<BeerChanged>(context, listen: false).notify();
                                     closeOverlay();
                                   }
                                 },

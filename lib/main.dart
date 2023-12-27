@@ -1,18 +1,26 @@
+import 'package:biersommelier/providers/BarChanged.dart';
+import 'package:biersommelier/providers/BeerChanged.dart';
+import 'package:biersommelier/providers/PostChanged.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'router/PageManager.dart';
 import 'database/DatabaseConnector.dart' as database;
 
-/// Entrypoint der App. Hier wird sie gestartet mit dem Hauptwidget
-/// Biersommilier.
+/// Entrypoint der App.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   database.DatabaseConnector dbConnector = database.DatabaseConnector();
-  var db = await dbConnector.database;
-  runApp(const BierSommelier());
+  await dbConnector.database; // Wait for the database to be initialized
+
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => BeerChanged()),
+    ChangeNotifierProvider(create: (context) => BarChanged()),
+    ChangeNotifierProvider(create: (context) => PostChanged()),
+  ], child: const BierSommelier()));
 }
 
-/// Biersommelier ist einfach ein Wrapper des PageRouters. Dieser besitzt die
-/// Seiteneigenschaften der App.
+/// Main widget of the app.
 class BierSommelier extends StatelessWidget {
   const BierSommelier({super.key});
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:biersommelier/components/ImagePicker.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/router/rut/toast/Toast.dart';
+import 'package:biersommelier/providers/PostChanged.dart';
 import 'package:flutter/material.dart';
 
 import 'package:biersommelier/components/Header.dart';
@@ -12,6 +13,7 @@ import 'package:biersommelier/components/DropdownInputField.dart';
 import 'package:biersommelier/components/CustomTimeField.dart';
 import 'package:biersommelier/components/CustomRatingField.dart';
 import 'package:biersommelier/components/ActionButton.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:biersommelier/database/entities/Post.dart';
@@ -148,6 +150,7 @@ class _PostFormState extends State<PostForm> {
     } else {
       await Post.insert(post);
     }
+    Provider.of<PostChanged>(context, listen: false).notify();
 
     // show toast
     if (context.mounted) {

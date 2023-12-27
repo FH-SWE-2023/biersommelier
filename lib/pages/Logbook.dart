@@ -6,7 +6,6 @@ import 'package:biersommelier/components/Post.dart';
 import 'package:biersommelier/database/entities/Post.dart' as db_post;
 import 'package:biersommelier/components/Header.dart';
 
-Future<List<db_post.Post>> posts = db_post.Post.getAll();
 
 class Logbook extends StatefulWidget {
   const Logbook({super.key});
