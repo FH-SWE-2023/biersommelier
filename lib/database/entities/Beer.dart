@@ -132,6 +132,13 @@ class Beer extends DropdownOption {
       where: 'id = ?',
       whereArgs: [id],
     );
+
+    // delete all posts that reference this beer
+    await db.delete(
+      'posts',
+      where: 'beerId = ?',
+      whereArgs: [id],
+    );
   }
 
   // Retrieve a beer from the database.

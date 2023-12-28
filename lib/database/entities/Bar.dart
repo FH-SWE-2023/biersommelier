@@ -140,6 +140,13 @@ class Bar extends DropdownOption {
       where: 'id = ?',
       whereArgs: [id],
     );
+
+    // Delete all posts that reference this bar
+    await db.delete(
+      'posts',
+      where: 'barId = ?',
+      whereArgs: [id],
+    );
   }
 
   // Retrieve a bar from the database.

@@ -247,7 +247,7 @@ class ExploreList extends StatelessWidget {
                                 // show confirmation dialog
                                 Rut.of(context).showDialog(ConfirmationDialog(
                                   description:
-                                      'Bist du sicher, dass du\ndieses ${isBar ? 'Lokal' : 'Bier'} löschen\nmöchtest?',
+                                      'Bist du sicher, dass du dieses ${isBar ? 'Lokal' : 'Bier'} löschen möchtest?\nAlle Beiträge zu diesem ${isBar ? 'Lokal' : 'Bier'} werden ebenfalls gelöscht!',
                                   onConfirm: () {
                                     if (isBar) {
                                       Bar.delete(item.id).then(
