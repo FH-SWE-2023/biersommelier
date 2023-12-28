@@ -26,13 +26,15 @@ class _NavBarState extends State<NavBar> {
 
   /// Navigate to the page with the given [index]
   void navigateTo(int index) {
-    context.jump(indexToPage[index]!, change: (change) {
-      if (change) {
-        setState(() {
-          pageIndex = index;
-        });
-      }
-    });
+    if (indexToPage[index]! != context.path.page) {
+      context.jump(indexToPage[index]!, change: (change) {
+        if (change) {
+          setState(() {
+            pageIndex = index;
+          });
+        }
+      });
+    }
   }
 
   @override
