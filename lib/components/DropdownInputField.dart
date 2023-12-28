@@ -26,13 +26,15 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
   /// Default value of the input field
   final String? defaultValue;
 
-  const DropdownInputField({
+  DropdownInputField({
     super.key,
     required this.labelText,
     required this.optionsList,
     required this.onOptionSelected,
     this.defaultValue,
   });
+
+  final _formFieldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,7 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
           textEditingCon.text = defaultValue!;
         }
         return TextFormField(
+          key: _formFieldKey,
           controller: textEditingCon,
           focusNode: focusNode,
           onFieldSubmitted: (String value) {
@@ -71,49 +74,58 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
           ) {
         return Align(
           alignment: Alignment.topLeft,
-          child: Container(
-            padding: const EdgeInsets.only(top: 3),
-            child: Material(
-              elevation: 4.0,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.lightBorder,
-                    style: BorderStyle.solid,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  children: options.map((Option option) => GestureDetector(
-                    onTap: () {
-                      onSelected(option);
-                      onOptionSelected(option);
-                    },
-                    child: ListTile(
-                      dense: true,
-                      title: Row(
-                        children: [
-                          Image.asset('assets/icons/${option.icon}', width: 21, color: Theme.of(context).colorScheme.secondary),
-                          const SizedBox(width: 16),
-                          Flexible(
-                            child: Text("${option.name} ", style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, overflow: TextOverflow.ellipsis)),
+          child: LayoutBuilder(
+            builder: (context, viewportConstraints) {
+              RenderBox renderBox = _formFieldKey.currentContext!.findRenderObject() as RenderBox;
+              double formFieldWidth = renderBox.size.width;
+              return ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: formFieldWidth),
+                child: Container(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Material(
+                    elevation: 4.0,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.lightBorder,
+                          style: BorderStyle.solid,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ListView(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        children: options.map((Option option) => GestureDetector(
+                          onTap: () {
+                            onSelected(option);
+                            onOptionSelected(option);
+                          },
+                          child: ListTile(
+                            dense: true,
+                            title: Row(
+                              children: [
+                                Image.asset('assets/icons/${option.icon}', width: 21, color: Theme.of(context).colorScheme.secondary),
+                                const SizedBox(width: 16),
+                                Flexible(
+                                  child: Text("${option.name} ", style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, overflow: TextOverflow.ellipsis)),
+                                ),
+                                Flexible(
+                                    child: Text(option.address ?? "", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 16, overflow: TextOverflow.ellipsis))
+                                ),
+                              ],
+                            ),
                           ),
-                          Flexible(
-                              child: Text(option.address ?? "", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 16, overflow: TextOverflow.ellipsis))
-                          ),
-                        ],
+                        )).toList(),
                       ),
                     ),
-                  )).toList(),
+                  ),
                 ),
-              ),
-            ),
+              );
+            }
           ),
         );
       },
