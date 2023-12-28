@@ -50,9 +50,6 @@ class _PostFormState extends State<PostForm> {
   void initState() {
     super.initState();
 
-    // block routing
-    context.blockRouting();
-
     if (widget.initialPost != null) {
       _isEditing = true;
     }
@@ -90,6 +87,11 @@ class _PostFormState extends State<PostForm> {
       _selectedDate = DateTime.now();
       _rating = 0;
     }
+
+    _descriptionController.addListener(() {
+      // block routing
+      context.blockRouting();
+    });
   }
 
   Future<void> _submitForm() async {
@@ -198,6 +200,9 @@ class _PostFormState extends State<PostForm> {
                   children: [
                     buildPaddedDropdownInputField(
                         context, "Lokal", Bar.getAll(), (selectedBar) {
+                      // block routing
+                      context.blockRouting();
+
                       setState(() {
                         _bar = selectedBar;
                       });
@@ -207,6 +212,9 @@ class _PostFormState extends State<PostForm> {
                             : null), // set default value to the bar of the initial post if editing
                     buildPaddedDropdownInputField(
                         context, "Bier", Beer.getAll(), (selectedBeer) {
+                      // block routing
+                      context.blockRouting();
+
                       setState(() {
                         _beer = selectedBeer;
                       });
@@ -217,6 +225,9 @@ class _PostFormState extends State<PostForm> {
                     CustomRatingField(
                       initialRating: _rating,
                       onRatingSelected: (rating) {
+                        // block routing
+                        context.blockRouting();
+
                         setState(() {
                           _rating = rating;
                         });
@@ -232,6 +243,9 @@ class _PostFormState extends State<PostForm> {
                               initialDate: _selectedDate,
                               initialValue: _selectedDate,
                               onDateSelected: (date) {
+                                // block routing
+                                context.blockRouting();
+
                                 setState(() {
                                   // set DATE part of _selectedDate to the selected date
                                   _selectedDate = DateTime(
@@ -254,6 +268,9 @@ class _PostFormState extends State<PostForm> {
                               initialValue: _selectedDate,
                               initialDate: _selectedDate,
                               onDateSelected: (time) {
+                                // block routing
+                                context.blockRouting();
+
                                 setState(() {
                                   // set TIME part of _selectedDate to the selected time
                                   _selectedDate = DateTime(
@@ -294,6 +311,8 @@ class _PostFormState extends State<PostForm> {
                                 height: MediaQuery.of(context).size.width / 2.5,
                                 child: ImagePickerWidget(
                                   onImageSelected: (file) {
+                                    // block routing
+                                    context.blockRouting();
                                     _image = file;
                                   },
                                   image: _image,
