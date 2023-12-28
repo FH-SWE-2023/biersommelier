@@ -10,8 +10,7 @@ import 'database/DatabaseConnector.dart' as database;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  database.DatabaseConnector dbConnector = database.DatabaseConnector();
-  await dbConnector.database; // Wait for the database to be initialized
+  await database.DatabaseConnector.database;
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => BeerChanged()),

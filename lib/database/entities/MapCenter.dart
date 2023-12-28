@@ -10,13 +10,13 @@ class MapCenter {
   MapCenter({required this.lat, required this.lng});
 
   static Future<LatLng> get() async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps = await db.query('MapCenter');
     return LatLng(maps.first['lat'], maps.first['lng']);
   }
 
   static Future<void> set(LatLng location) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.update(
       'MapCenter',
       {
