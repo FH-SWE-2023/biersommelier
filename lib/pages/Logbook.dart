@@ -6,7 +6,6 @@ import 'package:biersommelier/components/Post.dart';
 import 'package:biersommelier/database/entities/Post.dart' as db_post;
 import 'package:biersommelier/components/Header.dart';
 
-
 class Logbook extends StatefulWidget {
   const Logbook({super.key});
 
@@ -15,6 +14,13 @@ class Logbook extends StatefulWidget {
 }
 
 class _LogbookState extends State<Logbook> {
+  List<Post> posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ImageManager im = ImageManager();
@@ -63,14 +69,13 @@ class _LogbookState extends State<Logbook> {
                 return Expanded(
                     child: DecoratedBox(
                         decoration: const BoxDecoration(color: Colors.white),
-                        child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: items.length,
-                            itemBuilder: (context, index) {
-                              final post = items[index];
+                        child: SingleChildScrollView(
+                          child: Builder(builder: (context) {
+                            List<Widget> posts = [];
 
-                              return FutureBuilder(
+                            for (int i = 0; i < items.length; i++) {
+                              db_post.Post post = items[i];
+                              posts.add(FutureBuilder(
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       final image = snapshot.data![0] as Image;
@@ -89,7 +94,7 @@ class _LogbookState extends State<Logbook> {
                                             rating: post.rating,
                                             onDelete: () => setState(() {}),
                                           ),
-                                          if (index != items.length - 1)
+                                          if (i != items.length - 1)
                                             const DecoratedBox(
                                               decoration: BoxDecoration(
                                                   color: Colors.white),
@@ -109,8 +114,14 @@ class _LogbookState extends State<Logbook> {
                                     im.getImageByKey(post.imageId),
                                     Bar.get(post.barId),
                                     Beer.get(post.beerId),
-                                  ]));
-                            })));
+                                  ])));
+                            }
+
+                            return Column(
+                              children: posts,
+                            );
+                          }),
+                        )));
               }
             } else {
               return const Center(child: Text('No data available'));
