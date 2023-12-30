@@ -79,7 +79,10 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
               RenderBox renderBox = _formFieldKey.currentContext!.findRenderObject() as RenderBox;
               double formFieldWidth = renderBox.size.width;
               return ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: formFieldWidth),
+                constraints: BoxConstraints(
+                    maxHeight: 320,
+                    maxWidth: formFieldWidth
+                ),
                 child: Container(
                   padding: const EdgeInsets.only(top: 3),
                   child: Material(
