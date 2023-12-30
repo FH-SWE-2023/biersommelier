@@ -16,8 +16,9 @@ import 'package:biersommelier/router/Rut.dart';
 /// Creates the ExploreBar Component which contains the ExploreTabBar and the ExploreList with Locals and Beers
 class ExploreBar extends StatefulWidget {
   final bool onlyFavorites;
+  final Function(Bar)? onBarAddressClick;
 
-  const ExploreBar({super.key, this.onlyFavorites = false});
+  const ExploreBar({super.key, this.onlyFavorites = false, this.onBarAddressClick});
 
   @override
   _ExploreBarState createState() => _ExploreBarState();
@@ -55,7 +56,8 @@ class _ExploreBarState extends State<ExploreBar>
                   isBar: true,
                   onlyFavorites: widget.onlyFavorites,
                   onChanged: Provider.of<BarChanged>(context, listen: false)
-                      .notify), // For 'Lokale' which represents bars
+                      .notify, // For 'Lokale' which represents bars
+                  onBarAddressClick: widget.onBarAddressClick),
               ExploreList(
                   isBar: false,
                   onlyFavorites: widget.onlyFavorites,
@@ -122,12 +124,14 @@ class ExploreList extends StatelessWidget {
   final bool isBar; // To determine whether we are displaying Bars or Beers
   final bool onlyFavorites;
   final Function onChanged;
+  final Function(Bar)? onBarAddressClick;
 
   ExploreList(
       {super.key,
       required this.isBar,
       required this.onlyFavorites,
-      required this.onChanged});
+      required this.onChanged,
+      this.onBarAddressClick});
 
   final ImageManager imageManager = ImageManager(); // Instance of ImageManager
 
@@ -181,9 +185,12 @@ class ExploreList extends StatelessWidget {
                                 }
                               },
                             ),
-                      title: Text(item.name),
+                      title: isBar ? Text(item.name) : Container(
+                          transform:
+                          Matrix4.translationValues(0, 8, 0),
+                          child: Text(item.name)),
                       subtitle:
-                          isBar ? Text(item.address) : const SizedBox.shrink(),
+                          isBar ? (onBarAddressClick == null ? Text(item.address) : GestureDetector(onTap: () => {onBarAddressClick!(item)}, child: Text(item.address))) : const SizedBox.shrink(),
                       trailing: IconButton(
                         icon: const Icon(Icons.more_horiz),
                         onPressed: () {
