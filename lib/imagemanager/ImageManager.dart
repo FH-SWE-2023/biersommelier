@@ -93,9 +93,12 @@ class ImageManager {
             toolbarWidgetColor:  Theme.of(context).colorScheme.black,
             activeControlsWidgetColor: Theme.of(context).colorScheme.primary,
             initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: onlySquareCrop),
+            lockAspectRatio: onlySquareCrop,
+        ),
         IOSUiSettings(
-          title: 'Bild zuschneiden'
+          title: 'Bild zuschneiden',
+          doneButtonTitle: 'Fertig',
+          cancelButtonTitle: 'Abbrechen',
         ),
       ],
     );
