@@ -253,51 +253,59 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                             ],
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            RawMaterialButton(
-                              onPressed: () async {
-                                // Run the validators on both forms
-                                bool testLokal =
-                                    formKeyBar.currentState!.validate();
-                                bool testAddress =
-                                    formKeyAddress.currentState!.validate();
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              RawMaterialButton(
+                                onPressed: () async {
+                                  // Run the validators on both forms
+                                  bool testLokal =
+                                      formKeyBar.currentState!.validate();
+                                  bool testAddress =
+                                      formKeyAddress.currentState!.validate();
 
-                                // If all fields are valid, insert the bar into the database
-                                if (testLokal && testAddress) {
-                                  Bar.insert(Bar(
-                                      id: Bar.generateUuid(),
-                                      name: barNameController.text,
-                                      location: bars.first.location,
-                                      address: barAddressController.text));
-                                  Provider.of<BarChanged>(context, listen: false).notify();
-                                  widget.closeOverlay();
-                                } else {
-                                  submitAttempted = true;
-                                }
-                              },
-                              fillColor: Theme.of(context).colorScheme.success,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset('assets/icons/checkmark.png',
-                                  scale: 3.7),
-                            ),
-                            RawMaterialButton(
-                              onPressed: () {
-                                showCancelConfirmationDialog(
-                                    context,
-                                    widget.closeOverlay,
-                                    barNameController.text.isEmpty,
-                                    barAddressController.text.isEmpty);
-                              },
-                              fillColor: Theme.of(context).colorScheme.error,
-                              padding: const EdgeInsets.all(6.0),
-                              shape: const CircleBorder(),
-                              child: Image.asset('assets/icons/cross.png',
-                                  scale: 3.7),
-                            ),
-                          ],
+                                  // If all fields are valid, insert the bar into the database
+                                  if (testLokal && testAddress) {
+                                    Bar.insert(Bar(
+                                        id: Bar.generateUuid(),
+                                        name: barNameController.text,
+                                        location: bars.first.location,
+                                        address: barAddressController.text));
+                                    Provider.of<BarChanged>(context, listen: false).notify();
+                                    widget.closeOverlay();
+                                  } else {
+                                    submitAttempted = true;
+                                  }
+                                },
+                                fillColor: Theme.of(context).colorScheme.success,
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(6.0),
+                                constraints: const BoxConstraints(
+                                    maxWidth: 48, maxHeight: 48),
+                                child: Image.asset('assets/icons/checkmark.png',
+                                    scale: 3.7),
+                              ),
+                              const SizedBox(width: 16),
+                              RawMaterialButton(
+                                onPressed: () {
+                                  showCancelConfirmationDialog(
+                                      context,
+                                      widget.closeOverlay,
+                                      barNameController.text.isEmpty,
+                                      barAddressController.text.isEmpty);
+                                },
+                                fillColor: Theme.of(context).colorScheme.error,
+                                padding: const EdgeInsets.all(6.0),
+                                constraints: const BoxConstraints(
+                                    maxWidth: 48, maxHeight: 48),
+                                shape: const CircleBorder(),
+                                child: Image.asset('assets/icons/cross.png',
+                                    scale: 3.7),
+                              ),
+                            ],
+                          ),
                         )
                       ],
                     ),
