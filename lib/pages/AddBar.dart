@@ -243,7 +243,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     context: context,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Das Lokal muss einen Adresse besitzen';
+                                        return 'Das Lokal muss eine Adresse besitzen';
                                       } else if (bars.isEmpty) {
                                         return 'Die Adresse ist ungültig';
                                       }
