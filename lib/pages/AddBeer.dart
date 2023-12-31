@@ -119,7 +119,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                     ),
                                     ImagePickerWidget(onImageSelected: (file) {
                                       selectedImage = file;
-                                    })
+                                    }, onlySquareCrop: true,)
                                   ])),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,

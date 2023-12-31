@@ -8,8 +8,9 @@ class ImagePickerWidget extends StatefulWidget {
   final Function(File?) onImageSelected;
 
   File? image;
+  final bool onlySquareCrop;
 
-  ImagePickerWidget({super.key, required this.onImageSelected, this.image});
+  ImagePickerWidget({super.key, required this.onImageSelected, this.image, this.onlySquareCrop = false});
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
@@ -18,7 +19,7 @@ class ImagePickerWidget extends StatefulWidget {
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   Future getImage() async {
     try {
-      final pickedFile = await ImageManager().pickImage();
+      final pickedFile = await ImageManager().pickAndCropImage(context, onlySquareCrop: widget.onlySquareCrop);
 
       final _i = File(pickedFile.path);
       if (_i.lengthSync() > 50 * 1024 * 1024) {
@@ -36,7 +37,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         widget.onImageSelected(widget.image);
       }
     } catch (e) {
-      if (e.toString() != "Exception: No image selected") {
+      if (e.toString() != "Exception: Image cropping failed" && e.toString() != "Exception: No image selected") {
         context.showToast(
           Toast.levelToast(
             message: "Fehler beim Laden des Bildes",

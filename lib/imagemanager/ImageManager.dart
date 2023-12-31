@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +29,7 @@ class ImageManager {
       // Load a placeholder image
       //return Image.asset('assets/icons/review_full.png');
 
-      // check if image in asstes/demo/key.png exists, if not load assets/icons/review_full.png
+      // check if image in assets/demo/key.png exists, if not load assets/icons/review_full.png
       try {
         final image = await rootBundle.load('assets/demo/$key.png');
         return Image.memory(image.buffer.asUint8List());
@@ -57,14 +59,47 @@ class ImageManager {
     return File('$path/$key.jpg').delete();
   }
 
-  /// Opens the image picker and returns the picked image
-  Future<File> pickImage() async {
+
+  /// Opens the image picker and returns the cropped image
+  Future<CroppedFile> pickAndCropImage(BuildContext context, {bool onlySquareCrop = false}) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      return File(image.path);
+      final CroppedFile? croppedFile = await _cropImage(image, context, onlySquareCrop: onlySquareCrop);
+      if (croppedFile == null) {
+        throw Exception('Image cropping failed');
+      }
+      return croppedFile;
     } else {
       throw Exception('No image selected');
     }
+  }
+
+  Future<CroppedFile?> _cropImage(XFile file, BuildContext context, {bool onlySquareCrop = false}) async {
+    final CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: file.path,
+      aspectRatio: onlySquareCrop ? const CropAspectRatio(ratioX: 1, ratioY: 1) : null,
+      aspectRatioPresets: onlySquareCrop ? [CropAspectRatioPreset.square] : [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Bild zuschneiden',
+            toolbarColor: Theme.of(context).colorScheme.white,
+            toolbarWidgetColor:  Theme.of(context).colorScheme.black,
+            activeControlsWidgetColor: Theme.of(context).colorScheme.primary,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: onlySquareCrop),
+        IOSUiSettings(
+          title: 'Bild zuschneiden'
+        ),
+      ],
+    );
+
+    return croppedFile;
   }
 }
