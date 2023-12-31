@@ -4,6 +4,7 @@ import 'package:biersommelier/providers/PostChanged.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'router/PageManager.dart';
+import 'package:flutter/services.dart';
 import 'database/DatabaseConnector.dart' as database;
 
 /// Entrypoint der App.
@@ -11,6 +12,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await database.DatabaseConnector.database;
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => BeerChanged()),
