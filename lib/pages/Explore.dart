@@ -19,6 +19,7 @@ class Explore extends StatefulWidget {
 
 class _ExploreState extends State<Explore> {
   final ValueNotifier<bool> _tabListExpanded = ValueNotifier<bool>(false);
+  final GlobalKey<MapWidgetState> mapKey = GlobalKey<MapWidgetState>();
 
   @override
   void initState() {
@@ -104,6 +105,7 @@ class _ExploreState extends State<Explore> {
                       } else if (snapshot.hasData) {
                         final bars = snapshot.data!;
                         return MapWidget(
+                          key: mapKey,
                           bars: bars,
                         );
                       } else {
@@ -144,7 +146,13 @@ class _ExploreState extends State<Explore> {
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                 ),
-                                child: const ExploreBar()),
+                                child: ExploreBar(
+                                  onBarAddressClick: (bar) {
+                                    _tabListExpanded.value = false;
+                                    mapKey.currentState?.setSelectedBar(bar);
+                                    mapKey.currentState?.mapController.move(bar.location, mapKey.currentState!.mapController.camera.zoom);
+                                  }
+                                )),
                           ),
                         ),
                         Positioned.fill(
