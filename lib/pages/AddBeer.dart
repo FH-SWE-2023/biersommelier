@@ -6,7 +6,6 @@ import 'package:biersommelier/components/KeyboardSafeArea.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/providers/BeerChanged.dart';
-import 'package:biersommelier/router/PageManager.dart';
 import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay,
   final editing = initialBeer != null;
 
   var beerNameController =
-      TextEditingController(text: editing ? initialBeer!.name : "");
+      TextEditingController(text: editing ? initialBeer.name : "");
   final _formKey = GlobalKey<FormState>();
 
   File? selectedImage = initialImage;
@@ -115,10 +114,12 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay,
                                         height: 8,
                                       ),
                                       ImagePicker(
-                                          onImageSelected: (file) {
-                                            selectedImage = file;
-                                          },
-                                          image: selectedImage, onlySquareCrop: true,)
+                                        onImageSelected: (file) {
+                                          selectedImage = file;
+                                        },
+                                        image: selectedImage,
+                                        onlySquareCrop: true,
+                                      )
                                     ]),
                                 const SizedBox(
                                   width: 16,
@@ -145,7 +146,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay,
                                             }
                                             Beer.insert(Beer(
                                                 id: editing
-                                                    ? initialBeer!.id
+                                                    ? initialBeer.id
                                                     : Beer.generateUuid(),
                                                 name: beerNameController.text,
                                                 imageId: imageId));
@@ -156,7 +157,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay,
                                             }
                                             Beer.insert(Beer(
                                                 id: editing
-                                                    ? initialBeer!.id
+                                                    ? initialBeer.id
                                                     : Beer.generateUuid(),
                                                 name: beerNameController.text,
                                                 imageId: ""));
