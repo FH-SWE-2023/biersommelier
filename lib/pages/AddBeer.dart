@@ -76,27 +76,26 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                           alignment: Alignment.topLeft,
                           child: const Text("Bier",
                               style: TextStyle(
-                                  fontSize: 16,
-                              )
-                      )),
+                                fontSize: 16,
+                              ))),
                       Form(
                         key: _formKey,
                         child: Column(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-                              child: CustomTextFormField(
-                                controller: beerNameController,
-                                labelText: "Bier",
-                                context: context,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bier muss einen Namen haben';
-                                  }
-                                  return null;
-                                },
-                              )
-                            ),
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                child: CustomTextFormField(
+                                  controller: beerNameController,
+                                  labelText: "Bier",
+                                  context: context,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Bier muss einen Namen haben';
+                                    }
+                                    return null;
+                                  },
+                                )),
                             // Other widgets...
                           ],
                         ),
@@ -114,8 +113,10 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge),
-                                  const SizedBox(height: 8,),
-                                  ImagePickerWidget(onImageSelected: (file) {
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  ImagePicker(onImageSelected: (file) {
                                     selectedImage = file;
                                   })
                                 ]),
@@ -142,7 +143,9 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                             name: beerNameController.text,
                                             imageId: ""));
                                       }
-                                      Provider.of<BeerChanged>(context, listen: false).notify();
+                                      Provider.of<BeerChanged>(context,
+                                              listen: false)
+                                          .notify();
                                       closeOverlay();
                                     }
                                   },
@@ -152,7 +155,8 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                   padding: const EdgeInsets.all(6.0),
                                   constraints: const BoxConstraints(
                                       maxWidth: 48, maxHeight: 48),
-                                  child: Image.asset('assets/icons/checkmark.png',
+                                  child: Image.asset(
+                                      'assets/icons/checkmark.png',
                                       scale: 3.7),
                                 ),
                                 const SizedBox(width: 16),
@@ -163,7 +167,8 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                         closeOverlay,
                                         beerNameController.text.isEmpty);
                                   },
-                                  fillColor: Theme.of(context).colorScheme.error,
+                                  fillColor:
+                                      Theme.of(context).colorScheme.error,
                                   padding: const EdgeInsets.all(6.0),
                                   constraints: const BoxConstraints(
                                       maxWidth: 48, maxHeight: 48),

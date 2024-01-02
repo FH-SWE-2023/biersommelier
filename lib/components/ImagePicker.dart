@@ -4,18 +4,18 @@ import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:flutter/material.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 
-class ImagePickerWidget extends StatefulWidget {
+class ImagePicker extends StatefulWidget {
   final Function(File?) onImageSelected;
 
   File? image;
 
-  ImagePickerWidget({super.key, required this.onImageSelected, this.image});
+  ImagePicker({super.key, required this.onImageSelected, this.image});
 
   @override
-  _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
+  _ImagePickerState createState() => _ImagePickerState();
 }
 
-class _ImagePickerWidgetState extends State<ImagePickerWidget> {
+class _ImagePickerState extends State<ImagePicker> {
   Future getImage() async {
     try {
       final pickedFile = await ImageManager().pickImage();
@@ -57,6 +57,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
     final result = await showMenu(
       context: context,
+      constraints: const BoxConstraints(maxWidth: 180),
       position: positionRelativeRect,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -120,12 +121,15 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           color: Theme.of(context).colorScheme.onPrimary,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: widget.image == null
-            ? Image.asset(
-                'assets/icons/circle_plus.png',
-                scale: 2,
-              )
-            : Image.file(widget.image!, fit: BoxFit.cover),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: widget.image == null
+              ? Image.asset(
+                  'assets/icons/circle_plus.png',
+                  scale: 2,
+                )
+              : Image.file(widget.image!, fit: BoxFit.cover),
+        ),
       ),
     );
   }
