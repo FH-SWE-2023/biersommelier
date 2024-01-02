@@ -14,6 +14,10 @@ export 'rut/RutExtension.dart';
 class Rut implements RouterConfig<RutPath> {
   late final RutDelegate _delegate = RutDelegate(this);
 
+  BuildContext get context {
+    return _delegate.context;
+  }
+
   Rut();
 
   @override
@@ -78,6 +82,14 @@ class Rut implements RouterConfig<RutPath> {
 
   void showToast(Toast toast) {
     _delegate.showToast(toast);
+  }
+
+  void showOverlay(Widget? overlay) {
+    _delegate.showOverlay(overlay);
+  }
+
+  void showOverlayEntry(OverlayEntry entry) {
+    _delegate.showOverlay(entry.builder(context));
   }
 
   RutPath get path {

@@ -15,6 +15,7 @@ class RutDelegate extends RouterDelegate<RutPath>
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Rut rut;
+  late BuildContext context;
 
   RutDelegate(this.rut);
 
@@ -34,6 +35,7 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   @override
   Widget build(BuildContext context) {
+    this.context = context;
     return InheritedRut(
       rut: rut,
       child: Navigator(
@@ -71,6 +73,7 @@ class RutDelegate extends RouterDelegate<RutPath>
                     child: RutPath.findPage(path.page),
                   ),
                 ),
+                if (path.overlay != null) path.overlay!,
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 150),
                   child: path.dialog,
@@ -105,6 +108,11 @@ class RutDelegate extends RouterDelegate<RutPath>
 
   Future<bool> backButtonPressed() async {
     return true;
+  }
+
+  void showOverlay(Widget? overlay) {
+    path.overlay = overlay;
+    reload();
   }
 
   void blockRouting({
