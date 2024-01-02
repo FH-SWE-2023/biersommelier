@@ -130,7 +130,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                     // Check input
                                     if (_formKey.currentState!.validate()) {
                                       if (selectedImage != null) {
-                                        var imageId = await ImageManager()
+                                        var imageId = await ImageManager
                                             .saveImage(selectedImage!);
                                         Beer.insert(Beer(
                                             id: Beer.generateUuid(),

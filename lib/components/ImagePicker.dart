@@ -18,7 +18,7 @@ class ImagePickerWidget extends StatefulWidget {
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   Future getImage() async {
     try {
-      final pickedFile = await ImageManager().pickImage();
+      final pickedFile = await ImageManager.pickImage();
 
       final _i = File(pickedFile.path);
       if (_i.lengthSync() > 50 * 1024 * 1024) {

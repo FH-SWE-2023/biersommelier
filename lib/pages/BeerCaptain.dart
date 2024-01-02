@@ -21,8 +21,6 @@ class _BeerCaptainState extends State<BeerCaptain> {
 
   bool show = false;
 
-  final ImageManager imageManager = ImageManager();
-
   late List<Bar> bars;
   late List<Beer> beers;
 
@@ -159,7 +157,7 @@ class _BeerCaptainState extends State<BeerCaptain> {
                                     width: 50.0,
                                     height: 50.0,
                                     child: FutureBuilder<Image>(
-                                      future: imageManager.getImageByKey(
+                                      future: ImageManager.getImageByKey(
                                           beers[beerRandom].imageId),
                                       builder: (BuildContext context,
                                           AsyncSnapshot<Image> imageSnapshot) {

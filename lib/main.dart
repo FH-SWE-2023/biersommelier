@@ -1,3 +1,4 @@
+import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/providers/BarChanged.dart';
 import 'package:biersommelier/providers/BeerChanged.dart';
 import 'package:biersommelier/providers/PostChanged.dart';
@@ -14,6 +15,8 @@ void main() async {
   await database.DatabaseConnector.database;
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  ImageManager.setupAndroidImagePicker();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => BeerChanged()),

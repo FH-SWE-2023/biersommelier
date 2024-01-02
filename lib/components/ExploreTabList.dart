@@ -133,8 +133,6 @@ class ExploreList extends StatelessWidget {
       required this.onChanged,
       this.onBarAddressClick});
 
-  final ImageManager imageManager = ImageManager(); // Instance of ImageManager
-
   @override
   Widget build(BuildContext context) {
     return ConditionalConsumer(
@@ -163,7 +161,7 @@ class ExploreList extends StatelessWidget {
                       leading: isBar
                           ? null
                           : FutureBuilder<Image>(
-                              future: imageManager.getImageByKey(item.imageId),
+                              future: ImageManager.getImageByKey(item.imageId),
                               builder: (BuildContext context,
                                   AsyncSnapshot<Image> imageSnapshot) {
                                 if (imageSnapshot.connectionState ==

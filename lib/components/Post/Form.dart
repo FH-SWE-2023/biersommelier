@@ -69,7 +69,7 @@ class _PostFormState extends State<PostForm> {
       });
 
       // fill image
-      ImageManager()
+      ImageManager
           .getImageFileByKey(widget.initialPost!.imageId)
           .then((image) {
         setState(() {
@@ -131,7 +131,7 @@ class _PostFormState extends State<PostForm> {
     String imageTag = '';
 
     if (_image != null) {
-      imageTag = await ImageManager().saveImage(_image!);
+      imageTag = await ImageManager.saveImage(_image!);
     }
 
     // Create or update a Post object
