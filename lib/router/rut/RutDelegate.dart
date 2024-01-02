@@ -45,11 +45,36 @@ class RutDelegate extends RouterDelegate<RutPath>
               children: [
                 Scaffold(
                   backgroundColor: Theme.of(context).colorScheme.white,
-                  bottomNavigationBar:
-                      path.hideStatusBar ? null : const NavBar(),
-                  body: RutPath.findPage(path.page),
+                  bottomNavigationBar: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 1200),
+                    switchInCurve: Curves.bounceOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (child, animation) {
+                      final inAnimation = Tween<Offset>(
+                        begin: const Offset(0, 1.2),
+                        end: const Offset(0, 0),
+                      ).animate(animation);
+
+                      return SlideTransition(
+                        position: inAnimation,
+                        child: child,
+                      );
+                    },
+                    child: path.hideStatusBar
+                        ? const SizedBox(height: 0, width: 0)
+                        : const NavBar(),
+                  ),
+                  body: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    switchInCurve: Curves.easeIn,
+                    switchOutCurve: Curves.easeOut,
+                    child: RutPath.findPage(path.page),
+                  ),
                 ),
-                if (path.dialog != null) path.dialog!,
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 150),
+                  child: path.dialog,
+                ),
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   child: ToastDisplay(toastController),
