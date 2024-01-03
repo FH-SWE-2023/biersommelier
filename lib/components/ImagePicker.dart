@@ -146,7 +146,7 @@ class _ImagePickerState extends State<ImagePicker> {
                   'assets/icons/circle_plus.png',
                   scale: 2,
                 )
-              : Image.file(widget.image!, fit: BoxFit.cover),
+              : Image(image: getImageProvider(), fit: BoxFit.cover),
         ),
       ),
     );

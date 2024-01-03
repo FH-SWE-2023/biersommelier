@@ -47,7 +47,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay, B
   File? selectedImage;
 
   if (editing && initialBeer!.imageId.isNotEmpty) {
-    ImageManager().getImageFileByKey(initialBeer.imageId).then((value) {
+    ImageManager.getImageFileByKey(initialBeer.imageId).then((value) {
       selectedImage = value;
     });
   }
@@ -128,7 +128,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay, B
                                   ),
                                   ImagePicker(onImageSelected: (file) {
                                     selectedImage = file;
-                                  })
+                                  }, image: selectedImage)
                                 ]),
                             const SizedBox(
                               width: 16,

@@ -321,7 +321,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                   scale: 3.7),
                             ),
                           ],
-                        )
+                        ))
                       ],
                     ),
                   );

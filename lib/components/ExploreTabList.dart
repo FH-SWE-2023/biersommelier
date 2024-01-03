@@ -269,13 +269,18 @@ class ExploreList extends StatelessWidget {
                                     Beer.delete(item.id).then((_) => onChanged()); // Update here
                                   }
                                   // show toast
-                                  showToast(context, "${isBar ? 'Lokal' : 'Bier'} gelöscht!", ToastLevel.success);
+                                  context.showToast(
+                                    Toast.levelToast(
+                                      message: "${isBar ? 'Lokal' : 'Bier'} gelöscht!",
+                                      level: ToastLevel.success,
+                                    ),
+                                  );
 
-                                    Rut.of(context).showDialog(null);
-                                  },
-                                  onCancel: () {
-                                    Rut.of(context).showDialog(null);
-                                  },
+                                  Rut.of(context).showDialog(null);
+                                },
+                                onCancel: () {
+                                  Rut.of(context).showDialog(null);
+                                },
                                 ));
                               },
                               onAbort: () {
