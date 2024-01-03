@@ -70,9 +70,11 @@ class _PostFormState extends State<PostForm> {
 
       // fill image
       ImageManager.getImageFileByKey(widget.initialPost!.imageId).then((image) {
-        setState(() {
-          _image = image;
-        });
+        if (widget.initialPost!.imageId != "") {
+          setState(() {
+            _image = image;
+          });
+        }
       });
 
       // Bar name
