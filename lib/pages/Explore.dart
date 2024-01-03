@@ -54,12 +54,11 @@ class _ExploreState extends State<Explore> {
                           PopupMenuItem(
                             value: 'addBar',
                             onTap: () {
-                              OverlayEntry? addPostOverlay;
-                              addPostOverlay = createAddBarOverlay(context, () {
+                              OverlayEntry? addBarOverlay;
+                              addBarOverlay = createAddBarOverlay(context, () {
                                 Rut.of(context).showOverlay(null);
                               }, null);
-                              Rut.of(context).showOverlayEntry(addPostOverlay);
-                              // Overlay.of(context).insert(addPostOverlay);
+                              Rut.of(context).showOverlayEntry(addBarOverlay);
                             },
                             child: Row(
                               children: [
@@ -75,11 +74,9 @@ class _ExploreState extends State<Explore> {
                           PopupMenuItem(
                             value: 'addBeer',
                             onTap: () {
-                              OverlayEntry? addPostOverlay;
-                              addPostOverlay = createAddBeerOverlay(context,
-                                  () => Rut.of(context).showOverlay(null), null);
-                              Rut.of(context).showOverlayEntry(addPostOverlay);
-                              // Overlay.of(context).insert(addPostOverlay);
+                              OverlayEntry? addBeerOverlay;
+                              addBeerOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), null, null);
+                              Rut.of(context).showOverlayEntry(addBeerOverlay);
                             },
                             child: Row(
                               children: [

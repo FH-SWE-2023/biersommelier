@@ -14,6 +14,8 @@ import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:provider/provider.dart';
 
+import '../router/Rut.dart';
+
 /// Create an overlay for adding a bar
 OverlayEntry createAddBarOverlay(
     BuildContext context, Function() closeOverlay, Bar? initialBar) {
@@ -170,6 +172,8 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
 
   @override
   Widget build(BuildContext context) {
+    Rut rut = Rut.of(context);
+
     return Positioned(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -184,12 +188,21 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                   backgroundColor: Theme.of(context).colorScheme.white,
                   icon: HeaderIcon.back,
                   onBack: () {
-                    showCancelConfirmationDialog(
-                        context,
-                        widget.closeOverlay,
-                        barNameController.text.isEmpty,
-                        barAddressController.text.isEmpty);
+                    if (barNameController.text.isEmpty && barAddressController.text.isEmpty) {
+                      widget.closeOverlay();
+                      return;
+                    }
+                    rut.showDialog(Popup.continueWorking(
+                        pressContinue: () {
+                          rut.showDialog(null);
+                        },
+                        pressDelete: () {
+                          rut.showDialog(null);
+                          widget.closeOverlay();
+                        }
+                    ));
                   },
+
                 ),
                 Expanded(
                     child: MapWidget(
@@ -308,11 +321,19 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                             ),
                             RawMaterialButton(
                               onPressed: () {
-                                showCancelConfirmationDialog(
-                                    context,
-                                    widget.closeOverlay,
-                                    barNameController.text.isEmpty,
-                                    barAddressController.text.isEmpty);
+                                if (barNameController.text.isEmpty && barAddressController.text.isEmpty) {
+                                  widget.closeOverlay();
+                                  return;
+                                }
+                                rut.showDialog(Popup.continueWorking(
+                                    pressContinue: () {
+                                      rut.showDialog(null);
+                                    },
+                                    pressDelete: () {
+                                      rut.showDialog(null);
+                                      widget.closeOverlay();
+                                    }
+                                ));
                               },
                               fillColor: Theme.of(context).colorScheme.error,
                               padding: const EdgeInsets.all(6.0),
@@ -331,29 +352,4 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
       ),
     );
   }
-}
-
-/// Show a confirmation dialog when the user tries to cancel the overlay
-void showCancelConfirmationDialog(
-    BuildContext context,
-    Function() closeOverlay,
-    bool nameIsEmpty,
-    bool addressIsEmpty) {
-  // If both fields are empty, close the overlay
-  if (nameIsEmpty && addressIsEmpty) {
-    closeOverlay();
-    return;
-  }
-  // Otherwise, show a confirmation dialog
-  OverlayEntry? popUpOverlay;
-  popUpOverlay = OverlayEntry(
-      opaque: false,
-      maintainState: false,
-      builder: (context) => Popup.continueWorking(pressContinue: () {
-            popUpOverlay?.remove();
-          }, pressDelete: () {
-            popUpOverlay?.remove();
-            closeOverlay();
-          }));
-  Overlay.of(context).insert(popUpOverlay);
 }

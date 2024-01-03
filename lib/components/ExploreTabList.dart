@@ -242,13 +242,21 @@ class ExploreList extends StatelessWidget {
                           Rut.of(context).showDialog(Popup.editExplore(
                             pressEdit: () {
                               Rut.of(context).showDialog(null);
-                              OverlayEntry? addPostOverlay;
+                              OverlayEntry? addOverlay;
                               if (isBar) {
-                                addPostOverlay = createAddBarOverlay(context, () => addPostOverlay?.remove(), item);
+                                addOverlay = createAddBarOverlay(context, () => Rut.of(context).showOverlay(null), item);
+                                Rut.of(context).showOverlayEntry(addOverlay);
                               } else {
-                                addPostOverlay = createAddBeerOverlay(context, () => addPostOverlay?.remove(), item);
+                                if (item.imageId != null && item.imageId?.isNotEmpty) {
+                                  ImageManager.getImageFileByKey(item.imageId).then((value) {
+                                    addOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), item, value);
+                                    Rut.of(context).showOverlayEntry(addOverlay!);
+                                  });
+                                } else {
+                                  addOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), item, null);
+                                  Rut.of(context).showOverlayEntry(addOverlay);
+                                }
                               }
-                              Overlay.of(context).insert(addPostOverlay);
                             },
                             pressFavorite: () {
                               if (isBar) {
