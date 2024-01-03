@@ -14,27 +14,32 @@ import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:provider/provider.dart';
 
+import '../router/Rut.dart';
+
 /// Create an overlay for adding a bar
 OverlayEntry createAddBarOverlay(
-    BuildContext context, Function() closeOverlay) {
+    BuildContext context, Function() closeOverlay, Bar? initialBar) {
   return OverlayEntry(
     opaque: true,
-    builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay),
+    builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay, initialBar: initialBar),
   );
 }
 
 class AddBarOverlayContent extends StatefulWidget {
   final Function() closeOverlay;
 
-  const AddBarOverlayContent({super.key, required this.closeOverlay});
+  final Bar? initialBar;
+
+  const AddBarOverlayContent({super.key, required this.closeOverlay, this.initialBar});
 
   @override
   _AddBarOverlayContentState createState() => _AddBarOverlayContentState();
 }
 
 class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
-  TextEditingController barNameController = TextEditingController(text: "");
-  TextEditingController barAddressController = TextEditingController(text: "");
+  late bool editing;
+  late TextEditingController barNameController;
+  late TextEditingController barAddressController;
   GlobalKey<FormState> formKeyBar = GlobalKey<FormState>();
   GlobalKey<FormState> formKeyAddress = GlobalKey<FormState>();
   Timer? _debounceAddress;
@@ -139,6 +144,17 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   @override
   void initState() {
     super.initState();
+
+    editing = widget.initialBar != null;
+    barNameController = TextEditingController(text: editing ? widget.initialBar!.name : "");
+    barAddressController = TextEditingController(text: editing ? widget.initialBar!.address : "");
+
+    // if editing, set map pin to bar location
+    if (editing) {
+      bars = [widget.initialBar!];
+      _obBarAddressFocusChanged();
+    }
+
     barNameController.addListener(_onBarNameChanged);
     barAddressController.addListener(_onBarAddressChanged);
     focusNodeAddress.addListener(_obBarAddressFocusChanged);
@@ -156,6 +172,8 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
 
   @override
   Widget build(BuildContext context) {
+    Rut rut = Rut.of(context);
+
     return Positioned(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -170,12 +188,21 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                   backgroundColor: Theme.of(context).colorScheme.white,
                   icon: HeaderIcon.back,
                   onBack: () {
-                    showCancelConfirmationDialog(
-                        context,
-                        widget.closeOverlay,
-                        barNameController.text.isEmpty,
-                        barAddressController.text.isEmpty);
+                    if (barNameController.text.isEmpty && barAddressController.text.isEmpty) {
+                      widget.closeOverlay();
+                      return;
+                    }
+                    rut.showDialog(Popup.continueWorking(
+                        pressContinue: () {
+                          rut.showDialog(null);
+                        },
+                        pressDelete: () {
+                          rut.showDialog(null);
+                          widget.closeOverlay();
+                        }
+                    ));
                   },
+
                 ),
                 Expanded(
                     child: MapWidget(
@@ -266,47 +293,56 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                   bool testAddress =
                                       formKeyAddress.currentState!.validate();
 
-                                  // If all fields are valid, insert the bar into the database
-                                  if (testLokal && testAddress) {
-                                    Bar.insert(Bar(
+                                // If all fields are valid, insert the bar into the database
+                                if (testLokal && testAddress) {
+                                  if (editing) {
+                                    Bar bar = widget.initialBar!;
+                                    bar.name = barNameController.text;
+                                    bar.address = barAddressController.text;
+                                    await Bar.update(bar);
+                                  } else {
+                                    await Bar.insert(Bar(
                                         id: Bar.generateUuid(),
                                         name: barNameController.text,
                                         location: bars.first.location,
                                         address: barAddressController.text));
-                                    Provider.of<BarChanged>(context, listen: false).notify();
-                                    widget.closeOverlay();
-                                  } else {
-                                    submitAttempted = true;
                                   }
-                                },
-                                fillColor: Theme.of(context).colorScheme.success,
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(6.0),
-                                constraints: const BoxConstraints(
-                                    maxWidth: 48, maxHeight: 48),
-                                child: Image.asset('assets/icons/checkmark.png',
-                                    scale: 3.7),
-                              ),
-                              const SizedBox(width: 16),
-                              RawMaterialButton(
-                                onPressed: () {
-                                  showCancelConfirmationDialog(
-                                      context,
-                                      widget.closeOverlay,
-                                      barNameController.text.isEmpty,
-                                      barAddressController.text.isEmpty);
-                                },
-                                fillColor: Theme.of(context).colorScheme.error,
-                                padding: const EdgeInsets.all(6.0),
-                                constraints: const BoxConstraints(
-                                    maxWidth: 48, maxHeight: 48),
-                                shape: const CircleBorder(),
-                                child: Image.asset('assets/icons/cross.png',
-                                    scale: 3.7),
-                              ),
-                            ],
-                          ),
-                        )
+                                  Provider.of<BarChanged>(context, listen: false).notify();
+                                  widget.closeOverlay();
+                                } else {
+                                  submitAttempted = true;
+                                }
+                              },
+                              fillColor: Theme.of(context).colorScheme.success,
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(6.0),
+                              child: Image.asset('assets/icons/checkmark.png',
+                                  scale: 3.7),
+                            ),
+                            RawMaterialButton(
+                              onPressed: () {
+                                if (barNameController.text.isEmpty && barAddressController.text.isEmpty) {
+                                  widget.closeOverlay();
+                                  return;
+                                }
+                                rut.showDialog(Popup.continueWorking(
+                                    pressContinue: () {
+                                      rut.showDialog(null);
+                                    },
+                                    pressDelete: () {
+                                      rut.showDialog(null);
+                                      widget.closeOverlay();
+                                    }
+                                ));
+                              },
+                              fillColor: Theme.of(context).colorScheme.error,
+                              padding: const EdgeInsets.all(6.0),
+                              shape: const CircleBorder(),
+                              child: Image.asset('assets/icons/cross.png',
+                                  scale: 3.7),
+                            ),
+                          ],
+                        ))
                       ],
                     ),
                   );
@@ -316,29 +352,4 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
       ),
     );
   }
-}
-
-/// Show a confirmation dialog when the user tries to cancel the overlay
-void showCancelConfirmationDialog(
-    BuildContext context,
-    Function() closeOverlay,
-    bool nameIsEmpty,
-    bool addressIsEmpty) {
-  // If both fields are empty, close the overlay
-  if (nameIsEmpty && addressIsEmpty) {
-    closeOverlay();
-    return;
-  }
-  // Otherwise, show a confirmation dialog
-  OverlayEntry? popUpOverlay;
-  popUpOverlay = OverlayEntry(
-      opaque: false,
-      maintainState: false,
-      builder: (context) => Popup.continueWorking(pressContinue: () {
-            popUpOverlay?.remove();
-          }, pressDelete: () {
-            popUpOverlay?.remove();
-            closeOverlay();
-          }));
-  Overlay.of(context).insert(popUpOverlay);
 }

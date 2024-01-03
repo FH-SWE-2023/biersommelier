@@ -13,6 +13,9 @@ import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/components/ConfirmationDialog.dart';
 import 'package:biersommelier/router/Rut.dart';
 
+import '../pages/AddBar.dart';
+import '../pages/AddBeer.dart';
+
 /// Creates the ExploreBar Component which contains the ExploreTabBar and the ExploreList with Locals and Beers
 class ExploreBar extends StatefulWidget {
   final bool onlyFavorites;
@@ -224,67 +227,68 @@ class ExploreList extends StatelessWidget {
                                         level: ToastLevel.success,
                                       ),
                                     );
-
-                                    Rut.of(context).showDialog(null);
-                                  },
-                                  onCancel: () {
-                                    Rut.of(context).showDialog(null);
-                                  },
-                                ));
-                              },
-                              onAbort: () {
-                                Rut.of(context).showDialog(null);
-                              },
-                            ));
-                          } else {
-                            Rut.of(context).showDialog(Popup.editExplore(
-                              pressEdit: () {
-                                //show not implemented toast
-                                context.showToast(
-                                  Toast.levelToast(
-                                    message: "Not yet implemented!",
-                                    level: ToastLevel.warning,
-                                  ),
-                                );
-                                Rut.of(context).showDialog(null);
-                              },
-                              pressFavorite: () {
-                                if (isBar) {
-                                  Bar.toggleFavorite(item.id)
-                                      .then((_) => onChanged()); // Update here
+                                  Rut.of(context).showDialog(null);
+                                },
+                                onCancel: () {
+                                  Rut.of(context).showDialog(null);
+                                },
+                              ));
+                            },
+                            onAbort: () {
+                              Rut.of(context).showDialog(null);
+                            },
+                          ));
+                        } else {
+                          Rut.of(context).showDialog(Popup.editExplore(
+                            pressEdit: () {
+                              Rut.of(context).showDialog(null);
+                              OverlayEntry? addOverlay;
+                              if (isBar) {
+                                addOverlay = createAddBarOverlay(context, () => Rut.of(context).showOverlay(null), item);
+                                Rut.of(context).showOverlayEntry(addOverlay);
+                              } else {
+                                if (item.imageId != null && item.imageId?.isNotEmpty) {
+                                  ImageManager.getImageFileByKey(item.imageId).then((value) {
+                                    addOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), item, value);
+                                    Rut.of(context).showOverlayEntry(addOverlay!);
+                                  });
                                 } else {
-                                  Beer.toggleFavorite(item.id)
-                                      .then((_) => onChanged()); // Update here
+                                  addOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), item, null);
+                                  Rut.of(context).showOverlayEntry(addOverlay);
                                 }
-                                Rut.of(context).showDialog(null);
-                              },
-                              pressDelete: () {
-                                // show confirmation dialog
-                                Rut.of(context).showDialog(ConfirmationDialog(
-                                  description:
-                                      'Bist du sicher, dass du dieses ${isBar ? 'Lokal' : 'Bier'} löschen möchtest?\nAlle Beiträge zu diesem ${isBar ? 'Lokal' : 'Bier'} werden ebenfalls gelöscht!',
-                                  onConfirm: () {
-                                    if (isBar) {
-                                      Bar.delete(item.id).then(
-                                          (_) => onChanged()); // Update here
-                                    } else {
-                                      Beer.delete(item.id).then(
-                                          (_) => onChanged()); // Update here
-                                    }
-                                    // show toast
-                                    context.showToast(
-                                      Toast.levelToast(
-                                        message:
-                                            "${isBar ? 'Lokal' : 'Bier'} gelöscht!",
-                                        level: ToastLevel.success,
-                                      ),
-                                    );
+                              }
+                            },
+                            pressFavorite: () {
+                              if (isBar) {
+                                Bar.toggleFavorite(item.id).then((_) => onChanged()); // Update here
+                              } else {
+                                Beer.toggleFavorite(item.id).then((_) => onChanged()); // Update here
+                              }
+                              Rut.of(context).showDialog(null);
+                            },
+                            pressDelete: () {
+                              // show confirmation dialog
+                              Rut.of(context).showDialog(ConfirmationDialog(
+                                description: 'Bist du sicher, dass du dieses ${isBar ? 'Lokal' : 'Bier'} löschen möchtest?\nAlle Beiträge zu diesem ${isBar ? 'Lokal' : 'Bier'} werden ebenfalls gelöscht!',
+                                onConfirm: () {
+                                  if (isBar) {
+                                    Bar.delete(item.id).then((_) => onChanged()); // Update here
+                                  } else {
+                                    Beer.delete(item.id).then((_) => onChanged()); // Update here
+                                  }
+                                  // show toast
+                                  context.showToast(
+                                    Toast.levelToast(
+                                      message: "${isBar ? 'Lokal' : 'Bier'} gelöscht!",
+                                      level: ToastLevel.success,
+                                    ),
+                                  );
 
-                                    Rut.of(context).showDialog(null);
-                                  },
-                                  onCancel: () {
-                                    Rut.of(context).showDialog(null);
-                                  },
+                                  Rut.of(context).showDialog(null);
+                                },
+                                onCancel: () {
+                                  Rut.of(context).showDialog(null);
+                                },
                                 ));
                               },
                               onAbort: () {

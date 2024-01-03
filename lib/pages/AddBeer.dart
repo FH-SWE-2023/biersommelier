@@ -5,6 +5,7 @@ import 'package:biersommelier/components/ImagePicker.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/providers/BeerChanged.dart';
+import 'package:biersommelier/router/PageManager.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,35 +13,20 @@ import 'package:provider/provider.dart';
 import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
 
-///
-/// Funktion to Close the add Beer Overlay with warning Dialog
-///
-void showCancelConfirmationDialog(
-    BuildContext context, Function closeOverlay, bool formIsEmpty) {
-  if (formIsEmpty) {
-    closeOverlay();
-    return;
-  }
-  OverlayEntry? popUpOverlay;
-  popUpOverlay = OverlayEntry(
-      opaque: false,
-      maintainState: false,
-      builder: (context) => Popup.continueWorking(pressContinue: () {
-            popUpOverlay?.remove();
-          }, pressDelete: () {
-            popUpOverlay?.remove();
-            closeOverlay();
-          }));
-  Overlay.of(context).insert(popUpOverlay);
-}
+import 'package:biersommelier/router/Rut.dart';
 
 ///
 /// Overlay to add a Beer
 ///
-OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
-  var beerNameController = TextEditingController(text: "");
+OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay, Beer? initialBeer, File? initialImage) {
+  final editing = initialBeer != null;
+
+  var beerNameController = TextEditingController(text: editing ? initialBeer!.name : "");
   final _formKey = GlobalKey<FormState>();
-  File? selectedImage;
+
+  File? selectedImage = initialImage;
+
+  Rut rut = Rut.of(context);
 
   return OverlayEntry(
     opaque: false,
@@ -55,13 +41,23 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Header(
-                title: "Bier hinzufügen",
+                title: editing ? "Bier bearbeiten" : "Bier hinzufügen",
                 backgroundColor: Theme.of(context).colorScheme.white,
                 icon: HeaderIcon.back,
                 onBack: () {
-                  showCancelConfirmationDialog(
-                      context, closeOverlay, beerNameController.text.isEmpty);
-                  //Go Back
+                  if (beerNameController.text.isEmpty) {
+                    closeOverlay();
+                    return;
+                  }
+                  rut.showDialog(Popup.continueWorking(
+                      pressContinue: () {
+                        rut.showDialog(null);
+                      },
+                      pressDelete: () {
+                        rut.showDialog(null);
+                        closeOverlay();
+                      }
+                  ));
                 },
               ),
               Material(
@@ -118,7 +114,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                   ),
                                   ImagePicker(onImageSelected: (file) {
                                     selectedImage = file;
-                                  })
+                                  }, image: selectedImage)
                                 ]),
                             const SizedBox(
                               width: 16,
@@ -131,15 +127,25 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                     // Check input
                                     if (_formKey.currentState!.validate()) {
                                       if (selectedImage != null) {
-                                        var imageId = await ImageManager
-                                            .saveImage(selectedImage!);
+                                        var imageId = "";
+                                        if (selectedImage == initialImage) {
+                                          imageId = initialBeer!.imageId;
+                                        } else {
+                                          if (initialImage != null) {
+                                            await ImageManager.deleteImage(initialBeer!.imageId);
+                                          }
+                                          imageId = await ImageManager.saveImage(selectedImage!);
+                                        }
                                         Beer.insert(Beer(
-                                            id: Beer.generateUuid(),
+                                            id: editing ? initialBeer!.id : Beer.generateUuid(),
                                             name: beerNameController.text,
                                             imageId: imageId));
                                       } else {
+                                        if (initialImage != null) {
+                                          await ImageManager.deleteImage(initialBeer!.imageId);
+                                        }
                                         Beer.insert(Beer(
-                                            id: Beer.generateUuid(),
+                                            id: editing ? initialBeer!.id : Beer.generateUuid(),
                                             name: beerNameController.text,
                                             imageId: ""));
                                       }
@@ -162,10 +168,19 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                                 const SizedBox(width: 16),
                                 RawMaterialButton(
                                   onPressed: () {
-                                    showCancelConfirmationDialog(
-                                        context,
-                                        closeOverlay,
-                                        beerNameController.text.isEmpty);
+                                    if (beerNameController.text.isEmpty) {
+                                      closeOverlay();
+                                      return;
+                                    }
+                                    rut.showDialog(Popup.continueWorking(
+                                        pressContinue: () {
+                                          rut.showDialog(null);
+                                        },
+                                        pressDelete: () {
+                                          rut.showDialog(null);
+                                          closeOverlay();
+                                        }
+                                    ));
                                   },
                                   fillColor:
                                       Theme.of(context).colorScheme.error,
