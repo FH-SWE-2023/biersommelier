@@ -113,10 +113,8 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   void _onBarNameChanged() {
     // If the user has tried to submit the form at least once
     if (submitAttempted) {
-      setState(() {
-        // Run the validator
-        formKeyBar.currentState!.validate();
-      });
+      // Run the validator
+      formKeyBar.currentState!.validate();
     }
   }
 
@@ -124,13 +122,11 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   void _onBarAddressChanged() {
     // Debounce the address field
     if (_debounceAddress?.isActive ?? false) _debounceAddress?.cancel();
-    _debounceAddress = Timer(const Duration(milliseconds: 500), () {
-      setState(() async {
-        // Geocode the address
-        await geocodeAddress(barAddressController.text);
-        // Run the validator
-        formKeyAddress.currentState!.validate();
-      });
+    _debounceAddress = Timer(const Duration(milliseconds: 500), () async {
+      // Geocode the address
+      await geocodeAddress(barAddressController.text);
+      // Run the validator
+      formKeyAddress.currentState!.validate();
     });
   }
 
@@ -261,7 +257,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     context: context,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Das Lokal muss einen Adresse besitzen';
+                                        return 'Das Lokal muss eine Adresse besitzen';
                                       } else if (bars.isEmpty) {
                                         return 'Die Adresse ist ungültig';
                                       }
@@ -271,16 +267,18 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                             ],
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            RawMaterialButton(
-                              onPressed: () async {
-                                // Run the validators on both forms
-                                bool testLokal =
-                                    formKeyBar.currentState!.validate();
-                                bool testAddress =
-                                    formKeyAddress.currentState!.validate();
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              RawMaterialButton(
+                                onPressed: () async {
+                                  // Run the validators on both forms
+                                  bool testLokal =
+                                      formKeyBar.currentState!.validate();
+                                  bool testAddress =
+                                      formKeyAddress.currentState!.validate();
 
                                 // If all fields are valid, insert the bar into the database
                                 if (testLokal && testAddress) {

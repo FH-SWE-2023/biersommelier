@@ -10,13 +10,13 @@ class MapCenter {
   MapCenter({required this.lat, required this.lng});
 
   static Future<LatLng> get() async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     final List<Map<String, dynamic>> maps = await db.query('MapCenter');
     return LatLng(maps.first['lat'], maps.first['lng']);
   }
 
   static Future<void> set(LatLng location) async {
-    final db = await DatabaseConnector().database;
+    final db = await DatabaseConnector.database;
     await db.update(
       'MapCenter',
       {
@@ -29,8 +29,8 @@ class MapCenter {
   static String createTable() {
     return '''
      CREATE TABLE IF NOT EXISTS MapCenter (
-       lat REAL NOT NULL,
-       lng REAL NOT NULL
+       lat REAL NOT NULL DEFAULT 0.0,
+       lng REAL NOT NULL DEFAULT 0.0
      )
    ''';
   }
@@ -43,8 +43,8 @@ class MapCenter {
 
   static Future<bool> updateTableColumns(Database db) async {
     List<String> columnsToAdd = [
-      'lat REAL NOT NULL',
-      'lng REAL NOT NULL',
+      'lat REAL NOT NULL DEFAULT 0.0',
+      'lng REAL NOT NULL DEFAULT 0.0',
     ];
 
     for (String column in columnsToAdd) {

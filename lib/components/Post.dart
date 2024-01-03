@@ -1,7 +1,7 @@
 import 'package:biersommelier/components/ConfirmationDialog.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:biersommelier/components/Post/RateBar.dart';
-import 'package:biersommelier/components/Toast.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:flutter/material.dart';
 
 import 'package:biersommelier/database/entities/Post.dart' as dbPost;
@@ -130,9 +130,12 @@ class Post extends StatelessWidget {
                               'Bist du sicher, dass du\ndiesen Beitrag löschen\nmöchtest?',
                           onConfirm: () {
                             dbPost.Post.delete(id).then((_) {
-                              // show toast
-                              showToast(context, "Beitrag gelöscht!",
-                                  ToastLevel.success);
+                              context.showToast(
+                                Toast.levelToast(
+                                  message: "Beitrag gelöscht!",
+                                  level: ToastLevel.success,
+                                ),
+                              );
 
                               Rut.of(context).showDialog(null);
 

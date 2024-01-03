@@ -3,6 +3,7 @@ import 'package:biersommelier/components/introduction/FavouritesIntroduction.dar
 import 'package:biersommelier/components/introduction/MapIntroduction.dart';
 import 'package:biersommelier/components/introduction/PostsIntroduction.dart';
 import 'package:biersommelier/components/introduction/ProgressIntroductionIndicator.dart';
+import 'package:biersommelier/database/DatabaseConnector.dart';
 import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _IntroductionState extends State<Introduction> {
                   curve: Curves.ease,
                 );
               } else {
+                DatabaseConnector.introductionComplete();
                 Rut.of(context).rebase(RutPath.homePage());
               }
             },

@@ -76,7 +76,8 @@ class Popup extends StatelessWidget {
     );
   }
 
-  static editLogbook({Function()? pressEdit, Function()? pressDelete, Function()? onAbort}) {
+  static editLogbook(
+      {Function()? pressEdit, Function()? pressDelete, Function()? onAbort}) {
     return Popup(
       options: [
         Option(
@@ -136,11 +137,11 @@ class Popup extends StatelessWidget {
                           ? Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: Text(
-                              description!,
-                              style: const TextStyle(fontSize: 20),
-                              textAlign: TextAlign.center,
-                            ))
-                          : Container(),
+                                description!,
+                                style: const TextStyle(fontSize: 20),
+                                textAlign: TextAlign.center,
+                              ))
+                          : const SizedBox(width: 0, height: 0),
                       Builder(
                         builder: (context) {
                           List<Widget> list = [];

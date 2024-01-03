@@ -10,18 +10,13 @@ import 'entities/Post.dart' show Post;
 class DatabaseConnector {
   static Database? _database;
 
-  bool _isFirstLaunch = false;
+  static bool _isFirstLaunch = false;
 
   // Private constructor to prevent direct instantiation.
   DatabaseConnector._privateConstructor();
 
-  // Public factory constructor to access the singleton instance.
-  factory DatabaseConnector() {
-    return DatabaseConnector._privateConstructor();
-  }
-
   // Get the database, if not initialized then initialize it.
-  Future<Database> get database async {
+  static Future<Database> get database async {
     if (_database != null) {
       return _database!;
     }
@@ -29,24 +24,25 @@ class DatabaseConnector {
     return _database!;
   }
 
-  get isFirstLaunch => _isFirstLaunch;
+  static get isFirstLaunch => _isFirstLaunch;
 
-  void introductionComplete() {
+  static void introductionComplete() {
     _isFirstLaunch = false;
   }
 
   // Initialize the database.
-  Future<Database> _initDatabase() async {
+  static Future<Database> _initDatabase() async {
     // Get the directory path for both Android and iOS to store the database.
     var documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'biersommelier.db');
 
     // Open/create the database at the given path.
-    return await openDatabase(path, version: 1, onCreate: _onCreate, onOpen: _onOpen);
+    return await openDatabase(path,
+        version: 1, onCreate: _onCreate, onOpen: _onOpen);
   }
 
   // Create all the tables here
-  Future _onCreate(Database db, int version) async {
+  static Future _onCreate(Database db, int version) async {
     _isFirstLaunch = true;
 
     await db.execute(Beer.createTable());
@@ -61,7 +57,7 @@ class DatabaseConnector {
   }
 
   // op open create tables if not exists
-  Future _onOpen(Database db) async {
+  static Future _onOpen(Database db) async {
     await db.execute(Beer.createTable());
     await db.execute(Bar.createTable());
     await db.execute(Post.createTable());

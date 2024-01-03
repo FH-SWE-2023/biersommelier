@@ -23,10 +23,12 @@ class RutPath {
   Widget? dialog;
   bool hideStatusBar = false;
   Map<String, Object> arguments;
+  Widget? overlay;
 
   RutPath({
     required this.page,
     this.dialog,
+    this.overlay,
     this.hideStatusBar = false,
     this.arguments = const {},
   });

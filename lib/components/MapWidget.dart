@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:biersommelier/components/Toast.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/database/entities/MapCenter.dart';
+import 'package:biersommelier/router/rut/RutExtension.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +59,36 @@ class MapWidgetState extends State<MapWidget> {
 
   final tooltipKey = GlobalKey<TooltipState>();
 
+  /// Set the selected bar
+  void setSelectedBar(Bar bar) {
+    setState(() {
+      if (widget.onMarkerTap != null) {
+        widget.onMarkerTap!(bar);
+      } else {
+        if (selectedBar == bar) return;
+        // Hide the tooltip if it is visible above another marker
+        tooltipKey.currentState
+            ?.deactivate();
+        // Set the selected bar to the tapped bar
+        selectedBar = bar;
+        // Show the tooltip above the tapped marker
+        tooltipKey.currentState
+            ?.ensureTooltipVisible();
+        // Give haptic feedback
+        HapticFeedback.lightImpact();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Close the cache store when the widget is disposed
+    _cacheStoreFuture.then((cacheStore) => cacheStore.close());
+    // Hide the tooltip if it is visible
+    tooltipKey.currentState?.deactivate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<LatLng>(
@@ -92,7 +123,8 @@ class MapWidgetState extends State<MapWidget> {
                             },
                             onLongPress: (_, __) {
                               final location = mapController.camera.center;
-                              setMapCenter(location, () => {mapCenter = location}, context);
+                              setMapCenter(location,
+                                  () => {mapCenter = location}, context);
                             }),
                         children: [
                           TileLayer(
@@ -112,23 +144,7 @@ class MapWidgetState extends State<MapWidget> {
                                       point: bar.location,
                                       child: GestureDetector(
                                           onTap: () {
-                                            setState(() {
-                                              if (widget.onMarkerTap != null) {
-                                                widget.onMarkerTap!(bar);
-                                              } else {
-                                                if (selectedBar == bar) return;
-                                                // Hide the tooltip if it is visible above another marker
-                                                tooltipKey.currentState
-                                                    ?.deactivate();
-                                                // Set the selected bar to the tapped bar
-                                                selectedBar = bar;
-                                                // Show the tooltip above the tapped marker
-                                                tooltipKey.currentState
-                                                    ?.ensureTooltipVisible();
-                                                // Give haptic feedback
-                                                HapticFeedback.lightImpact();
-                                              }
-                                            });
+                                            setSelectedBar(bar);
                                           },
                                           child: Tooltip(
                                             // Show the tooltip programmatically if the marker is selected
@@ -182,7 +198,8 @@ class MapWidgetState extends State<MapWidget> {
                                 icon: const Icon(Icons.my_location),
                                 color: const Color(0xFF706f6f),
                                 onPressed: () {
-                                  mapController.moveAndRotate(mapCenter, initialZoom, 0);
+                                  mapController.moveAndRotate(
+                                      mapCenter, initialZoom, 0);
                                 },
                               ),
                             ),
@@ -268,7 +285,12 @@ void setMapCenter(LatLng location, Function onConfirm, BuildContext context) {
                   popUpOverlay?.remove();
                   MapCenter.set(location);
                   onConfirm();
-                  showToast(context, "Zentrum erfolgreich gesetzt!", ToastLevel.success);
+                  context.showToast(
+                    Toast.levelToast(
+                      message: "Zentrum erfolgreich gesetzt!",
+                      level: ToastLevel.success,
+                    ),
+                  );
                 },
               ),
               Option(
@@ -283,7 +305,6 @@ void setMapCenter(LatLng location, Function onConfirm, BuildContext context) {
           ));
   Overlay.of(context).insert(popUpOverlay);
 }
-
 
 class ControlsLayer extends StatelessWidget {
   final Widget child;

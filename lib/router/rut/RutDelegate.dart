@@ -3,6 +3,9 @@ import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/router/rut/InheritedRut.dart';
 import 'package:biersommelier/router/rut/JumpAuthorizer.dart';
 import 'package:biersommelier/router/rut/RutPath.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
+import 'package:biersommelier/router/rut/toast/ToastController.dart';
+import 'package:biersommelier/router/rut/toast/ToastDisplay.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +15,7 @@ class RutDelegate extends RouterDelegate<RutPath>
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Rut rut;
+  late BuildContext context;
 
   RutDelegate(this.rut);
 
@@ -20,14 +24,18 @@ class RutDelegate extends RouterDelegate<RutPath>
     hideStatusBar: true,
     dialog: null,
   );
+
   JumpAuthorizer authorizer = JumpAuthorizer(
     defaultDescription: 'Willst du diese Seite wirklich verlassen?',
     defaultButtonSuccessText: 'Bestätigen',
     defaultButtonCancelText: 'Abbrechen',
   );
 
+  ToastController toastController = ToastController();
+
   @override
   Widget build(BuildContext context) {
+    this.context = context;
     return InheritedRut(
       rut: rut,
       child: Navigator(
@@ -39,11 +47,41 @@ class RutDelegate extends RouterDelegate<RutPath>
               children: [
                 Scaffold(
                   backgroundColor: Theme.of(context).colorScheme.white,
-                  bottomNavigationBar:
-                      path.hideStatusBar ? null : const NavBar(),
-                  body: RutPath.findPage(path.page),
+                  bottomNavigationBar: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 1200),
+                    switchInCurve: Curves.bounceOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (child, animation) {
+                      final inAnimation = Tween<Offset>(
+                        begin: const Offset(0, 1.2),
+                        end: const Offset(0, 0),
+                      ).animate(animation);
+
+                      return SlideTransition(
+                        position: inAnimation,
+                        child: child,
+                      );
+                    },
+                    child: path.hideStatusBar
+                        ? const SizedBox(height: 0, width: 0)
+                        : const NavBar(),
+                  ),
+                  body: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    switchInCurve: Curves.easeIn,
+                    switchOutCurve: Curves.easeOut,
+                    child: RutPath.findPage(path.page),
+                  ),
                 ),
-                if (path.dialog != null) path.dialog!,
+                if (path.overlay != null) path.overlay!,
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 150),
+                  child: path.dialog,
+                ),
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: ToastDisplay(toastController),
+                )
               ],
             ),
           ),
@@ -72,6 +110,11 @@ class RutDelegate extends RouterDelegate<RutPath>
     return true;
   }
 
+  void showOverlay(Widget? overlay) {
+    path.overlay = overlay;
+    reload();
+  }
+
   void blockRouting({
     String? description,
     String? buttonSuccessText,
@@ -96,6 +139,10 @@ class RutDelegate extends RouterDelegate<RutPath>
   void changePage(RutPage page) {
     path.page = page;
     reload();
+  }
+
+  void showToast(Toast toast) {
+    toastController.addToast(toast);
   }
 
   void jump(

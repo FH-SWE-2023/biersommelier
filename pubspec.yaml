@@ -39,7 +39,6 @@ dependencies:
   path_provider: ^2.1.1
   uuid: ^4.2.1
   google_maps_flutter: ^2.5.0
-  fluttertoast: ^8.2.4
   flutter_image_compress: ^2.1.0
   date_field: ^3.0.5
   image_picker: any
@@ -56,6 +55,7 @@ dependencies:
   connectivity_plus: ^5.0.2
   flutter_keyboard_visibility: ^5.4.1
   provider: ^6.1.1
+  image_picker_android: ^0.8.9+1
 
 dev_dependencies:
   flutter_test:

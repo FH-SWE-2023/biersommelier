@@ -2,6 +2,7 @@ import 'package:biersommelier/components/ExploreTabList.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/MapWidget.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
+import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:biersommelier/pages/AddBeer.dart';
 import 'package:biersommelier/pages/AddBar.dart';
@@ -19,6 +20,7 @@ class Explore extends StatefulWidget {
 
 class _ExploreState extends State<Explore> {
   final ValueNotifier<bool> _tabListExpanded = ValueNotifier<bool>(false);
+  final GlobalKey<MapWidgetState> mapKey = GlobalKey<MapWidgetState>();
 
   @override
   void initState() {
@@ -54,9 +56,10 @@ class _ExploreState extends State<Explore> {
                             onTap: () {
                               OverlayEntry? addPostOverlay;
                               addPostOverlay = createAddBarOverlay(context, () {
-                                addPostOverlay?.remove();
-                              }, null);
-                              Overlay.of(context).insert(addPostOverlay);
+                                Rut.of(context).showOverlay(null);
+                              });
+                              Rut.of(context).showOverlayEntry(addPostOverlay);
+                              // Overlay.of(context).insert(addPostOverlay);
                             },
                             child: Row(
                               children: [
@@ -73,9 +76,10 @@ class _ExploreState extends State<Explore> {
                             value: 'addBeer',
                             onTap: () {
                               OverlayEntry? addPostOverlay;
-                              addPostOverlay = createAddBeerOverlay(
-                                  context, () => addPostOverlay?.remove(), null);
-                              Overlay.of(context).insert(addPostOverlay);
+                              addPostOverlay = createAddBeerOverlay(context,
+                                  () => Rut.of(context).showOverlay(null));
+                              Rut.of(context).showOverlayEntry(addPostOverlay);
+                              // Overlay.of(context).insert(addPostOverlay);
                             },
                             child: Row(
                               children: [
@@ -104,6 +108,7 @@ class _ExploreState extends State<Explore> {
                       } else if (snapshot.hasData) {
                         final bars = snapshot.data!;
                         return MapWidget(
+                          key: mapKey,
                           bars: bars,
                         );
                       } else {
@@ -144,7 +149,14 @@ class _ExploreState extends State<Explore> {
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                 ),
-                                child: const ExploreBar()),
+                                child: ExploreBar(onBarAddressClick: (bar) {
+                                  _tabListExpanded.value = false;
+                                  mapKey.currentState?.setSelectedBar(bar);
+                                  mapKey.currentState?.mapController.move(
+                                      bar.location,
+                                      mapKey.currentState!.mapController.camera
+                                          .zoom);
+                                })),
                           ),
                         ),
                         Positioned.fill(
@@ -157,8 +169,7 @@ class _ExploreState extends State<Explore> {
                                       !_tabListExpanded.value;
                                 },
                                 elevation: 1,
-                                fillColor:
-                                    Theme.of(context).colorScheme.white,
+                                fillColor: Theme.of(context).colorScheme.white,
                                 padding: const EdgeInsets.all(3.0),
                                 shape: const CircleBorder(),
                                 child: Icon(
