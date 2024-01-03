@@ -176,7 +176,10 @@ class ExploreList extends StatelessWidget {
                                     height: 50.0,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(7),
-                                      child: imageSnapshot.data,
+                                      child: FittedBox(
+                                        fit: BoxFit.cover,
+                                        child: imageSnapshot.data,
+                                      ),
                                     ),
                                   );
                                 } else if (imageSnapshot.hasError) {
@@ -227,68 +230,90 @@ class ExploreList extends StatelessWidget {
                                         level: ToastLevel.success,
                                       ),
                                     );
-                                  Rut.of(context).showDialog(null);
-                                },
-                                onCancel: () {
-                                  Rut.of(context).showDialog(null);
-                                },
-                              ));
-                            },
-                            onAbort: () {
-                              Rut.of(context).showDialog(null);
-                            },
-                          ));
-                        } else {
-                          Rut.of(context).showDialog(Popup.editExplore(
-                            pressEdit: () {
-                              Rut.of(context).showDialog(null);
-                              OverlayEntry? addOverlay;
-                              if (isBar) {
-                                addOverlay = createAddBarOverlay(context, () => Rut.of(context).showOverlay(null), item);
-                                Rut.of(context).showOverlayEntry(addOverlay);
-                              } else {
-                                if (item.imageId != null && item.imageId?.isNotEmpty) {
-                                  ImageManager.getImageFileByKey(item.imageId).then((value) {
-                                    addOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), item, value);
-                                    Rut.of(context).showOverlayEntry(addOverlay!);
-                                  });
-                                } else {
-                                  addOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), item, null);
+                                    Rut.of(context).showDialog(null);
+                                  },
+                                  onCancel: () {
+                                    Rut.of(context).showDialog(null);
+                                  },
+                                ));
+                              },
+                              onAbort: () {
+                                Rut.of(context).showDialog(null);
+                              },
+                            ));
+                          } else {
+                            Rut.of(context).showDialog(Popup.editExplore(
+                              pressEdit: () {
+                                Rut.of(context).showDialog(null);
+                                OverlayEntry? addOverlay;
+                                if (isBar) {
+                                  addOverlay = createAddBarOverlay(
+                                      context,
+                                      () => Rut.of(context).showOverlay(null),
+                                      item);
                                   Rut.of(context).showOverlayEntry(addOverlay);
-                                }
-                              }
-                            },
-                            pressFavorite: () {
-                              if (isBar) {
-                                Bar.toggleFavorite(item.id).then((_) => onChanged()); // Update here
-                              } else {
-                                Beer.toggleFavorite(item.id).then((_) => onChanged()); // Update here
-                              }
-                              Rut.of(context).showDialog(null);
-                            },
-                            pressDelete: () {
-                              // show confirmation dialog
-                              Rut.of(context).showDialog(ConfirmationDialog(
-                                description: 'Bist du sicher, dass du dieses ${isBar ? 'Lokal' : 'Bier'} löschen möchtest?\nAlle Beiträge zu diesem ${isBar ? 'Lokal' : 'Bier'} werden ebenfalls gelöscht!',
-                                onConfirm: () {
-                                  if (isBar) {
-                                    Bar.delete(item.id).then((_) => onChanged()); // Update here
+                                } else {
+                                  if (item.imageId != null &&
+                                      item.imageId?.isNotEmpty) {
+                                    ImageManager.getImageFileByKey(item.imageId)
+                                        .then((value) {
+                                      addOverlay = createAddBeerOverlay(
+                                          context,
+                                          () =>
+                                              Rut.of(context).showOverlay(null),
+                                          item,
+                                          value);
+                                      Rut.of(context)
+                                          .showOverlayEntry(addOverlay!);
+                                    });
                                   } else {
-                                    Beer.delete(item.id).then((_) => onChanged()); // Update here
+                                    addOverlay = createAddBeerOverlay(
+                                        context,
+                                        () => Rut.of(context).showOverlay(null),
+                                        item,
+                                        null);
+                                    Rut.of(context)
+                                        .showOverlayEntry(addOverlay);
                                   }
-                                  // show toast
-                                  context.showToast(
-                                    Toast.levelToast(
-                                      message: "${isBar ? 'Lokal' : 'Bier'} gelöscht!",
-                                      level: ToastLevel.success,
-                                    ),
-                                  );
+                                }
+                              },
+                              pressFavorite: () {
+                                if (isBar) {
+                                  Bar.toggleFavorite(item.id)
+                                      .then((_) => onChanged()); // Update here
+                                } else {
+                                  Beer.toggleFavorite(item.id)
+                                      .then((_) => onChanged()); // Update here
+                                }
+                                Rut.of(context).showDialog(null);
+                              },
+                              pressDelete: () {
+                                // show confirmation dialog
+                                Rut.of(context).showDialog(ConfirmationDialog(
+                                  description:
+                                      'Bist du sicher, dass du dieses ${isBar ? 'Lokal' : 'Bier'} löschen möchtest?\nAlle Beiträge zu diesem ${isBar ? 'Lokal' : 'Bier'} werden ebenfalls gelöscht!',
+                                  onConfirm: () {
+                                    if (isBar) {
+                                      Bar.delete(item.id).then(
+                                          (_) => onChanged()); // Update here
+                                    } else {
+                                      Beer.delete(item.id).then(
+                                          (_) => onChanged()); // Update here
+                                    }
+                                    // show toast
+                                    context.showToast(
+                                      Toast.levelToast(
+                                        message:
+                                            "${isBar ? 'Lokal' : 'Bier'} gelöscht!",
+                                        level: ToastLevel.success,
+                                      ),
+                                    );
 
-                                  Rut.of(context).showDialog(null);
-                                },
-                                onCancel: () {
-                                  Rut.of(context).showDialog(null);
-                                },
+                                    Rut.of(context).showDialog(null);
+                                  },
+                                  onCancel: () {
+                                    Rut.of(context).showDialog(null);
+                                  },
                                 ));
                               },
                               onAbort: () {
