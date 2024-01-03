@@ -34,11 +34,13 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
     this.defaultValue,
   });
 
+  final _autocompleteKey = GlobalKey();
   final _formFieldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Autocomplete<Option>(
+      key: _autocompleteKey,
       displayStringForOption: (Option option) => option.name,
       optionsBuilder: (TextEditingValue textEditingValue) {
         return optionsList.where((Option option) {
@@ -72,6 +74,7 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
           AutocompleteOnSelected<Option> onSelected,
           Iterable<Option> options,
           ) {
+        Scrollable.ensureVisible(_autocompleteKey.currentContext!, alignment: 0.07);
         return Align(
           alignment: Alignment.topLeft,
           child: LayoutBuilder(
