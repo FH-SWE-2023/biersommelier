@@ -173,12 +173,15 @@ class Post extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      '"$description"',
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        height: 1.4,
-                        fontWeight: FontWeight.w400,
+                    Flexible(
+                      child: Text(
+                        description,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          height: 1.4,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        softWrap: true,
                       ),
                     )
                   ],
