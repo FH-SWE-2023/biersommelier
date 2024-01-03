@@ -69,9 +69,7 @@ class _PostFormState extends State<PostForm> {
       });
 
       // fill image
-      ImageManager
-          .getImageFileByKey(widget.initialPost!.imageId)
-          .then((image) {
+      ImageManager.getImageFileByKey(widget.initialPost!.imageId).then((image) {
         setState(() {
           _image = image;
         });
@@ -95,7 +93,7 @@ class _PostFormState extends State<PostForm> {
   }
 
   Future<void> _submitForm() async {
-    if (_descriptionController.text.isEmpty || _rating == 0) {
+    if (_rating == 0) {
       context.showToast(
         Toast.levelToast(
           message: "Bitte fülle alle Felder aus!",
