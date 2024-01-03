@@ -37,10 +37,20 @@ void showCancelConfirmationDialog(
 ///
 /// Overlay to add a Beer
 ///
-OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
-  var beerNameController = TextEditingController(text: "");
+OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay, Beer? initialBeer) {
+  final editing = initialBeer != null;
+
+  var beerNameController = TextEditingController(text: editing ? initialBeer!.name : "");
   final _formKey = GlobalKey<FormState>();
+
+  // get selected image either from initial beer or set to null
   File? selectedImage;
+
+  if (editing && initialBeer!.imageId.isNotEmpty) {
+    ImageManager().getImageFileByKey(initialBeer.imageId).then((value) {
+      selectedImage = value;
+    });
+  }
 
   return OverlayEntry(
     opaque: false,
@@ -55,7 +65,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Header(
-                title: "Bier hinzufügen",
+                title: editing ? "Bier bearbeiten" : "Bier hinzufügen",
                 backgroundColor: Theme.of(context).colorScheme.white,
                 icon: HeaderIcon.back,
                 onBack: () {
