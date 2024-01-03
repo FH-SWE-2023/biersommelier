@@ -75,7 +75,11 @@ class _ExploreState extends State<Explore> {
                             value: 'addBeer',
                             onTap: () {
                               OverlayEntry? addBeerOverlay;
-                              addBeerOverlay = createAddBeerOverlay(context, () => Rut.of(context).showOverlay(null), null, null);
+                              addBeerOverlay = createAddBeerOverlay(
+                                  context,
+                                  () => Rut.of(context).showOverlay(null),
+                                  null,
+                                  null);
                               Rut.of(context).showOverlayEntry(addBeerOverlay);
                             },
                             child: Row(
@@ -127,6 +131,7 @@ class _ExploreState extends State<Explore> {
                 Positioned(
                   bottom: 0,
                   child: AnimatedContainer(
+                    curve: Curves.easeInOutCubic,
                     duration: const Duration(milliseconds: 500),
                     height: _tabListExpanded.value
                         ? MediaQuery.of(context).size.height * 0.7
@@ -136,13 +141,13 @@ class _ExploreState extends State<Explore> {
                       clipBehavior: Clip.none,
                       children: [
                         GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             _tabListExpanded.value = true;
                           },
                           child: AbsorbPointer(
                             absorbing: !_tabListExpanded.value,
                             child: Container(
-                                clipBehavior: Clip.none,
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                 ),
