@@ -309,7 +309,7 @@ class _PostFormState extends State<PostForm> {
                             SizedBox(
                                 width: MediaQuery.of(context).size.width / 2.5,
                                 height: MediaQuery.of(context).size.width / 2.5,
-                                child: ImagePickerWidget(
+                                child: ImagePicker(
                                   onImageSelected: (file) {
                                     // block routing
                                     context.blockRouting();

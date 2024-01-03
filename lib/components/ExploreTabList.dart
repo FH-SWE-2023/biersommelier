@@ -18,7 +18,8 @@ class ExploreBar extends StatefulWidget {
   final bool onlyFavorites;
   final Function(Bar)? onBarAddressClick;
 
-  const ExploreBar({super.key, this.onlyFavorites = false, this.onBarAddressClick});
+  const ExploreBar(
+      {super.key, this.onlyFavorites = false, this.onBarAddressClick});
 
   @override
   _ExploreBarState createState() => _ExploreBarState();
@@ -170,7 +171,10 @@ class ExploreList extends StatelessWidget {
                                   return SizedBox(
                                     width: 50.0,
                                     height: 50.0,
-                                    child: imageSnapshot.data,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(7),
+                                      child: imageSnapshot.data,
+                                    ),
                                   );
                                 } else if (imageSnapshot.hasError) {
                                   return const Icon(Icons.error);
@@ -183,12 +187,18 @@ class ExploreList extends StatelessWidget {
                                 }
                               },
                             ),
-                      title: isBar ? Text(item.name) : Container(
-                          transform:
-                          Matrix4.translationValues(0, 8, 0),
-                          child: Text(item.name)),
-                      subtitle:
-                          isBar ? (onBarAddressClick == null ? Text(item.address) : GestureDetector(onTap: () => {onBarAddressClick!(item)}, child: Text(item.address))) : const SizedBox.shrink(),
+                      title: isBar
+                          ? Text(item.name)
+                          : Container(
+                              transform: Matrix4.translationValues(0, 8, 0),
+                              child: Text(item.name)),
+                      subtitle: isBar
+                          ? (onBarAddressClick == null
+                              ? Text(item.address)
+                              : GestureDetector(
+                                  onTap: () => {onBarAddressClick!(item)},
+                                  child: Text(item.address)))
+                          : const SizedBox.shrink(),
                       trailing: IconButton(
                         icon: const Icon(Icons.more_horiz),
                         onPressed: () {
