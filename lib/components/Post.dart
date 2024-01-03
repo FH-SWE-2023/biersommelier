@@ -156,7 +156,14 @@ class Post extends StatelessWidget {
               ],
             ),
           ),
-          image,
+          SizedBox(
+            height: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(context).size.width,
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: image,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
             child: Column(
