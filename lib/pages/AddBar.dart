@@ -21,7 +21,8 @@ OverlayEntry createAddBarOverlay(
     BuildContext context, Function() closeOverlay, Bar? initialBar) {
   return OverlayEntry(
     opaque: true,
-    builder: (context) => AddBarOverlayContent(closeOverlay: closeOverlay, initialBar: initialBar),
+    builder: (context) => AddBarOverlayContent(
+        closeOverlay: closeOverlay, initialBar: initialBar),
   );
 }
 
@@ -30,7 +31,8 @@ class AddBarOverlayContent extends StatefulWidget {
 
   final Bar? initialBar;
 
-  const AddBarOverlayContent({super.key, required this.closeOverlay, this.initialBar});
+  const AddBarOverlayContent(
+      {super.key, required this.closeOverlay, this.initialBar});
 
   @override
   _AddBarOverlayContentState createState() => _AddBarOverlayContentState();
@@ -44,10 +46,13 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   GlobalKey<FormState> formKeyAddress = GlobalKey<FormState>();
   Timer? _debounceAddress;
   FocusNode focusNodeAddress = FocusNode();
+
   /// The bars that are currently displayed on the map
   List<Bar> bars = [];
+
   /// Whether the user has tried to submit the form at least once
   bool submitAttempted = false;
+
   /// Key of the map
   GlobalKey<MapWidgetState> mapKey = GlobalKey<MapWidgetState>();
 
@@ -87,11 +92,11 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
           localeIdentifier: 'de_DE');
       // Use the first placemark
       Placemark placemark = placemarks.first;
-      address = "${placemark.street}, ${placemark.postalCode} ${placemark.locality}, ${placemark.isoCountryCode}";
+      address =
+          "${placemark.street}, ${placemark.postalCode} ${placemark.locality}, ${placemark.isoCountryCode}";
     } catch (e) {
       address = '$latitude, $longitude';
     }
-
 
     setState(() {
       // Temporarily remove the listener and set the address
@@ -123,12 +128,15 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
   /// Called when the address field changes
   void _onBarAddressChanged() {
     // Debounce the address field
-    if (_debounceAddress?.isActive ?? false) _debounceAddress?.cancel();
-    _debounceAddress = Timer(const Duration(milliseconds: 500), () async {
+    _debounceAddress?.cancel();
+    _debounceAddress = Timer(const Duration(milliseconds: 1000), () async {
       // Geocode the address
       await geocodeAddress(barAddressController.text);
       // Run the validator
-      formKeyAddress.currentState!.validate();
+      if (bars.isNotEmpty && formKeyAddress.currentState!.validate()) {
+        // Move the map to the location of the bar
+        mapKey.currentState?.mapController.move(bars.first.location, 13);
+      }
     });
   }
 
@@ -146,8 +154,10 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
     super.initState();
 
     editing = widget.initialBar != null;
-    barNameController = TextEditingController(text: editing ? widget.initialBar!.name : "");
-    barAddressController = TextEditingController(text: editing ? widget.initialBar!.address : "");
+    barNameController =
+        TextEditingController(text: editing ? widget.initialBar!.name : "");
+    barAddressController =
+        TextEditingController(text: editing ? widget.initialBar!.address : "");
 
     // if editing, set map pin to bar location
     if (editing) {
@@ -188,25 +198,22 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                   backgroundColor: Theme.of(context).colorScheme.white,
                   icon: HeaderIcon.back,
                   onBack: () {
-                    if (barNameController.text.isEmpty && barAddressController.text.isEmpty) {
+                    if (barNameController.text.isEmpty &&
+                        barAddressController.text.isEmpty) {
                       widget.closeOverlay();
                       return;
                     }
-                    rut.showDialog(Popup.continueWorking(
-                        pressContinue: () {
-                          rut.showDialog(null);
-                        },
-                        pressDelete: () {
-                          rut.showDialog(null);
-                          widget.closeOverlay();
-                        }
-                    ));
+                    rut.showDialog(Popup.continueWorking(pressContinue: () {
+                      rut.showDialog(null);
+                    }, pressDelete: () {
+                      rut.showDialog(null);
+                      widget.closeOverlay();
+                    }));
                   },
-
                 ),
                 Expanded(
                     child: MapWidget(
-                      key: mapKey,
+                  key: mapKey,
                   bars: bars,
                   onTap: (LatLng loc) {
                     reverseGeocodeLatLng(loc.latitude, loc.longitude);
@@ -281,68 +288,73 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              RawMaterialButton(
-                                onPressed: () async {
-                                  // Run the validators on both forms
-                                  bool testLokal =
-                                      formKeyBar.currentState!.validate();
-                                  bool testAddress =
-                                      formKeyAddress.currentState!.validate();
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                RawMaterialButton(
+                                  onPressed: () async {
+                                    // Run the validators on both forms
+                                    bool testLokal =
+                                        formKeyBar.currentState!.validate();
+                                    bool testAddress =
+                                        formKeyAddress.currentState!.validate();
 
-                                // If all fields are valid, insert the bar into the database
-                                if (testLokal && testAddress) {
-                                  if (editing) {
-                                    Bar bar = widget.initialBar!;
-                                    bar.name = barNameController.text;
-                                    bar.address = barAddressController.text;
-                                    await Bar.update(bar);
-                                  } else {
-                                    await Bar.insert(Bar(
-                                        id: Bar.generateUuid(),
-                                        name: barNameController.text,
-                                        location: bars.first.location,
-                                        address: barAddressController.text));
-                                  }
-                                  Provider.of<BarChanged>(context, listen: false).notify();
-                                  widget.closeOverlay();
-                                } else {
-                                  submitAttempted = true;
-                                }
-                              },
-                              fillColor: Theme.of(context).colorScheme.success,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(6.0),
-                              child: Image.asset('assets/icons/checkmark.png',
-                                  scale: 3.7),
-                            ),
-                            RawMaterialButton(
-                              onPressed: () {
-                                if (barNameController.text.isEmpty && barAddressController.text.isEmpty) {
-                                  widget.closeOverlay();
-                                  return;
-                                }
-                                rut.showDialog(Popup.continueWorking(
-                                    pressContinue: () {
+                                    // If all fields are valid, insert the bar into the database
+                                    if (testLokal && testAddress) {
+                                      if (editing) {
+                                        Bar bar = widget.initialBar!;
+                                        bar.name = barNameController.text;
+                                        bar.address = barAddressController.text;
+                                        await Bar.update(bar);
+                                      } else {
+                                        await Bar.insert(Bar(
+                                            id: Bar.generateUuid(),
+                                            name: barNameController.text,
+                                            location: bars.first.location,
+                                            address:
+                                                barAddressController.text));
+                                      }
+                                      Provider.of<BarChanged>(context,
+                                              listen: false)
+                                          .notify();
+                                      widget.closeOverlay();
+                                    } else {
+                                      submitAttempted = true;
+                                    }
+                                  },
+                                  fillColor:
+                                      Theme.of(context).colorScheme.success,
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Image.asset(
+                                      'assets/icons/checkmark.png',
+                                      scale: 3.7),
+                                ),
+                                RawMaterialButton(
+                                  onPressed: () {
+                                    if (barNameController.text.isEmpty &&
+                                        barAddressController.text.isEmpty) {
+                                      widget.closeOverlay();
+                                      return;
+                                    }
+                                    rut.showDialog(Popup.continueWorking(
+                                        pressContinue: () {
                                       rut.showDialog(null);
-                                    },
-                                    pressDelete: () {
+                                    }, pressDelete: () {
                                       rut.showDialog(null);
                                       widget.closeOverlay();
-                                    }
-                                ));
-                              },
-                              fillColor: Theme.of(context).colorScheme.error,
-                              padding: const EdgeInsets.all(6.0),
-                              shape: const CircleBorder(),
-                              child: Image.asset('assets/icons/cross.png',
-                                  scale: 3.7),
-                            ),
-                          ],
-                        ))
+                                    }));
+                                  },
+                                  fillColor:
+                                      Theme.of(context).colorScheme.error,
+                                  padding: const EdgeInsets.all(6.0),
+                                  shape: const CircleBorder(),
+                                  child: Image.asset('assets/icons/cross.png',
+                                      scale: 3.7),
+                                ),
+                              ],
+                            ))
                       ],
                     ),
                   );
