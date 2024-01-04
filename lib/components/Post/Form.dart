@@ -207,9 +207,7 @@ class _PostFormState extends State<PostForm> {
                         _bar = selectedBar;
                       });
                     },
-                        _isEditing
-                            ? _bar?.name
-                            : null), // set default value to the bar of the initial post if editing
+                        _bar?.name),
                     buildPaddedDropdownInputField(
                         context, "Bier", Beer.getAll(), (selectedBeer) {
                       // block routing
@@ -219,9 +217,7 @@ class _PostFormState extends State<PostForm> {
                         _beer = selectedBeer;
                       });
                     },
-                        _isEditing
-                            ? _beer?.name
-                            : null), // set default value to the beer of the initial post if editing
+                        _beer?.name),
                     CustomRatingField(
                       initialRating: _rating,
                       onRatingSelected: (rating) {
