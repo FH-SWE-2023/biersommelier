@@ -213,6 +213,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                 ),
                 Expanded(
                     child: MapWidget(
+                  pos: bars.firstOrNull?.location,
                   key: mapKey,
                   bars: bars,
                   onTap: (LatLng loc) {
@@ -300,20 +301,26 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     bool testAddress =
                                         formKeyAddress.currentState!.validate();
 
+                                    Bar bar = widget.initialBar ??
+                                        Bar(
+                                          id: Bar.generateUuid(),
+                                          name: barNameController.text,
+                                          location: bars.first.location,
+                                          address: barAddressController.text,
+                                        );
+
+                                    await reverseGeocodeLatLng(
+                                      bars.first.location.latitude,
+                                      bars.first.location.longitude,
+                                    );
+
+                                    bar.address = barAddressController.text;
                                     // If all fields are valid, insert the bar into the database
                                     if (testLokal && testAddress) {
                                       if (editing) {
-                                        Bar bar = widget.initialBar!;
-                                        bar.name = barNameController.text;
-                                        bar.address = barAddressController.text;
                                         await Bar.update(bar);
                                       } else {
-                                        await Bar.insert(Bar(
-                                            id: Bar.generateUuid(),
-                                            name: barNameController.text,
-                                            location: bars.first.location,
-                                            address:
-                                                barAddressController.text));
+                                        await Bar.insert(bar);
                                       }
                                       Provider.of<BarChanged>(context,
                                               listen: false)

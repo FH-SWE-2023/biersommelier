@@ -35,8 +35,11 @@ class MapWidget extends StatefulWidget {
   /// A function that is called when a marker is tapped
   final Function(Bar)? onMarkerTap;
 
+  /// Map Start position
+  final LatLng? pos;
+
   const MapWidget(
-      {super.key, required this.bars, this.onTap, this.onMarkerTap});
+      {super.key, required this.bars, this.onTap, this.onMarkerTap, this.pos});
 
   @override
   State<MapWidget> createState() => MapWidgetState();
@@ -67,13 +70,11 @@ class MapWidgetState extends State<MapWidget> {
       } else {
         if (selectedBar == bar) return;
         // Hide the tooltip if it is visible above another marker
-        tooltipKey.currentState
-            ?.deactivate();
+        tooltipKey.currentState?.deactivate();
         // Set the selected bar to the tapped bar
         selectedBar = bar;
         // Show the tooltip above the tapped marker
-        tooltipKey.currentState
-            ?.ensureTooltipVisible();
+        tooltipKey.currentState?.ensureTooltipVisible();
         // Give haptic feedback
         HapticFeedback.lightImpact();
       }
@@ -95,7 +96,7 @@ class MapWidgetState extends State<MapWidget> {
         future: MapCenter.get(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            var mapCenter = snapshot.data!;
+            var mapCenter = widget.pos ?? snapshot.data!;
             return FutureBuilder<CacheStore>(
               future: _cacheStoreFuture,
               builder: (context, snapshot) {
