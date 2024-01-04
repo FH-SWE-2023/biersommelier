@@ -150,7 +150,8 @@ class Post {
   // Retrieve all Posts from the database.
   static Future<List<Post>> getAll() async {
     final db = await DatabaseConnector.database;
-    final List<Map<String, dynamic>> maps = await db.query('posts', limit: 500);
+    final List<Map<String, dynamic>> maps =
+        await db.query('posts', limit: 500, orderBy: 'date desc');
 
     return List.generate(maps.length, (i) {
       return Post.fromMap(maps[i]);
