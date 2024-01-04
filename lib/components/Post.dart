@@ -159,9 +159,11 @@ class Post extends StatelessWidget {
           SizedBox(
             height: MediaQuery.of(context).size.width,
             width: MediaQuery.of(context).size.width,
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: image,
+            child: ClipRect(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: image,
+              ),
             ),
           ),
           Padding(
