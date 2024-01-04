@@ -83,27 +83,38 @@ class Post extends StatelessWidget {
                         size: 22,
                       ),
                     ),
-                    Text(
-                      bar,
-                      style: const TextStyle(
-                        fontSize: 12,
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.4,
+                      ),
+                      child: Text(
+                        bar,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        softWrap: false,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    const Padding(
-                      padding: EdgeInsets.all(4),
-                      child: Icon(
-                        Icons.fiber_manual_record,
-                        size: 5,
-                        color: Color(0xFF946C00),
-                      ),
-                    ),
-                    Text(
-                      _getVocalTime(created),
-                      style: const TextStyle(
-                        color: Color(0xFF946C00),
-                      ),
-                    ),
+                    Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(
+                            Icons.fiber_manual_record,
+                            size: 5,
+                            color: Color(0xFF946C00),
+                          ),
+                        ),
+                        Text(
+                          _getVocalTime(created),
+                          style: const TextStyle(
+                            color: Color(0xFF946C00),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
                 IconButton(
@@ -175,7 +186,15 @@ class Post extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     RateBar(rating: rating),
-                    Text(beer),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.4,
+                      ),
+                      child: Text(
+                        beer,
+                        style: const TextStyle(overflow: TextOverflow.ellipsis),
+                      ),
+                    )
                   ],
                 ),
                 if (description != "")
