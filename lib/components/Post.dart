@@ -17,7 +17,7 @@ import 'package:biersommelier/router/rut/RutPath.dart';
 /// - [beer] Der Biername
 /// - [rating] Eine Integerzahl von 1 bis 5 wie gut es bewertet wurde
 class Post extends StatelessWidget {
-  final Image image;
+  final Image? image;
   final String description;
   final String bar;
   final DateTime created;
@@ -31,7 +31,7 @@ class Post extends StatelessWidget {
   const Post({
     super.key,
     required this.id,
-    required this.image,
+    this.image,
     required this.description,
     required this.bar,
     required this.created,
@@ -156,16 +156,17 @@ class Post extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.width,
-            width: MediaQuery.of(context).size.width,
-            child: ClipRect(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: image,
+          if (image != null)
+            SizedBox(
+              height: MediaQuery.of(context).size.width,
+              width: MediaQuery.of(context).size.width,
+              child: ClipRect(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: image,
+                ),
               ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
             child: Column(
@@ -177,24 +178,29 @@ class Post extends StatelessWidget {
                     Text(beer),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        description,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          height: 1.4,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        softWrap: true,
-                      ),
-                    )
-                  ],
-                )
+                if (description != "")
+                  Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              description,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                height: 1.4,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              softWrap: true,
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  )
               ],
             ),
           )

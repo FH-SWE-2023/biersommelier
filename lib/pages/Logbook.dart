@@ -87,8 +87,11 @@ class _LogbookState extends State<Logbook> {
                                             bar: bar.name,
                                             beer: beer.name,
                                             created: post.date,
-                                            description: post.description,
-                                            image: image,
+                                            description:
+                                                post.description.trim(),
+                                            image: post.imageId != ""
+                                                ? image
+                                                : null,
                                             rating: post.rating,
                                             onDelete: () => setState(() {}),
                                           ),
