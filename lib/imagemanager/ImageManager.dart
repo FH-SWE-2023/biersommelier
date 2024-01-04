@@ -69,10 +69,47 @@ class ImageManager {
     }
   }
 
-  /// Opens the image picker and returns the picked image
-  static Future<File> pickImage() async {
+  static Future<File> pickImage(BuildContext context) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    // Show dialog to ask user for source type
+    final ImageSource? source = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) => SimpleDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text('Quelle auswählen'),
+        children: <Widget>[
+          SimpleDialogOption(
+            child: const Row(
+              children: [
+                Icon(Icons.camera),
+                SizedBox(width: 16), // Add space between icon and text
+                Text('Kamera'),
+              ],
+            ),
+            onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+          ),
+          SimpleDialogOption(
+            child: const Row(
+              children: [
+                Icon(Icons.photo_library),
+                SizedBox(width: 16), // Add space between icon and text
+                Text('Gallerie'),
+              ],
+            ),
+            onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+          ),
+        ],
+      ),
+    );
+
+    if (source == null) {
+      // User cancelled the dialog
+      throw Exception('No image selected');
+    }
+
+    final XFile? image = await picker.pickImage(source: source);
     if (image != null) {
       return File(image.path);
     } else {

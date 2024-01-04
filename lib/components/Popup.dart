@@ -127,7 +127,7 @@ class Popup extends StatelessWidget {
               ),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                    const EdgeInsets.symmetric(vertical: 15),
                 child: Material(
                   color: Colors.transparent,
                   child: Column(
@@ -135,7 +135,7 @@ class Popup extends StatelessWidget {
                     children: [
                       description != null
                           ? Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.fromLTRB(30, 0, 10, 30),
                               child: Text(
                                 description!,
                                 style: const TextStyle(fontSize: 20),
@@ -149,6 +149,10 @@ class Popup extends StatelessWidget {
                           for (Option option in options) {
                             list.add(
                               TextButton.icon(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: option.color,
+                                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                                ),
                                 onPressed: option.callback,
                                 icon: Image.asset(
                                   option.icon,
