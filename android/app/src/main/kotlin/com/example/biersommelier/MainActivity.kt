@@ -1,4 +1,4 @@
-package com.example.biersommelier
+package de.fhaachen.biersommelier
 
 import io.flutter.embedding.android.FlutterActivity
 

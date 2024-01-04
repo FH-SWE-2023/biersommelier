@@ -23,8 +23,6 @@ class _LogbookState extends State<Logbook> {
 
   @override
   Widget build(BuildContext context) {
-    ImageManager im = ImageManager();
-
     return SafeArea(
         child: Column(children: [
       const Header(
@@ -89,8 +87,11 @@ class _LogbookState extends State<Logbook> {
                                             bar: bar.name,
                                             beer: beer.name,
                                             created: post.date,
-                                            description: post.description,
-                                            image: image,
+                                            description:
+                                                post.description.trim(),
+                                            image: post.imageId != ""
+                                                ? image
+                                                : null,
                                             rating: post.rating,
                                             onDelete: () => setState(() {}),
                                           ),
@@ -111,7 +112,7 @@ class _LogbookState extends State<Logbook> {
                                     }
                                   },
                                   future: Future.wait([
-                                    im.getImageByKey(post.imageId),
+                                    ImageManager.getImageByKey(post.imageId),
                                     Bar.get(post.barId),
                                     Beer.get(post.beerId),
                                   ])));

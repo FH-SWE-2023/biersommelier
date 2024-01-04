@@ -7,21 +7,23 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 class ImageManager {
   /// Returns the local path of the app
-  Future<String> get _localPath async {
+  static Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
   /// Returns the image file with the given [key]
-  Future<File> getImageFileByKey(String key) async {
+  static Future<File> getImageFileByKey(String key) async {
     final path = await _localPath;
     return File('$path/$key.jpg');
   }
 
-  Future<Image> getImageByKey(String key) async {
+  static Future<Image> getImageByKey(String key) async {
     final file = await getImageFileByKey(key);
     if (await file.exists()) {
       return Image.file(file);
@@ -40,7 +42,7 @@ class ImageManager {
   }
 
   /// Saves the given [image] and returns the generated key
-  Future<String> saveImage(File image) async {
+  static Future<String> saveImage(File image) async {
     final path = await _localPath;
     const uuid = Uuid();
     String key = uuid.v4();
@@ -54,16 +56,63 @@ class ImageManager {
   /// Deletes the image with the given [key]
   /// Returns a Future<FileSystemEntity> that completes with this FileSystemEntity when the deletion is done.
   /// If the FileSystemEntity cannot be deleted, the future completes with an exception.
-  Future<FileSystemEntity> deleteImage(String key) async {
+  static Future<FileSystemEntity> deleteImage(String key) async {
     final path = await _localPath;
     return File('$path/$key.jpg').delete();
   }
 
+  /// Use the native android image picker (available on Android 13+) when calling pickImage().
+  /// This function should be called once when the app is initialized.
+  static void setupAndroidImagePicker() {
+    final ImagePickerPlatform imagePickerImplementation =
+        ImagePickerPlatform.instance;
+    if (imagePickerImplementation is ImagePickerAndroid) {
+      imagePickerImplementation.useAndroidPhotoPicker = true;
+    }
+  }
 
   /// Opens the image picker and returns the cropped image
-  Future<CroppedFile> pickAndCropImage(BuildContext context, {bool onlySquareCrop = false}) async {
+  static Future<CroppedFile> pickAndCropImage(BuildContext context, {bool onlySquareCrop = false}) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    // Show dialog to ask user for source type
+    final ImageSource? source = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) => SimpleDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text('Quelle auswählen'),
+        children: <Widget>[
+          SimpleDialogOption(
+            child: const Row(
+              children: [
+                Icon(Icons.camera),
+                SizedBox(width: 16), // Add space between icon and text
+                Text('Kamera'),
+              ],
+            ),
+            onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+          ),
+          SimpleDialogOption(
+            child: const Row(
+              children: [
+                Icon(Icons.photo_library),
+                SizedBox(width: 16), // Add space between icon and text
+                Text('Gallerie'),
+              ],
+            ),
+            onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+          ),
+        ],
+      ),
+    );
+
+    if (source == null) {
+      // User cancelled the dialog
+      throw Exception('No image selected');
+    }
+
+    final XFile? image = await picker.pickImage(source: source);
     if (image != null) {
       final CroppedFile? croppedFile = await _cropImage(image, context, onlySquareCrop: onlySquareCrop);
       if (croppedFile == null) {
@@ -75,7 +124,7 @@ class ImageManager {
     }
   }
 
-  Future<CroppedFile?> _cropImage(XFile file, BuildContext context, {bool onlySquareCrop = false}) async {
+  static Future<CroppedFile?> _cropImage(XFile file, BuildContext context, {bool onlySquareCrop = false}) async {
     final CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: file.path,
       aspectRatio: onlySquareCrop ? const CropAspectRatio(ratioX: 1, ratioY: 1) : null,

@@ -4,22 +4,22 @@ import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:flutter/material.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 
-class ImagePickerWidget extends StatefulWidget {
+class ImagePicker extends StatefulWidget {
   final Function(File?) onImageSelected;
 
   File? image;
   final bool onlySquareCrop;
 
-  ImagePickerWidget({super.key, required this.onImageSelected, this.image, this.onlySquareCrop = false});
+  ImagePicker({super.key, required this.onImageSelected, this.image, this.onlySquareCrop = false});
 
   @override
-  _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
+  _ImagePickerState createState() => _ImagePickerState();
 }
 
-class _ImagePickerWidgetState extends State<ImagePickerWidget> {
+class _ImagePickerState extends State<ImagePicker> {
   Future getImage() async {
     try {
-      final pickedFile = await ImageManager().pickAndCropImage(context, onlySquareCrop: widget.onlySquareCrop);
+      final pickedFile = await ImageManager.pickAndCropImage(context, onlySquareCrop: widget.onlySquareCrop);
 
       final _i = File(pickedFile.path);
       if (_i.lengthSync() > 50 * 1024 * 1024) {
@@ -58,6 +58,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
     final result = await showMenu(
       context: context,
+      constraints: const BoxConstraints(maxWidth: 180),
       position: positionRelativeRect,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -104,6 +105,24 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     if (result != null) {}
   }
 
+  ImageProvider getImageProvider() {
+    // Attempt to determine if the image is a local file or an asset
+    final String imagePath = widget.image!.path;
+    try {
+      // Check if the path is a local file
+      final File imageFile = File(imagePath);
+      if (imageFile.existsSync()) {
+        return FileImage(imageFile);  // Use the image as a local file
+      }
+    } catch (e) {
+      // If there's an error, assume the path references an asset
+    }
+
+    var fileName = imagePath.split('/').last;
+    fileName = fileName.replaceAll('.jpg', '.png');
+    return AssetImage('assets/demo/$fileName');
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -121,12 +140,15 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           color: Theme.of(context).colorScheme.onPrimary,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: widget.image == null
-            ? Image.asset(
-                'assets/icons/circle_plus.png',
-                scale: 2,
-              )
-            : Image.file(widget.image!, fit: BoxFit.cover),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: widget.image == null
+              ? Image.asset(
+                  'assets/icons/circle_plus.png',
+                  scale: 2,
+                )
+              : Image(image: getImageProvider(), fit: BoxFit.cover),
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:biersommelier/components/ExploreTabList.dart';
 import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/MapWidget.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
+import 'package:biersommelier/router/Rut.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:biersommelier/pages/AddBeer.dart';
 import 'package:biersommelier/pages/AddBar.dart';
@@ -19,6 +20,7 @@ class Explore extends StatefulWidget {
 
 class _ExploreState extends State<Explore> {
   final ValueNotifier<bool> _tabListExpanded = ValueNotifier<bool>(false);
+  final GlobalKey<MapWidgetState> mapKey = GlobalKey<MapWidgetState>();
 
   @override
   void initState() {
@@ -52,11 +54,11 @@ class _ExploreState extends State<Explore> {
                           PopupMenuItem(
                             value: 'addBar',
                             onTap: () {
-                              OverlayEntry? addPostOverlay;
-                              addPostOverlay = createAddBarOverlay(context, () {
-                                addPostOverlay?.remove();
-                              });
-                              Overlay.of(context).insert(addPostOverlay);
+                              OverlayEntry? addBarOverlay;
+                              addBarOverlay = createAddBarOverlay(context, () {
+                                Rut.of(context).showOverlay(null);
+                              }, null);
+                              Rut.of(context).showOverlayEntry(addBarOverlay);
                             },
                             child: Row(
                               children: [
@@ -72,10 +74,13 @@ class _ExploreState extends State<Explore> {
                           PopupMenuItem(
                             value: 'addBeer',
                             onTap: () {
-                              OverlayEntry? addPostOverlay;
-                              addPostOverlay = createAddBeerOverlay(
-                                  context, () => addPostOverlay?.remove());
-                              Overlay.of(context).insert(addPostOverlay);
+                              OverlayEntry? addBeerOverlay;
+                              addBeerOverlay = createAddBeerOverlay(
+                                  context,
+                                  () => Rut.of(context).showOverlay(null),
+                                  null,
+                                  null);
+                              Rut.of(context).showOverlayEntry(addBeerOverlay);
                             },
                             child: Row(
                               children: [
@@ -104,6 +109,7 @@ class _ExploreState extends State<Explore> {
                       } else if (snapshot.hasData) {
                         final bars = snapshot.data!;
                         return MapWidget(
+                          key: mapKey,
                           bars: bars,
                         );
                       } else {
@@ -125,6 +131,7 @@ class _ExploreState extends State<Explore> {
                 Positioned(
                   bottom: 0,
                   child: AnimatedContainer(
+                    curve: Curves.easeInOutCubic,
                     duration: const Duration(milliseconds: 500),
                     height: _tabListExpanded.value
                         ? MediaQuery.of(context).size.height * 0.7
@@ -134,17 +141,24 @@ class _ExploreState extends State<Explore> {
                       clipBehavior: Clip.none,
                       children: [
                         GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () {
                             _tabListExpanded.value = true;
                           },
                           child: AbsorbPointer(
                             absorbing: !_tabListExpanded.value,
                             child: Container(
-                                clipBehavior: Clip.none,
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                 ),
-                                child: const ExploreBar()),
+                                child: ExploreBar(onBarAddressClick: (bar) {
+                                  _tabListExpanded.value = false;
+                                  mapKey.currentState?.setSelectedBar(bar);
+                                  mapKey.currentState?.mapController.move(
+                                      bar.location,
+                                      mapKey.currentState!.mapController.camera
+                                          .zoom);
+                                })),
                           ),
                         ),
                         Positioned.fill(
@@ -157,8 +171,7 @@ class _ExploreState extends State<Explore> {
                                       !_tabListExpanded.value;
                                 },
                                 elevation: 1,
-                                fillColor:
-                                    Theme.of(context).colorScheme.white,
+                                fillColor: Theme.of(context).colorScheme.white,
                                 padding: const EdgeInsets.all(3.0),
                                 shape: const CircleBorder(),
                                 child: Icon(

@@ -1,7 +1,7 @@
 import 'package:biersommelier/router/Rut.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import  '../theme/theme.dart' as theme;
+import '../theme/theme.dart' as theme;
 
 final Rut rut = Rut();
 

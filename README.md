@@ -1,16 +1,27 @@
-# biersommelier
+# Biersommelier
 
-A new Flutter project.
+Eine App zum notieren von Bieren.
 
-## Getting Started
+![Lets get drunk](./lgd.gif)
 
-This project is a starting point for a Flutter application.
+## Grund der App
 
-A few resources to get you started if this is your first Flutter project:
+Diese App wird während des dritten Semesters an der Fh-Aachen für das SWE Praktikum erstellt.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Anforderungen
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Bauen
+
+Die App benötigt [Flutter](https://flutter.dev/) sowie die Android SDK mit Mindestversion 33. Um diese komfotabel zu installieren kann [Android Studio](https://developer.android.com/studio) verwendet werden.
+
+### Mobil
+
+Die App benötigt eine Android Version von 11 oder höher oder die iOS Version 16 oder höher.
+
+## Bauen der App
+
+Die App kann auf Windows, Linux sowie Mac gebaut werden. Um eine Apk zu erstellen kann dieser Befehl genutzt werden
+
+```bash
+flutter build apk
+```

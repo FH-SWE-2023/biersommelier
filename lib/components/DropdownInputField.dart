@@ -1,6 +1,6 @@
 import 'package:biersommelier/components/CustomTextField.dart';
-import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 abstract class DropdownOption {
   final String name;
@@ -26,7 +26,7 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
   /// Default value of the input field
   final String? defaultValue;
 
-  const DropdownInputField({
+  DropdownInputField({
     super.key,
     required this.labelText,
     required this.optionsList,
@@ -36,86 +36,45 @@ class DropdownInputField<Option extends DropdownOption> extends StatelessWidget 
 
   @override
   Widget build(BuildContext context) {
-    return Autocomplete<Option>(
-      displayStringForOption: (Option option) => option.name,
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        return optionsList.where((Option option) {
-          return (option.name + (option.address ?? ""))
-              .toLowerCase()
-              .contains(textEditingValue.text.toLowerCase());
-        });
-      },
-      fieldViewBuilder: (
-          BuildContext context,
-          TextEditingController controller,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted,
-          ) {
-        final textEditingCon = controller;
+    return TypeAheadField(
+      builder: (context, TextEditingController controller, FocusNode focusNode) {
         if (defaultValue != null) {
-          textEditingCon.text = defaultValue!;
+          controller.text = defaultValue!;
+          focusNode.unfocus();
         }
         return TextFormField(
-          controller: textEditingCon,
+          controller: controller,
           focusNode: focusNode,
-          onFieldSubmitted: (String value) {
-            onFieldSubmitted();
-          },
+          autofocus: false,
           decoration: getCustomInputDecoration(context, labelText),
         );
       },
-      optionsViewBuilder: (
-          BuildContext context,
-          AutocompleteOnSelected<Option> onSelected,
-          Iterable<Option> options,
-          ) {
-        return Align(
-          alignment: Alignment.topLeft,
-          child: Container(
-            padding: const EdgeInsets.only(top: 3),
-            child: Material(
-              elevation: 4.0,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      suggestionsCallback: (pattern) async {
+        return optionsList.where((Option option) {
+          return (option.name + (option.address ?? ""))
+              .toLowerCase()
+              .contains(pattern.toLowerCase());
+        }).toList();
+      },
+      itemBuilder: (context, Option option) {
+        return ListTile(
+          dense: true,
+          title: Row(
+            children: [
+              Image.asset('assets/icons/${option.icon}', width: 21, color: Theme.of(context).colorScheme.secondary),
+              const SizedBox(width: 16),
+              Flexible(
+                child: Text("${option.name} ", style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, overflow: TextOverflow.ellipsis)),
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.lightBorder,
-                    style: BorderStyle.solid,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  children: options.map((Option option) => GestureDetector(
-                    onTap: () {
-                      onSelected(option);
-                      onOptionSelected(option);
-                    },
-                    child: ListTile(
-                      dense: true,
-                      title: Row(
-                        children: [
-                          Image.asset('assets/icons/${option.icon}', width: 21, color: Theme.of(context).colorScheme.secondary),
-                          const SizedBox(width: 16),
-                          Flexible(
-                            child: Text("${option.name} ", style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, overflow: TextOverflow.ellipsis)),
-                          ),
-                          Flexible(
-                              child: Text(option.address ?? "", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 16, overflow: TextOverflow.ellipsis))
-                          ),
-                        ],
-                      ),
-                    ),
-                  )).toList(),
-                ),
+              Flexible(
+                  child: Text(option.address ?? "", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 16, overflow: TextOverflow.ellipsis))
               ),
-            ),
+            ],
           ),
         );
+      },
+      onSelected: (Option option) {
+        onOptionSelected(option);
       },
     );
   }

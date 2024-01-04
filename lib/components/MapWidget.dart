@@ -59,6 +59,36 @@ class MapWidgetState extends State<MapWidget> {
 
   final tooltipKey = GlobalKey<TooltipState>();
 
+  /// Set the selected bar
+  void setSelectedBar(Bar bar) {
+    setState(() {
+      if (widget.onMarkerTap != null) {
+        widget.onMarkerTap!(bar);
+      } else {
+        if (selectedBar == bar) return;
+        // Hide the tooltip if it is visible above another marker
+        tooltipKey.currentState
+            ?.deactivate();
+        // Set the selected bar to the tapped bar
+        selectedBar = bar;
+        // Show the tooltip above the tapped marker
+        tooltipKey.currentState
+            ?.ensureTooltipVisible();
+        // Give haptic feedback
+        HapticFeedback.lightImpact();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Close the cache store when the widget is disposed
+    _cacheStoreFuture.then((cacheStore) => cacheStore.close());
+    // Hide the tooltip if it is visible
+    tooltipKey.currentState?.deactivate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<LatLng>(
@@ -114,23 +144,7 @@ class MapWidgetState extends State<MapWidget> {
                                       point: bar.location,
                                       child: GestureDetector(
                                           onTap: () {
-                                            setState(() {
-                                              if (widget.onMarkerTap != null) {
-                                                widget.onMarkerTap!(bar);
-                                              } else {
-                                                if (selectedBar == bar) return;
-                                                // Hide the tooltip if it is visible above another marker
-                                                tooltipKey.currentState
-                                                    ?.deactivate();
-                                                // Set the selected bar to the tapped bar
-                                                selectedBar = bar;
-                                                // Show the tooltip above the tapped marker
-                                                tooltipKey.currentState
-                                                    ?.ensureTooltipVisible();
-                                                // Give haptic feedback
-                                                HapticFeedback.lightImpact();
-                                              }
-                                            });
+                                            setSelectedBar(bar);
                                           },
                                           child: Tooltip(
                                             // Show the tooltip programmatically if the marker is selected

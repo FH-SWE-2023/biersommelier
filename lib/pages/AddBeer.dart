@@ -5,6 +5,7 @@ import 'package:biersommelier/components/ImagePicker.dart';
 import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/providers/BeerChanged.dart';
+import 'package:biersommelier/router/PageManager.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,35 +13,20 @@ import 'package:provider/provider.dart';
 import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
 
-///
-/// Funktion to Close the add Beer Overlay with warning Dialog
-///
-void showCancelConfirmationDialog(
-    BuildContext context, Function closeOverlay, bool formIsEmpty) {
-  if (formIsEmpty) {
-    closeOverlay();
-    return;
-  }
-  OverlayEntry? popUpOverlay;
-  popUpOverlay = OverlayEntry(
-      opaque: false,
-      maintainState: false,
-      builder: (context) => Popup.continueWorking(pressContinue: () {
-            popUpOverlay?.remove();
-          }, pressDelete: () {
-            popUpOverlay?.remove();
-            closeOverlay();
-          }));
-  Overlay.of(context).insert(popUpOverlay);
-}
+import 'package:biersommelier/router/Rut.dart';
 
 ///
 /// Overlay to add a Beer
 ///
-OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
-  var beerNameController = TextEditingController(text: "");
+OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay, Beer? initialBeer, File? initialImage) {
+  final editing = initialBeer != null;
+
+  var beerNameController = TextEditingController(text: editing ? initialBeer!.name : "");
   final _formKey = GlobalKey<FormState>();
-  File? selectedImage;
+
+  File? selectedImage = initialImage;
+
+  Rut rut = Rut.of(context);
 
   return OverlayEntry(
     opaque: false,
@@ -55,13 +41,23 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Header(
-                title: "Bier hinzufügen",
+                title: editing ? "Bier bearbeiten" : "Bier hinzufügen",
                 backgroundColor: Theme.of(context).colorScheme.white,
                 icon: HeaderIcon.back,
                 onBack: () {
-                  showCancelConfirmationDialog(
-                      context, closeOverlay, beerNameController.text.isEmpty);
-                  //Go Back
+                  if (beerNameController.text.isEmpty) {
+                    closeOverlay();
+                    return;
+                  }
+                  rut.showDialog(Popup.continueWorking(
+                      pressContinue: () {
+                        rut.showDialog(null);
+                      },
+                      pressDelete: () {
+                        rut.showDialog(null);
+                        closeOverlay();
+                      }
+                  ));
                 },
               ),
               Material(
@@ -76,98 +72,129 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay) {
                           alignment: Alignment.topLeft,
                           child: const Text("Bier",
                               style: TextStyle(
-                                  fontSize: 16,
-                              )
-                      )),
+                                fontSize: 16,
+                              ))),
                       Form(
                         key: _formKey,
                         child: Column(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-                              child: CustomTextFormField(
-                                controller: beerNameController,
-                                labelText: "Bier",
-                                context: context,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bier muss einen Namen haben';
-                                  }
-                                  return null;
-                                },
-                              )
-                            ),
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                                child: CustomTextFormField(
+                                  controller: beerNameController,
+                                  labelText: "Bier",
+                                  context: context,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Bier muss einen Namen haben';
+                                    }
+                                    return null;
+                                  },
+                                )),
                             // Other widgets...
                           ],
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("Foto hinzufügen",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge),
-                                    ),
-                                    ImagePickerWidget(onImageSelected: (file) {
-                                      selectedImage = file;
-                                    }, onlySquareCrop: true,)
-                                  ])),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              RawMaterialButton(
-                                onPressed: () async {
-                                  // Check input
-                                  if (_formKey.currentState!.validate()) {
-                                    if (selectedImage != null) {
-                                      var imageId = await ImageManager()
-                                          .saveImage(selectedImage!);
-                                      Beer.insert(Beer(
-                                          id: Beer.generateUuid(),
-                                          name: beerNameController.text,
-                                          imageId: imageId));
-                                    } else {
-                                      Beer.insert(Beer(
-                                          id: Beer.generateUuid(),
-                                          name: beerNameController.text,
-                                          imageId: ""));
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Foto hinzufügen",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  ImagePicker(onImageSelected: (file) {
+                                    selectedImage = file;
+                                  }, image: selectedImage, onlySquareCrop: true,)
+                                ]),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                RawMaterialButton(
+                                  onPressed: () async {
+                                    // Check input
+                                    if (_formKey.currentState!.validate()) {
+                                      if (selectedImage != null) {
+                                        var imageId = "";
+                                        if (selectedImage == initialImage) {
+                                          imageId = initialBeer!.imageId;
+                                        } else {
+                                          if (initialImage != null) {
+                                            await ImageManager.deleteImage(initialBeer!.imageId);
+                                          }
+                                          imageId = await ImageManager.saveImage(selectedImage!);
+                                        }
+                                        Beer.insert(Beer(
+                                            id: editing ? initialBeer!.id : Beer.generateUuid(),
+                                            name: beerNameController.text,
+                                            imageId: imageId));
+                                      } else {
+                                        if (initialImage != null) {
+                                          await ImageManager.deleteImage(initialBeer!.imageId);
+                                        }
+                                        Beer.insert(Beer(
+                                            id: editing ? initialBeer!.id : Beer.generateUuid(),
+                                            name: beerNameController.text,
+                                            imageId: ""));
+                                      }
+                                      Provider.of<BeerChanged>(context,
+                                              listen: false)
+                                          .notify();
+                                      closeOverlay();
                                     }
-                                    Provider.of<BeerChanged>(context, listen: false).notify();
-                                    closeOverlay();
-                                  }
-                                },
-                                fillColor:
-                                    Theme.of(context).colorScheme.success,
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(6.0),
-                                child: Image.asset('assets/icons/checkmark.png',
-                                    scale: 3.7),
-                              ),
-                              RawMaterialButton(
-                                onPressed: () {
-                                  showCancelConfirmationDialog(
-                                      context,
-                                      closeOverlay,
-                                      beerNameController.text.isEmpty);
-                                },
-                                fillColor: Theme.of(context).colorScheme.error,
-                                padding: const EdgeInsets.all(6.0),
-                                shape: const CircleBorder(),
-                                child: Image.asset('assets/icons/cross.png',
-                                    scale: 3.7),
-                              ),
-                            ],
-                          ),
-                        ],
+                                  },
+                                  fillColor:
+                                      Theme.of(context).colorScheme.success,
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(6.0),
+                                  constraints: const BoxConstraints(
+                                      maxWidth: 48, maxHeight: 48),
+                                  child: Image.asset(
+                                      'assets/icons/checkmark.png',
+                                      scale: 3.7),
+                                ),
+                                const SizedBox(width: 16),
+                                RawMaterialButton(
+                                  onPressed: () {
+                                    if (beerNameController.text.isEmpty) {
+                                      closeOverlay();
+                                      return;
+                                    }
+                                    rut.showDialog(Popup.continueWorking(
+                                        pressContinue: () {
+                                          rut.showDialog(null);
+                                        },
+                                        pressDelete: () {
+                                          rut.showDialog(null);
+                                          closeOverlay();
+                                        }
+                                    ));
+                                  },
+                                  fillColor:
+                                      Theme.of(context).colorScheme.error,
+                                  padding: const EdgeInsets.all(6.0),
+                                  constraints: const BoxConstraints(
+                                      maxWidth: 48, maxHeight: 48),
+                                  shape: const CircleBorder(),
+                                  child: Image.asset('assets/icons/cross.png',
+                                      scale: 3.7),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),

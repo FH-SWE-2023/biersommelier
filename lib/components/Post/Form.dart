@@ -69,12 +69,12 @@ class _PostFormState extends State<PostForm> {
       });
 
       // fill image
-      ImageManager()
-          .getImageFileByKey(widget.initialPost!.imageId)
-          .then((image) {
-        setState(() {
-          _image = image;
-        });
+      ImageManager.getImageFileByKey(widget.initialPost!.imageId).then((image) {
+        if (widget.initialPost!.imageId != "") {
+          setState(() {
+            _image = image;
+          });
+        }
       });
 
       // Bar name
@@ -95,7 +95,7 @@ class _PostFormState extends State<PostForm> {
   }
 
   Future<void> _submitForm() async {
-    if (_descriptionController.text.isEmpty || _rating == 0) {
+    if (_rating == 0) {
       context.showToast(
         Toast.levelToast(
           message: "Bitte fülle alle Felder aus!",
@@ -131,7 +131,7 @@ class _PostFormState extends State<PostForm> {
     String imageTag = '';
 
     if (_image != null) {
-      imageTag = await ImageManager().saveImage(_image!);
+      imageTag = await ImageManager.saveImage(_image!);
     }
 
     // Create or update a Post object
@@ -156,12 +156,21 @@ class _PostFormState extends State<PostForm> {
 
     // show toast
     if (context.mounted) {
-      context.showToast(
-        Toast.levelToast(
-          message: "Beitrag hinzugefügt",
-          level: ToastLevel.success,
-        ),
-      );
+      if (_isEditing) {
+        context.showToast(
+          Toast.levelToast(
+            message: "Beitrag gespeichert",
+            level: ToastLevel.success,
+          ),
+        );
+      } else {
+        context.showToast(
+          Toast.levelToast(
+            message: "Beitrag hinzugefügt",
+            level: ToastLevel.success,
+          ),
+        );
+      }
     }
 
     widget.onSubmit(post);
@@ -207,9 +216,7 @@ class _PostFormState extends State<PostForm> {
                         _bar = selectedBar;
                       });
                     },
-                        _isEditing
-                            ? _bar?.name
-                            : null), // set default value to the bar of the initial post if editing
+                        _bar?.name),
                     buildPaddedDropdownInputField(
                         context, "Bier", Beer.getAll(), (selectedBeer) {
                       // block routing
@@ -219,9 +226,7 @@ class _PostFormState extends State<PostForm> {
                         _beer = selectedBeer;
                       });
                     },
-                        _isEditing
-                            ? _beer?.name
-                            : null), // set default value to the beer of the initial post if editing
+                        _beer?.name),
                     CustomRatingField(
                       initialRating: _rating,
                       onRatingSelected: (rating) {
@@ -309,7 +314,7 @@ class _PostFormState extends State<PostForm> {
                             SizedBox(
                                 width: MediaQuery.of(context).size.width / 2.5,
                                 height: MediaQuery.of(context).size.width / 2.5,
-                                child: ImagePickerWidget(
+                                child: ImagePicker(
                                   onImageSelected: (file) {
                                     // block routing
                                     context.blockRouting();
