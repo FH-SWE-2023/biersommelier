@@ -156,12 +156,21 @@ class _PostFormState extends State<PostForm> {
 
     // show toast
     if (context.mounted) {
-      context.showToast(
-        Toast.levelToast(
-          message: "Beitrag hinzugefügt",
-          level: ToastLevel.success,
-        ),
-      );
+      if (_isEditing) {
+        context.showToast(
+          Toast.levelToast(
+            message: "Beitrag gespeichert",
+            level: ToastLevel.success,
+          ),
+        );
+      } else {
+        context.showToast(
+          Toast.levelToast(
+            message: "Beitrag hinzugefügt",
+            level: ToastLevel.success,
+          ),
+        );
+      }
     }
 
     widget.onSubmit(post);
