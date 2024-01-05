@@ -64,11 +64,13 @@ class Bar extends DropdownOption {
     return '''
       INSERT INTO bars (id, name, location, address, isFavorite)
       VALUES
-        ('${generateUuid()}', 'Billiard Bar Downtown', '(50.776346, 6.085887)', 'Viktoriastraße 91, 52066 Aachen', 0),
-        ('${generateUuid()}', 'Billiard Verein Aachen', '(50.773346, 6.081887)', 'Rote Sträse 39, 52066 Aachen', 0),
-        ('${generateUuid()}', 'Lach Club Aachen', '(50.795346, 6.073887)', 'Blastraße 3, 52066 Aachen', 0),
-        ('${generateUuid()}', 'Mizu Bar Aachen', '(50.775346, 6.083887)', 'Oralinastraße 69, 52066 Aachen', 0),
-        ('${generateUuid()}', 'Ver-pufft', '(50.779346, 6.081887)', 'Ottstraße 420, 52066 Aachen', 0)
+         ('${generateUuid()}', 'Billiard Bar Downtown', '(50.7732127479416, 6.107242462345631)', 'Viktoriastraße 39, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Im Backhaus', '(50.761425766127815, 6.091296865603559)', 'Altdorfstraße 19, 52066 Aachen', 0),
+        ('${generateUuid()}', 'Nikas Bar', '(50.77588455893767, 6.087706958103683)', 'Büchel 53, 52062 Aachen', 0),
+        ('${generateUuid()}', 'Sausalitos', '(50.776645159951954, 6.084402846412179)', 'Markt 52-54, 52062 Aachen', 0),
+        ('${generateUuid()}', 'Domkeller', '(50.7756492878807, 6.0853821698739825)', 'Hof 1, 52062 Aachen', 0),
+        ('${generateUuid()}', 'The Wingman', '(50.77637377249416, 6.080851467269063)', 'Annuntiatenbach 3, 52062 Aachen', 0),
+        ('${generateUuid()}', 'Die Kiste', '(50.77574490697329, 6.086701708498426)', 'Büchel 36, 52062 Aachen', 0)
     ''';
   }
 
