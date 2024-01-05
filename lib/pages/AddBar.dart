@@ -316,6 +316,7 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     );
 
                                     bar.address = barAddressController.text;
+                                    bar.name = barNameController.text;
                                     // If all fields are valid, insert the bar into the database
                                     if (testLokal && testAddress) {
                                       if (editing) {
