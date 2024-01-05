@@ -285,6 +285,12 @@ class ExploreList extends StatelessWidget {
                                   Beer.toggleFavorite(item.id)
                                       .then((_) => onChanged()); // Update here
                                 }
+                                context.showToast(
+                                  Toast.levelToast(
+                                    message: "Favoritstatus geändert!",
+                                    level: ToastLevel.success,
+                                  ),
+                                );
                                 Rut.of(context).showDialog(null);
                               },
                               pressDelete: () {

@@ -14,7 +14,8 @@ import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
 import 'package:provider/provider.dart';
 
-import '../router/Rut.dart';
+import 'package:biersommelier/router/Rut.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 
 /// Create an overlay for adding a bar
 OverlayEntry createAddBarOverlay(
@@ -322,9 +323,16 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                       } else {
                                         await Bar.insert(bar);
                                       }
-                                      Provider.of<BarChanged>(context,
-                                              listen: false)
-                                          .notify();
+
+                                      Provider.of<BarChanged>(context, listen: false).notify();
+
+                                      rut.showToast(
+                                        Toast.levelToast(
+                                          message: "Bar ${editing ? 'bearbeitet' : 'hinzugefügt'}!",
+                                          level: ToastLevel.success,
+                                        ),
+                                      );
+
                                       widget.closeOverlay();
                                     } else {
                                       submitAttempted = true;

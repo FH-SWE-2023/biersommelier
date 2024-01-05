@@ -14,6 +14,7 @@ import 'package:biersommelier/components/CustomTextFormField.dart';
 import 'package:biersommelier/components/Popup.dart';
 
 import 'package:biersommelier/router/Rut.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 
 ///
 /// Overlay to add a Beer
@@ -149,9 +150,14 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay, B
                                             name: beerNameController.text,
                                             imageId: ""));
                                       }
-                                      Provider.of<BeerChanged>(context,
-                                              listen: false)
-                                          .notify();
+                                      Provider.of<BeerChanged>(context, listen: false).notify();
+
+                                      rut.showToast(
+                                        Toast.levelToast(
+                                          message: "Bier ${editing ? 'bearbeitet' : 'hinzugefügt'}!",
+                                          level: ToastLevel.success,
+                                        ),
+                                      );
                                       closeOverlay();
                                     }
                                   },
