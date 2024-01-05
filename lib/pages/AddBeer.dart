@@ -7,6 +7,7 @@ import 'package:biersommelier/database/entities/Beer.dart';
 import 'package:biersommelier/imagemanager/ImageManager.dart';
 import 'package:biersommelier/providers/BeerChanged.dart';
 import 'package:biersommelier/router/PageManager.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -160,6 +161,23 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay,
                                                 name: beerNameController.text,
                                                 imageId: ""));
                                           }
+
+                                          if (editing) {
+                                            rut.showToast(
+                                              Toast.levelToast(
+                                                message: "Eintrag gespeichert",
+                                                level: ToastLevel.success,
+                                              ),
+                                            );
+                                          } else {
+                                            rut.showToast(
+                                              Toast.levelToast(
+                                                message: "Bier hinzugefügt",
+                                                level: ToastLevel.success,
+                                              ),
+                                            );
+                                          }
+
                                           Provider.of<BeerChanged>(context,
                                                   listen: false)
                                               .notify();

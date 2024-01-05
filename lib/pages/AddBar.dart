@@ -4,6 +4,7 @@ import 'package:biersommelier/components/Header.dart';
 import 'package:biersommelier/components/MapWidget.dart';
 import 'package:biersommelier/database/entities/Bar.dart';
 import 'package:biersommelier/providers/BarChanged.dart';
+import 'package:biersommelier/router/rut/toast/Toast.dart';
 import 'package:biersommelier/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -318,8 +319,20 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                     // If all fields are valid, insert the bar into the database
                                     if (testLokal && testAddress) {
                                       if (editing) {
+                                        rut.showToast(
+                                          Toast.levelToast(
+                                            message: "Eintrag gespeichert",
+                                            level: ToastLevel.success,
+                                          ),
+                                        );
                                         await Bar.update(bar);
                                       } else {
+                                        rut.showToast(
+                                          Toast.levelToast(
+                                            message: "Lokal hinzugefügt",
+                                            level: ToastLevel.success,
+                                          ),
+                                        );
                                         await Bar.insert(bar);
                                       }
                                       Provider.of<BarChanged>(context,

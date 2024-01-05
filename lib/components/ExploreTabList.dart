@@ -216,6 +216,13 @@ class ExploreList extends StatelessWidget {
                                   description:
                                       'Bist du sicher, dass du\ndiesen Favoriten löschen\nmöchtest?',
                                   onConfirm: () {
+                                    context.showToast(
+                                      Toast.levelToast(
+                                        message: "Favorit gelöscht",
+                                        level: ToastLevel.success,
+                                      ),
+                                    );
+
                                     if (isBar) {
                                       Bar.toggleFavorite(item.id).then(
                                           (_) => onChanged()); // Update here
@@ -278,6 +285,22 @@ class ExploreList extends StatelessWidget {
                                 }
                               },
                               pressFavorite: () {
+                                if (item.isFavorite) {
+                                  context.showToast(
+                                    Toast.levelToast(
+                                      message: "Favorit gelöscht",
+                                      level: ToastLevel.success,
+                                    ),
+                                  );
+                                } else {
+                                  context.showToast(
+                                    Toast.levelToast(
+                                      message: "Favorit hinzugefügt",
+                                      level: ToastLevel.success,
+                                    ),
+                                  );
+                                }
+
                                 if (isBar) {
                                   Bar.toggleFavorite(item.id)
                                       .then((_) => onChanged()); // Update here
