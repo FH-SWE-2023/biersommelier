@@ -95,7 +95,7 @@ class ImageManager {
               children: [
                 Icon(Icons.photo_library),
                 SizedBox(width: 16), // Add space between icon and text
-                Text('Gallerie'),
+                Text('Galerie'),
               ],
             ),
             onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
