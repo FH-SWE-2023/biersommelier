@@ -56,13 +56,13 @@ class Beer extends DropdownOption {
   static String createDefaultBeers() {
     return '''
       INSERT INTO beers (id, name, imageId, isFavorite) VALUES
-      ('b007bec1-e6b0-4514-b741-895440d2619e', 'Kölsch', 'b007bec1-e6b0-4514-b741-895440d2619e', 0),
-      ('88c58884-5dba-4296-9a74-21cc29b9db73', 'Berg Märzen', '88c58884-5dba-4296-9a74-21cc29b9db73', 0),
-      ('ba8bb191-6c43-491f-99a8-4a3029440496', 'Dunkles', 'ba8bb191-6c43-491f-99a8-4a3029440496', 0),
-      ('1fbf011a-958b-4ebf-924b-5f7325a4c616', 'Duxer Bock', '1fbf011a-958b-4ebf-924b-5f7325a4c616', 0),
-      ('3ddd3fbb-2ba3-4942-aed8-37371190651d', 'Berliner Weisse', '3ddd3fbb-2ba3-4942-aed8-37371190651d', 0),
-      ('268fa825-3127-4e37-b7c4-3da4001f13ec', 'Feldschlösschen Pils', '268fa825-3127-4e37-b7c4-3da4001f13ec', 0),
-      ('92d646f8-49a9-4399-85db-6522da2674e2', 'Watzdorfer Schwarzbier', '92d646f8-49a9-4399-85db-6522da2674e2', 0)
+      ('b007bec1-e6b0-4514-b741-895440d2619e', 'Kölsch - Kölner Sauerbier', 'b007bec1-e6b0-4514-b741-895440d2619e', 0),
+      ('88c58884-5dba-4296-9a74-21cc29b9db73', 'Märzen - Ideales Sommerbier', '88c58884-5dba-4296-9a74-21cc29b9db73', 0),
+      ('ba8bb191-6c43-491f-99a8-4a3029440496', 'Dunkles Bier - Vollmundiges Bier', 'ba8bb191-6c43-491f-99a8-4a3029440496', 0),
+      ('1fbf011a-958b-4ebf-924b-5f7325a4c616', 'Bock - Malziges Starkbier', '1fbf011a-958b-4ebf-924b-5f7325a4c616', 0),
+      ('3ddd3fbb-2ba3-4942-aed8-37371190651d', 'Berliner Weisse - Säuerliches Schankbier', '3ddd3fbb-2ba3-4942-aed8-37371190651d', 0),
+      ('268fa825-3127-4e37-b7c4-3da4001f13ec', 'Pils - Ursprünglich tschechisch', '268fa825-3127-4e37-b7c4-3da4001f13ec', 0),
+      ('92d646f8-49a9-4399-85db-6522da2674e2', 'Schwarzbier - Tiefschwarz und Hopfig', '92d646f8-49a9-4399-85db-6522da2674e2', 0)
     ''';
   }
 
