@@ -59,7 +59,7 @@ class Toast extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         color: backgroundColor,
@@ -75,7 +75,7 @@ class Toast extends StatelessWidget {
           Text(
             message,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 16,
               fontFamily: "Roboto",
               textBaseline: null,
               color: textColor,
