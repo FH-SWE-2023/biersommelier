@@ -12,22 +12,26 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: SafeArea(
-          child: Column(
-        children: [
-          Header(
-            title: "Favoriten",
-            backgroundColor: Colors.white,
-            icon: HeaderIcon.none,
+    return const SafeArea(
+        child: Column(children: [
+          Padding(padding: EdgeInsets.only(bottom: 5),
+              child: Header(
+                title: "Favoriten",
+                backgroundColor: Colors.white,
+                icon: HeaderIcon.none,
+              ),
           ),
           Flexible(
-            fit: FlexFit.tight,
-            child: ExploreBar(onlyFavorites: true),
+              fit: FlexFit.tight,
+              child: ExploreBar(onlyFavorites: true),
           ),
-        ],
-      )),
+        ],)
     );
   }
 }
