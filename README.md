@@ -12,7 +12,7 @@ Diese App wird während des dritten Semesters an der Fh-Aachen für das SWE Prak
 
 ### Bauen
 
-Die App benötigt [Flutter](https://flutter.dev/) sowie die Android SDK mit Mindestversion 33. Um diese komfotabel zu installieren kann [Android Studio](https://developer.android.com/studio) verwendet werden.
+Die App benötigt [Flutter](https://flutter.dev/) sowie die Android SDK mit Mindestversion 33. Um diese komfortabel zu installieren kann [Android Studio](https://developer.android.com/studio) verwendet werden.
 
 ### Mobil
 
