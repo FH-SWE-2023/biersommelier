@@ -136,8 +136,14 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay,
                                               imageId = initialBeer!.imageId;
                                             } else {
                                               if (initialImage != null) {
-                                                await ImageManager.deleteImage(
-                                                    initialBeer!.imageId);
+                                                try {
+                                                  await ImageManager
+                                                      .deleteImage(
+                                                          initialBeer!.imageId);
+                                                } catch (e) {
+                                                  // Ist egal, weil hier einfach nur ein sample bild nicht gelöscht werden
+                                                  // kann.
+                                                }
                                               }
                                               imageId =
                                                   await ImageManager.saveImage(
