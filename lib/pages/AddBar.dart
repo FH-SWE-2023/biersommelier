@@ -304,6 +304,10 @@ class _AddBarOverlayContentState extends State<AddBarOverlayContent> {
                                   bool testAddress =
                                       formKeyAddress.currentState!.validate();
 
+                                  if (bars.firstOrNull == null) {
+                                    return;
+                                  }
+
                                   Bar bar = widget.initialBar ??
                                       Bar(
                                         id: Bar.generateUuid(),
