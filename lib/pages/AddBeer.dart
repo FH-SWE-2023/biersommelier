@@ -118,7 +118,7 @@ OverlayEntry createAddBeerOverlay(BuildContext context, Function closeOverlay,
                                           onImageSelected: (file) {
                                             selectedImage = file;
                                           },
-                                          image: selectedImage, onlySquareCrop: true,)
+                                          image: selectedImage)
                                     ]),
                                 const SizedBox(
                                   width: 16,
