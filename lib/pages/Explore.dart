@@ -140,26 +140,22 @@ class _ExploreState extends State<Explore> {
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
+                        Listener(
+                          onPointerUp: (event) {
                             _tabListExpanded.value = true;
                           },
-                          child: AbsorbPointer(
-                            absorbing: !_tabListExpanded.value,
-                            child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                ),
-                                child: ExploreBar(onBarAddressClick: (bar) {
-                                  _tabListExpanded.value = false;
-                                  mapKey.currentState?.setSelectedBar(bar);
-                                  mapKey.currentState?.mapController.move(
-                                      bar.location,
-                                      mapKey.currentState!.mapController.camera
-                                          .zoom);
-                                })),
-                          ),
+                          child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: ExploreBar(onBarAddressClick: (bar) {
+                                _tabListExpanded.value = false;
+                                mapKey.currentState?.setSelectedBar(bar);
+                                mapKey.currentState?.mapController.move(
+                                    bar.location,
+                                    mapKey.currentState!.mapController.camera
+                                        .zoom);
+                              })),
                         ),
                         Positioned.fill(
                           top: -20,
