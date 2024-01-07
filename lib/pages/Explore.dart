@@ -140,27 +140,35 @@ class _ExploreState extends State<Explore> {
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            _tabListExpanded.value = true;
-                          },
-                          child: AbsorbPointer(
-                            absorbing: !_tabListExpanded.value,
-                            child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                ),
-                                child: ExploreBar(onBarAddressClick: (bar) {
-                                  _tabListExpanded.value = false;
-                                  mapKey.currentState?.setSelectedBar(bar);
-                                  mapKey.currentState?.mapController.move(
-                                      bar.location,
-                                      mapKey.currentState!.mapController.camera
-                                          .zoom);
-                                })),
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
                           ),
+                          child: ExploreBar(onBarAddressClick: (bar) {
+                            _tabListExpanded.value = false;
+                            mapKey.currentState?.setSelectedBar(bar);
+                            mapKey.currentState?.mapController.move(
+                                bar.location,
+                                mapKey.currentState!.mapController.camera.zoom);
+                          }),
                         ),
+                        Builder(builder: (context) {
+                          if (!_tabListExpanded.value) {
+                            return Listener(
+                              behavior: HitTestBehavior.translucent,
+                              onPointerUp: (_) {
+                                print("tap down 1");
+                                _tabListExpanded.value = true;
+                              },
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width,
+                              ),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        }),
                         Positioned.fill(
                           top: -20,
                           child: Align(
