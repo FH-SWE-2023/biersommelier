@@ -25,55 +25,72 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: onCancel,
+          child: DecoratedBox(
+            decoration: BoxDecoration(color: Colors.black.withAlpha(100)),
+            child: Container(),
+          ),
         ),
-      ),
-      contentPadding: const EdgeInsets.all(16.0),
-      content: SizedBox(
-        width: 300.0,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 30,
-                horizontal: 10,
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: AlertDialog(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10.0),
+                ),
               ),
-              child: Text(
-                description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.w400),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(
-                  onPressed: onConfirm,
-                  child: Text(
-                    confirmButtonText,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 20.0,
+              contentPadding: const EdgeInsets.all(16.0),
+              content: SizedBox(
+                width: 300.0,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 30,
+                        horizontal: 10,
+                      ),
+                      child: Text(
+                        description,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.w400),
+                      ),
                     ),
-                  ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        TextButton(
+                          onPressed: onConfirm,
+                          child: Text(
+                            confirmButtonText,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: onCancel,
+                          child: Text(
+                            cancelButtonText,
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 20.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                TextButton(
-                  onPressed: onCancel,
-                  child: Text(
-                    cancelButtonText,
-                    style: const TextStyle(color: Colors.black, fontSize: 20.0),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
