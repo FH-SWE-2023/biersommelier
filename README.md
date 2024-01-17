@@ -2,7 +2,7 @@
 
 Eine App zum notieren von Bieren.
 
-![Lets get drunk](./lgd.gif)
+![Biersommelier Überblick](./biersommelier.png)
 
 ## Grund der App
 
